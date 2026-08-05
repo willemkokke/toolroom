@@ -1419,10 +1419,6 @@ def test_pages_regenerates_the_tools_nav_between_markers(tmp_path):
     assert {"bash", "python", "ruff"} <= set(keys)  # the real drivers, sorted in
 
 
-@pytest.mark.skip(
-    reason="tool pages are not wired into toolroom's site yet — "
-    "docs parity deferred (2026-08-05)"
-)
 def test_checked_in_tools_nav_lists_every_stubbed_driver():
     # Fails when a driver is added without `fm toolroom.pages` regenerating
     # the sidebar — the drift guard the hardcoded nav never had.

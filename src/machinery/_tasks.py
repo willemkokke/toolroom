@@ -2328,7 +2328,7 @@ _INDEX = """\
 # Tools
 
 Import a tool by name — `from toolroom import git` — and call it,
-`git.commit(…)`. No declaration needed: [the bridge](../../tools-bridge.md)
+`git.commit(…)`. No declaration needed: [the bridge](../../usage.md)
 translates keyword arguments into flags mechanically, and every tool on
 your PATH already works. These pages document the **stubs**: what each
 curated tool accepted at the version footman last read it from, with that
@@ -2359,7 +2359,7 @@ point *can* run in footman's own process instead, skipping the spawn:
 - **no** — a Rust/Go/Node binary with no Python entry point; always a
   subprocess.
 
-See [the tools bridge](../../tools-bridge.md#parallelism) for how in-process
+See [the footman host page](../../footman.md) for how in-process
 tools stay parallel (and the one case that can't).
 
 {table}

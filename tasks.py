@@ -51,7 +51,17 @@ def test() -> None:
 @requires_dep("zensical", reason="docs tooling: uv sync --group docs")
 @task
 def docs() -> None:
-    """Build the documentation site, strictly."""
+    """Build the documentation site, strictly.
+
+    The per-tool reference pages regenerate first, from the checked-in
+    stubs — the build needs no tool on PATH, and the sidebar can never
+    fall behind the drivers.
+    """
+    from pathlib import Path
+
+    from machinery._tasks import pages
+
+    pages(Path("docs/_generated/tools"), nav=Path("zensical.toml"))
     tools.zensical.build(clean=True, strict=True)
 
 
