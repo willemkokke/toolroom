@@ -339,6 +339,7 @@ class _FakeEP:
 
 
 def test_dry_run_does_not_import_the_tool(monkeypatch):
+    monkeypatch.setattr(tools._host, "hosted", lambda: True)
     # The property duty had: a call you don't execute costs no tool import.
     # Under recording (dry-run), the entry point is resolved (metadata) but
     # never loaded — so the tool's module is never imported.
@@ -374,7 +375,8 @@ def test_in_process_never_spawns(monkeypatch):
     assert sys.argv == saved_argv  # patched argv is always restored
 
 
-def test_in_process_demand_without_entry_is_taught():
+def test_in_process_demand_without_entry_is_taught(monkeypatch):
+    monkeypatch.setattr(tools._host, "hosted", lambda: True)
     with pytest.raises(ValueError, match="no importable in-process entry"):
         tools.Tool("no-such-python-tool").opts(in_process=True)("--version")
 
@@ -569,6 +571,7 @@ def test_tool_opts_none_means_unset(tmp_path):
 
 
 def test_zero_arg_entries_fall_back_to_argv_patching(monkeypatch):
+    monkeypatch.setattr(tools._host, "hosted", lambda: True)
     seen = {}
 
     def zero_arg_entry():  # reads sys.argv like an old argparse main

@@ -15,6 +15,13 @@ breaking changes.
   **whole** environment, never a merge over the parent's. The divergence
   was a portability trap between the two lanes, caught by a consumer's
   sweep.
+- Host detection keys on **orchestration, not presence**: a call routes
+  through footman only when a footman context is live (a task body, a
+  `parallel()` worker, a `recording()` block). A bare call in a process
+  that merely imported footman — a pytest run auto-loading footman's
+  plugin, say — now takes the standalone lane deterministically, so which
+  exception a failure raises never depends on what some other module
+  imported. The same sweep caught this one.
 
 ## [0.1.0] — 2026-08-05
 

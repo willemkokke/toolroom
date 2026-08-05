@@ -8,13 +8,17 @@ dry-run, `recording()`, lanes — without footman ever importing (or even
 knowing about) toolroom. When it is not, a plain subprocess executor
 answers with toolroom's own `Result`.
 
-Detection keys on *presence in the process* — footman already imported
-— never on "a task is running": footman's `current()` hands back a
-default context outside a run, and a bridge call outside a task body
-must keep routing through `run()` exactly as it does when the bridge
-ships inside footman. An installed-but-never-imported footman does not
-make this a footman process, and importing it here would change the
-process just to answer a question about it.
+Detection keys on *orchestration*, not mere presence: a call routes
+hosted only when a footman context is actually live — a task body, a
+`parallel()` worker, a `recording()` block — because that is when
+receipts, dry-run, and recording must be impossible to bypass. A bare
+call in a process that merely *imported* footman (a pytest run
+auto-loading footman's plugin, an app embedding both) takes the
+standalone executor and standalone semantics, deterministically: which
+exception a failure raises must never depend on what some other module
+imported. An installed-but-never-imported footman does not make this a
+footman process either, and importing it here would change the process
+just to answer a question about it.
 
 The hosted branch's lazy imports reach the same names the in-tree
 bridge imports today. When footman grows a named executor contract,
@@ -150,8 +154,20 @@ class ToolError(RuntimeError):
 
 
 def hosted() -> bool:
-    """Whether footman is present in this process."""
-    return "footman" in sys.modules
+    """Whether footman is orchestrating this call.
+
+    True only with a live footman context — a task body, a `parallel()`
+    worker, a `recording()` block — where routing through `run()` is
+    what keeps receipts, dry-run, and recording honest. Presence alone
+    (footman merely imported somewhere in the process) is not
+    orchestration: a standalone-minded call keeps standalone semantics
+    however the process came to hold a footman.
+    """
+    if "footman" not in sys.modules:
+        return False
+    from footman.context import _current
+
+    return _current.get() is not None
 
 
 def container_error(value: Any, where: str, *, example: str = "") -> str:

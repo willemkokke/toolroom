@@ -12,13 +12,13 @@ footman is already in the process.
 
 ## Detection, not configuration
 
-When a `toolroom` call happens in a process where footman is present —
-which is every footman task body, and any script that imported footman
-— the bridge routes the call through footman's `run()`. Nothing opts
-in and nothing can forget to: the same `git.push()` that spawns a
-plain subprocess in a script earns a receipt, captures through the
-task's lane, obeys `--dry-run`, and appears in `recording()` when a
-footman run is around it.
+When a `toolroom` call happens where footman is *orchestrating* — a
+task body, a `parallel()` worker, a `recording()` block — the bridge
+routes the call through footman's `run()`. Nothing opts in and nothing
+can forget to: the same `git.push()` that spawns a plain subprocess in
+a script earns a receipt, captures through the task's lane, obeys
+`--dry-run`, and appears in `recording()` when a footman run is
+around it.
 
 ```python
 from footman import task
@@ -31,11 +31,15 @@ def check() -> None:
     pytest.opts(in_process=False)()
 ```
 
-Detection keys on footman being *present in the process*, not on a
-task running: a bridge call outside any task still routes through
-`run()` on footman's default context, exactly as `footman.tools`
-behaves. What standalone toolroom adds is the case that could not
-exist before — no footman anywhere — where plain `subprocess` answers.
+Detection keys on a live footman context, never on mere presence: a
+process that only *imported* footman — a pytest run auto-loading
+footman's plugin, an app embedding both packages — leaves bare calls
+on the standalone lane, deterministically, so which exception a
+failure raises never depends on what some other module imported.
+Harness infrastructure that must answer truthfully even inside
+`recording()` — an availability probe, say — rides
+`.opts(recorded=False)`: a value read executes where a story step
+would be faked.
 
 ## What the host unlocks
 
