@@ -51,6 +51,7 @@ dev = [
     "ruff>=0.14",
     "basedpyright>=1.29",
 ]
+docs = ["zensical>=0.0.50"]
 
 [tool.ruff]
 line-length = 88

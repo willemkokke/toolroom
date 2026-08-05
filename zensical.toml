@@ -1,0 +1,18 @@
+[project]
+site_name = "toolroom"
+site_description = "Typed surfaces for command-line tools, generated from the tools themselves."
+site_author = "Willem Kokke"
+site_url = "https://willemkokke.github.io/toolroom/"
+repo_url = "https://github.com/willemkokke/toolroom"
+repo_name = "willemkokke/toolroom"
+copyright = """
+Copyright &copy; 2026 Willem Kokke — MIT licensed
+"""
+
+nav = [
+  { "Home" = "index.md" },
+  { "Using the tools" = "usage.md" },
+  { "With footman" = "footman.md" },
+  { "Typing & the stubs" = "typing.md" },
+  { "Changelog" = "changelog.md" },
+]

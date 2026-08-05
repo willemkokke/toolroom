@@ -8,7 +8,7 @@ the gate exercises the hosted lane on every run.
 
 from __future__ import annotations
 
-from footman import task
+from footman import requires_dep, task
 
 import toolroom as tools
 
@@ -44,6 +44,13 @@ def test() -> None:
     argv, and the suite is xdist-bound anyway.
     """
     tools.pytest.opts(in_process=False)()
+
+
+@requires_dep("zensical", reason="docs tooling: uv sync --group docs")
+@task
+def docs() -> None:
+    """Build the documentation site, strictly."""
+    tools.zensical.build(clean=True, strict=True)
 
 
 @task(pre=[format, lint, typecheck, test])
