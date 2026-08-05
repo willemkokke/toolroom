@@ -1,3 +1,7 @@
+---
+icon: lucide/warehouse
+---
+
 # toolroom
 
 Typed surfaces for command-line tools, generated from the tools

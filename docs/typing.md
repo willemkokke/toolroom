@@ -1,3 +1,7 @@
+---
+icon: lucide/pencil-ruler
+---
+
 # Typing & the stubs
 
 toolroom is typed the way the bridge works: the runtime accepts

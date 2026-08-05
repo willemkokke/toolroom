@@ -2325,6 +2325,10 @@ _READ_FROM = _re.compile(
 )
 
 _INDEX = """\
+---
+icon: lucide/layout-grid
+---
+
 # Tools
 
 Import a tool by name — `from toolroom import git` — and call it,

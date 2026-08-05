@@ -1,3 +1,7 @@
+---
+icon: lucide/hammer
+---
+
 # Using the tools
 
 Every tool is a handle; every handle speaks the same grammar.

@@ -1,4 +1,5 @@
 ---
+icon: lucide/joystick
 hide:
   - navigation
   - toc
