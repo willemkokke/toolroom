@@ -26,8 +26,8 @@ import subprocess
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
-from footman import _toolhelp, _toolspec
-from footman._toolspec import ToolSpec, Verb
+from machinery import _toolhelp, _toolspec
+from machinery._toolspec import ToolSpec, Verb
 
 
 @dataclass(frozen=True)
@@ -572,7 +572,7 @@ def _read_version(name: str) -> tuple[str, str]:
     say which teaches nothing when it trips (the CI flake that motivated
     this reported `gh (—)` and left every hypothesis standing).
     """
-    from footman import tools
+    import toolroom as tools
 
     # A suite tool may name a sibling that answers for it: ssh-keygen has no
     # version output at all, and ssh speaks for the OpenSSH release both
@@ -645,7 +645,7 @@ def in_process_capable(name: str) -> bool:
     list to maintain, and it answers correctly for a tool footman has never
     heard of.
     """
-    from footman import tools
+    import toolroom as tools
 
     return tools._console_entrypoint(name) is not None
 
@@ -810,7 +810,7 @@ def _from_click(driver: Driver) -> ToolSpec | None:
     a binary whose version cannot be read) falls through to the help path,
     which always asks the binary itself.
     """
-    from footman import tools
+    import toolroom as tools
 
     entry = tools._console_entrypoint(driver.name)
     if entry is None:

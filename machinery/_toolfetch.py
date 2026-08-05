@@ -30,7 +30,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from footman._drivers import Driver, Plugin, Provision
+from machinery._drivers import Driver, Plugin, Provision
 
 PYPI = "https://pypi.org/pypi/{package}/json"
 TIMEOUT = 30
@@ -190,7 +190,7 @@ def releases(driver: Driver) -> list[Release]:
         return []
     found = _stable(found)
     if driver.provision.floor:
-        from footman.tools import version_tuple
+        from toolroom import version_tuple
 
         cut = version_tuple(driver.provision.floor)
         found = [r for r in found if version_tuple(r.version) >= cut]
@@ -229,7 +229,7 @@ def _order(found: list[Release]) -> list[Release]:
     versions, and fixed there. Measured across all 24 listable tools and
     3,214 stable releases, this ordering is total with no collisions.
     """
-    from footman.tools import version_tuple
+    from toolroom import version_tuple
 
     return sorted(
         found,
@@ -282,7 +282,7 @@ def _read_index(request: urllib.request.Request, url: str) -> bytes:
     `Unreachable` still ends the run when the tries are spent: an index
     that will not answer must never read as "nothing new".
     """
-    from footman._provision import _worth_retrying
+    from machinery._provision import _worth_retrying
 
     for attempt in range(_INDEX_TRIES):
         try:
@@ -304,7 +304,7 @@ def _index(url: str) -> Any:
     """A registry's JSON — shape varies by registry (PyPI a dict, a paged
     forge API a list), so the honest static type is the JSON it is. Raises
     `Unreachable` when it cannot be read."""
-    from footman._provision import api_headers
+    from machinery._provision import api_headers
 
     request = urllib.request.Request(url, headers=api_headers(url))
     try:
@@ -342,7 +342,7 @@ def _forge(driver: Driver, host: str, pages: int = 1) -> list[Release]:
     compose listing runs out in late 2022, which is well inside the range
     docker itself goes back to.
     """
-    from footman.tools import read_version
+    from toolroom import read_version
 
     repo = driver.provision.repo
     if not repo:
@@ -548,7 +548,7 @@ def _docker_index() -> list[Release]:
 
 def _install_docker(driver: Driver, release: Release, into: Path) -> Path | None:
     """Fetch one static build and place its binary where the walk reads it."""
-    from footman import _provision
+    from machinery import _provision
 
     os_name, arch, suffix = _docker_channel()
     index = _DOCKER_INDEX.format(os=os_name, arch=arch)
@@ -595,8 +595,8 @@ def install_plugin(plugin: Plugin, on_or_before: str, home: Path) -> bool:
     absent, which is what a walk of an era before the plugin existed
     should say.
     """
-    from footman import _provision
-    from footman.tools import version_tuple
+    from machinery import _provision
+    from toolroom import version_tuple
 
     found = _listing(plugin.repo, 3)
     floor = version_tuple(plugin.since) if plugin.since else ()
@@ -673,7 +673,7 @@ def _install_man(driver: Driver, release: Release, into: Path) -> Path | None:
     """Unpack one release's manuals where the reader will look for them."""
     import tarfile
 
-    from footman import _provision
+    from machinery import _provision
 
     man = driver.provision.manual
     if man is None:
@@ -885,7 +885,7 @@ def _install_asset(driver: Driver, release: Release, into: Path) -> Path | None:
     listing it worked and only installing failed. The version is still tried
     as a fallback, for a listing that recorded no tag.
     """
-    from footman import _provision
+    from machinery import _provision
 
     kind = driver.provision.kind
     host = kind if kind in ("gitlab", "gitea") else "github"

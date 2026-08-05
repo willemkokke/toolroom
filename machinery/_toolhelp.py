@@ -42,7 +42,7 @@ from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from footman._toolspec import Option, ToolSpec, Verb
+from machinery._toolspec import Option, ToolSpec, Verb
 
 if TYPE_CHECKING:
     from footman.context import Result

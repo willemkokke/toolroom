@@ -35,26 +35,27 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Any, Literal, cast
 
-from footman import _drivers, _stubgen, _toolhistory, _toolspec
+from machinery import _drivers, _stubgen, _toolhistory, _toolspec
 
 if TYPE_CHECKING:
     from types import ModuleType
 
-    from footman import _colorprobe, _provision, _toolfetch
+    from machinery import _colorprobe, _provision, _toolfetch
 from footman._describe import bold, cyan, wants_color
 from footman.context import current
 from footman.params import doc
 from footman.registry import Group
-from footman.tools import version_tuple as _version_tuple
+
+from toolroom import version_tuple as _version_tuple
 
 tasks: Group = Group("tools", help="Keep the tools.* stubs honest")
 
-_STUBS = Path(__file__).resolve().parent.parent / "_stubs"
+_STUBS = Path(__file__).resolve().parents[1] / "src" / "toolroom" / "_stubs"
 # Repo-only, deliberately outside `src/`: generation reads the history and
 # generation is a maintainer task run from a checkout, while users read the
 # stubs — which already carry everything the log is for. Shipping it would
 # make every install pay for history nobody reads.
-_HISTORY = Path(__file__).resolve().parents[3] / "tool-history"
+_HISTORY = Path(__file__).resolve().parents[1] / "tool-history"
 
 
 class _Ambiguous(Exception):
@@ -156,7 +157,7 @@ def _plugin_home(driver: _drivers.Driver) -> Path | None:
     answer and the only one available. A walk must not use it: see
     `_extract`.
     """
-    from footman import _toolfetch
+    from machinery import _toolfetch
 
     if not driver.plugins:
         return None
@@ -170,7 +171,7 @@ def _plugin_home(driver: _drivers.Driver) -> Path | None:
 
 def _fetched_home(driver: _drivers.Driver, placed: Path) -> Path | None:
     """The home this observation's own plugins were fetched into."""
-    from footman import _toolfetch
+    from machinery import _toolfetch
 
     if not driver.plugins:
         return None
@@ -310,7 +311,7 @@ def _node_shim(scratch: Path) -> Path | None:
     """
     import shutil
 
-    from footman._provision import write_node_shim
+    from machinery._provision import write_node_shim
 
     bun = shutil.which("bun")
     if bun is None:
@@ -476,7 +477,7 @@ def _formatted(text: str) -> str:
     Generated code lands in `src/`, where `ruff check` and `ruff format
     --check` run on every commit — so it has to satisfy both by construction,
     not by a follow-up nobody remembers. Import sorting is the half a
-    formatter cannot do: the generator writes one `from footman.tools import
+    formatter cannot do: the generator writes one `from toolroom import
     …` line and ruff's isort has its own opinion about aliased members.
     """
     import subprocess
@@ -601,7 +602,7 @@ def _ignore(driver: _drivers.Driver, root: Path | None) -> str:
       machine behind the one that took the snapshot. Reading it would
       rewrite the stub *backwards*, losing flags that exist upstream.
     """
-    from footman import _toolhelp
+    from machinery import _toolhelp
 
     manual = _toolhelp._fetched_manpath() if driver.provision.kind == "man" else ""
     if driver.provision.kind == "man" and root is not None and not manual:
@@ -772,7 +773,7 @@ def audit(
 def _audit(
     only: str, fix: bool, strict: bool, root: Path | None = None
 ) -> dict[str, object]:
-    from footman import tools as _bridge
+    import toolroom as _bridge
 
     stale, skipped, wrong, checked = [], [], [], 0
     for driver in _drivers.DRIVERS:
@@ -863,7 +864,7 @@ def color(
 
 
 def _color_probe_and_write(only: str, write: bool, on: bool) -> None:
-    from footman import _colorprobe
+    from machinery import _colorprobe
 
     installed: list[tuple[str, str, str, _toolspec.ToolSpec]] = []
     for driver in _drivers.DRIVERS:
@@ -897,7 +898,7 @@ def _color_probe_and_write(only: str, write: bool, on: bool) -> None:
     if write and not only:
         data = Path(__file__).resolve().parent.parent / "_colordata.py"
         data.write_text(_formatted(_colorprobe.render(results)), encoding="utf-8")
-        docs = Path(__file__).resolve().parents[3] / "docs" / "color-support.md"
+        docs = Path(__file__).resolve().parents[1] / "docs" / "color-support.md"
         docs.write_text(_color_docs_table(results), encoding="utf-8")
         print(f"\nwrote {data.name} + {docs.name} ({len(results)} tools)")
 
@@ -961,7 +962,7 @@ def prime(
     import shutil
     import tempfile
 
-    from footman import _toolfetch
+    from machinery import _toolfetch
 
     _bounce_bare_call("prime")
     scratch = Path(tempfile.mkdtemp(prefix="footman-prime-"))
@@ -1073,7 +1074,7 @@ def gather(
     import shutil
     import tempfile
 
-    from footman import _toolfetch
+    from machinery import _toolfetch
 
     _bounce_bare_call("gather")
     scratch = Path(tempfile.mkdtemp(prefix="footman-gather-"))
@@ -1177,7 +1178,7 @@ def owed(
     An index that would not answer is *not* nothing to do — `unreachable`
     is reported separately for exactly that reason.
     """
-    from footman import _toolfetch
+    from machinery import _toolfetch
 
     _bounce_bare_call("owed")
     with _on_path(prefix):
@@ -1839,7 +1840,7 @@ def observe(
     describe itself — is a hole for the caller to report, never an error:
     the chain stays contiguous by construction, and a later run fills it.
     """
-    from footman import _toolfetch
+    from machinery import _toolfetch
 
     driver = _drivers.find(tool)
     if driver is None or not scratch:  # pragma: no cover - engine-supplied
@@ -2239,7 +2240,7 @@ def provision(
     for a person deciding what to do next and wrong for a job that will
     read the prefix and believe it.
     """
-    from footman import _provision
+    from machinery import _provision
 
     # Absolute: bun errors `ReadOnlyFileSystem` on a relative BUN_INSTALL, and
     # an absolute prefix keeps every tier's launchers and env vars unambiguous.
@@ -2303,7 +2304,7 @@ _READ_FROM = _re.compile(
 _INDEX = """\
 # Tools
 
-Import a tool by name — `from footman.tools import git` — and call it,
+Import a tool by name — `from toolroom import git` — and call it,
 `git.commit(…)`. No declaration needed: [the bridge](../../tools-bridge.md)
 translates keyword arguments into flags mechanically, and every tool on
 your PATH already works. These pages document the **stubs**: what each
@@ -2503,7 +2504,7 @@ def _page(driver: _drivers.Driver) -> str:
     home = f"[{driver.name} documentation]({driver.url})\n\n" if driver.url else ""
     return (
         f"# {driver.key}\n\n{home}"
-        f"::: footman._stubs.{driver.key}.{_class_name(driver.key)}\n"
+        f"::: toolroom._stubs.{driver.key}.{_class_name(driver.key)}\n"
     )
 
 

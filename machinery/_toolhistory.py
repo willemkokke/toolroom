@@ -27,7 +27,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-from footman._toolspec import Option, ToolSpec, Verb
+from machinery._toolspec import Option, ToolSpec, Verb
 
 SCHEMA = 1
 """Bumped when the on-disk shape changes in a way a reader must know about."""
@@ -627,8 +627,8 @@ def insert(
     Returns whether the release was added; a release the chain already holds
     is left exactly as it is.
     """
-    from footman._toolfetch import _patchlevel
-    from footman.tools import version_tuple
+    from machinery._toolfetch import _patchlevel
+    from toolroom import version_tuple
 
     if version in observed(doc):
         return False

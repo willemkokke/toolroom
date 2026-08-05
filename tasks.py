@@ -8,9 +8,11 @@ the gate exercises the hosted lane on every run.
 
 from __future__ import annotations
 
-from footman import requires_dep, task
+from footman import include, requires_dep, task
 
 import toolroom as tools
+
+include("machinery._tasks")
 
 
 @task

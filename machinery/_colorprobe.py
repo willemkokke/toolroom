@@ -30,8 +30,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from footman import _toolhelp
-from footman._toolspec import ToolSpec
+from machinery import _toolhelp
+from machinery._toolspec import ToolSpec
 
 _SGR = re.compile("\x1b\\[")  # a CSI escape — how "it emitted colour" is seen
 

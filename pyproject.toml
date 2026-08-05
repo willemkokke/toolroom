@@ -65,13 +65,14 @@ select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
 "tests/**" = ["A", "B", "ARG"]
 
 [tool.basedpyright]
-include = ["src", "tests", "tasks.py"]
+include = ["src", "tests", "tasks.py", "machinery"]
 pythonVersion = "3.11"
 typeCheckingMode = "standard"
 reportMissingModuleSource = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 # `-n auto` fans the suite across cores (pytest-xdist); override with -n0 to
 # debug one test serially.
 addopts = "-n auto --dist worksteal"
