@@ -290,9 +290,11 @@ def _standalone(
     The reporting-lane policy (`title`, `recorded`, `pre_record`) has no
     meaning without a host and is accepted upstream then ignored here;
     the execution-lane policy is honoured: `capture` holds the streams,
-    `input` feeds stdin, `env` replaces the inherited additions the way
-    `run(env=…)` means it, `cwd`/`rel` root the call, `timeout` bounds
-    it, and a non-zero exit raises `ToolError` unless `nofail`.
+    `input` feeds stdin, `env` is the child's whole environment exactly
+    as `run(env=…)` means it hosted — what you pass is what the child
+    gets, never a merge over the parent's — `cwd`/`rel` root the call,
+    `timeout` bounds it, and a non-zero exit raises `ToolError` unless
+    `nofail`.
     """
     base = None if cwd in (None, "unmanaged") else Path(cwd)
     directory = (base or Path(os.getcwd())) / rel if rel is not None else base
@@ -303,7 +305,7 @@ def _standalone(
         encoding="utf-8",
         errors="replace",
         input=input,
-        env={**os.environ, **env} if env else None,
+        env=env,
         cwd=directory,
         timeout=timeout,
     )

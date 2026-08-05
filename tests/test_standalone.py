@@ -55,11 +55,17 @@ def test_capture_false_leaves_streams_empty():
     assert r.stdout == "" and r.stderr == ""
 
 
-def test_env_overlays_the_inherited_environment():
+def test_env_is_the_childs_whole_environment(monkeypatch):
+    # The hosted contract, kept standalone: what you pass is what the
+    # child gets — never a merge over the parent's environment. hse's
+    # portability sweep caught the divergence; this pins the repair.
+    monkeypatch.setenv("TOOLROOM_INHERITED", "leaks")
     r = tools.python.opts(env={"TOOLROOM_PROBE": "42"})(
-        "-c", "import os; print(os.environ['TOOLROOM_PROBE'])"
+        "-c",
+        "import os; print(os.environ.get('TOOLROOM_PROBE'), "
+        "os.environ.get('TOOLROOM_INHERITED'))",
     )
-    assert r.stdout.strip() == "42"
+    assert r.stdout.strip() == "42 None"
 
 
 def test_cwd_and_rel_root_the_call(tmp_path):

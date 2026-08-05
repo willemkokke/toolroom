@@ -1,5 +1,5 @@
 [project]
-site_name = "toolroom"
+site_name = "Toolroom"
 site_description = "Typed surfaces for command-line tools, generated from the tools themselves."
 site_author = "Willem Kokke"
 site_url = "https://willemkokke.github.io/toolroom/"

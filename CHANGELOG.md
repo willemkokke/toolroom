@@ -7,6 +7,13 @@ breaking changes.
 
 ## [Unreleased]
 
+### Fixed
+
+- `.opts(env=…)` standalone now means what it means hosted: the child's
+  **whole** environment, never a merge over the parent's. The divergence
+  was a portability trap between the two lanes, caught by a consumer's
+  sweep.
+
 ## [0.1.0] — 2026-08-05
 
 ### Added
