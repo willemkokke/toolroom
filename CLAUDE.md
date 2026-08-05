@@ -16,8 +16,11 @@ on the other. Python 3.11+, pre-1.0, moving fast.
 
 - **Zero runtime deps, and the wheel is the bridge + stubs only.**
   Nothing under `src/toolroom/` imports anything but stdlib at module
-  level. The machinery under `machinery/` is repo-only and must never
-  ship in any dist ("the lean install", ruled 2026-08-05).
+  level. The machinery under `src/machinery/` is repo-only: uv_build
+  ships only the declared `toolroom` module, the release workflow
+  fails if machinery leaks into the wheel, and the editable install is
+  what makes it importable in the dev env ("the lean install", ruled
+  2026-08-05).
 - **footman is a dev dependency only** — it runs the gate and hosts
   the conformance suite. `src/toolroom/` may import footman *lazily
   and only behind `_host.hosted()`* (footman present in `sys.modules`
@@ -49,8 +52,9 @@ that is the unpicklable argv-router proxy.
 ```
 src/toolroom/      the wheel: __init__.py (bridge), _host.py (seam),
                    _colordata.py, __init__.pyi + _stubs/ (typing)
-machinery/         repo-only: drivers, provision, toolfetch, stubgen,
-                   toolhelp/toolspec/toolhistory, _tasks.py (fm tools.*)
+src/machinery/     repo-only, never in the wheel: drivers, provision,
+                   toolfetch, stubgen, toolhelp/toolspec/toolhistory,
+                   _tasks.py (fm tools.*)
 tool-history/      the per-tool option-event store (append-only)
 tests/             bridge + standalone + machinery suites
 docs/              Zensical site → willemkokke.github.io/toolroom

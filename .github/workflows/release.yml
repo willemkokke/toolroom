@@ -54,6 +54,11 @@ jobs:
         run: uv build
       - name: Wheel must ship py.typed
         run: unzip -l dist/*.whl | grep -q "toolroom/py.typed"
+      - name: Wheel must NOT ship the machinery (the lean install)
+        run: |
+          if unzip -l dist/*.whl | grep -q machinery; then
+            echo "::error::machinery leaked into the wheel"; exit 1
+          fi
       - uses: actions/upload-artifact@v7
         with:
           name: dist

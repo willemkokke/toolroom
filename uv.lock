@@ -593,7 +593,6 @@ dev = [
     { name = "pytest" },
     { name = "pytest-xdist" },
     { name = "ruff" },
-    { name = "toolroom-machinery" },
     { name = "uv" },
 ]
 docs = [
@@ -611,15 +610,9 @@ dev = [
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-xdist", specifier = ">=3.6" },
     { name = "ruff", specifier = ">=0.14" },
-    { name = "toolroom-machinery", editable = "machinery" },
     { name = "uv" },
 ]
 docs = [{ name = "zensical", specifier = ">=0.0.50" }]
-
-[[package]]
-name = "toolroom-machinery"
-version = "0.0.0"
-source = { editable = "machinery" }
 
 [[package]]
 name = "uv"
