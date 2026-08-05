@@ -3,6 +3,7 @@
 Typed surfaces for command-line tools, generated from the tools
 themselves.
 
+<!-- example: fragment -->
 ```python
 from toolroom import cmake, git
 

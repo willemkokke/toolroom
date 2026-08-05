@@ -30,6 +30,7 @@ Every generated class is generic over what a call returns. A running
 handle answers in `Result`; `.argv` re-parameterises the same class
 over `Argv`, so a *built* call keeps the same flag checking as a run:
 
+<!-- example: fragment -->
 ```python
 from toolroom import git
 
