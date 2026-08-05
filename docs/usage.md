@@ -29,8 +29,10 @@ docker.compose.up(detach=True)  # docker compose up --detach
 Any executable works without being declared: `toolroom.terraform("plan")`
 runs `terraform plan`. Tools with quirks are curated — `eclint` takes
 single-dash long flags, `mkdocs build` negates `clean` as `--dirty`,
-`python` always means the running interpreter — and the curation rides
-every call.
+`python` means the running interpreter, never whatever `python` is on
+`PATH` — and the curation rides every call. Point a handle at a
+different executable deliberately with `.at()` (`python.at(venv_python)`);
+ambient intent is spelled `toolroom.python3`.
 
 ## Results and failures
 
