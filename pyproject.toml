@@ -29,3 +29,48 @@ dependencies = []
 [project.urls]
 Homepage = "https://github.com/willemkokke/toolroom"
 Repository = "https://github.com/willemkokke/toolroom"
+
+# Zero runtime dependencies, like footman. footman appears below as a *dev*
+# dependency only: it runs the gate (`fm check`), and its presence in the test
+# environment is what exercises the hosted lane — the bridge detecting footman
+# and routing through run(). Nothing here ships in the wheel's metadata.
+[dependency-groups]
+dev = [
+    # uv itself, pinned by the lock so every laptop and CI runs the same one.
+    "uv",
+    "footman>=0.31",
+    "pytest>=8.0",
+    "pytest-xdist>=3.6",
+    # An in-process-preferring tool the suite drives without spawning
+    # (test_in_process_never_spawns) — and the coverage lane, when it lands.
+    "coverage>=7.6",
+    # The other in-process tool the suite drives (the DYLD/macOS story);
+    # without it two in-process tests skip and basedpyright can't resolve
+    # `mkdocs.__main__`.
+    "mkdocs>=1.6",
+    "ruff>=0.14",
+    "basedpyright>=1.29",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["A", "B", "ARG"]
+
+[tool.basedpyright]
+include = ["src", "tests", "tasks.py"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+reportMissingModuleSource = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# `-n auto` fans the suite across cores (pytest-xdist); override with -n0 to
+# debug one test serially.
+addopts = "-n auto --dist worksteal"

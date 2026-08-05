@@ -28,8 +28,8 @@ So: to assert that a flag exists, pass it something wrong.
 
 from __future__ import annotations
 
-from footman import tools
-from footman.tools import Tool, off
+import toolroom as tools
+from toolroom import Tool, off
 
 
 def _ruff() -> None:

@@ -34,55 +34,90 @@ from typing import cast as _cast  # noqa: F401
 
 from typing_extensions import TypeVar
 
-from footman._stubs.basedpyright import Basedpyright as Basedpyright
+from toolroom import _host as _host
+from toolroom._stubs.basedpyright import Basedpyright as Basedpyright
 
 # One generated file per tool — `fm tools.sync` writes them from
 # the installed binaries, and `audit` fails when they drift. They import
 # `Tool` and the aliases from here, which a stub may do circularly.
-from footman._stubs.bash import Bash as Bash
-from footman._stubs.build import Build as Build
-from footman._stubs.bun import Bun as Bun
-from footman._stubs.cmake import Cmake as Cmake
-from footman._stubs.cmd import Cmd as Cmd
-from footman._stubs.coverage import Coverage as Coverage
-from footman._stubs.cspell import Cspell as Cspell
-from footman._stubs.djlint import Djlint as Djlint
-from footman._stubs.docker import Docker as Docker
-from footman._stubs.eclint import Eclint as Eclint
-from footman._stubs.fish import Fish as Fish
-from footman._stubs.gh import Gh as Gh
-from footman._stubs.git import Git as Git
-from footman._stubs.git_changelog import GitChangelog as GitChangelog
-from footman._stubs.git_cliff import GitCliff as GitCliff
-from footman._stubs.markdownlint import Markdownlint as Markdownlint
-from footman._stubs.mkdocs import Mkdocs as Mkdocs
-from footman._stubs.mypy import Mypy as Mypy
-from footman._stubs.ninja import Ninja as Ninja
-from footman._stubs.nu import Nu as Nu
-from footman._stubs.prek import Prek as Prek
-from footman._stubs.pwsh import Pwsh as Pwsh
-from footman._stubs.pytest import Pytest as Pytest
-from footman._stubs.python import Python as Python
-from footman._stubs.ruff import Ruff as Ruff
-from footman._stubs.ruff_format import RuffFormat as RuffFormat
-from footman._stubs.ssh import Ssh as Ssh
-from footman._stubs.ssh_keygen import SshKeygen as SshKeygen
-from footman._stubs.ssh_keyscan import SshKeyscan as SshKeyscan
-from footman._stubs.twine import Twine as Twine
-from footman._stubs.ty import Ty as Ty
-from footman._stubs.uv import Uv as Uv
-from footman._stubs.zensical import Zensical as Zensical
-from footman._stubs.zsh import Zsh as Zsh
-from footman.context import Argv as Argv
-from footman.context import Invocation as _Invocation  # noqa: F401
-from footman.context import Result as Result
-from footman.context import ResultView as _ResultView
-from footman.context import _target_cwd as _target_cwd_of  # noqa: F401
-from footman.context import color_on as _color_on  # noqa: F401
-from footman.context import container_error as _container_error  # noqa: F401
-from footman.context import current as _current  # noqa: F401
-from footman.context import real_stderr as _real_stderr  # noqa: F401
-from footman.context import run as _run  # noqa: F401
+from toolroom._stubs.bash import Bash as Bash
+from toolroom._stubs.build import Build as Build
+from toolroom._stubs.bun import Bun as Bun
+from toolroom._stubs.cmake import Cmake as Cmake
+from toolroom._stubs.cmd import Cmd as Cmd
+from toolroom._stubs.coverage import Coverage as Coverage
+from toolroom._stubs.cspell import Cspell as Cspell
+from toolroom._stubs.djlint import Djlint as Djlint
+from toolroom._stubs.docker import Docker as Docker
+from toolroom._stubs.eclint import Eclint as Eclint
+from toolroom._stubs.fish import Fish as Fish
+from toolroom._stubs.gh import Gh as Gh
+from toolroom._stubs.git import Git as Git
+from toolroom._stubs.git_changelog import GitChangelog as GitChangelog
+from toolroom._stubs.git_cliff import GitCliff as GitCliff
+from toolroom._stubs.markdownlint import Markdownlint as Markdownlint
+from toolroom._stubs.mkdocs import Mkdocs as Mkdocs
+from toolroom._stubs.mypy import Mypy as Mypy
+from toolroom._stubs.ninja import Ninja as Ninja
+from toolroom._stubs.nu import Nu as Nu
+from toolroom._stubs.prek import Prek as Prek
+from toolroom._stubs.pwsh import Pwsh as Pwsh
+from toolroom._stubs.pytest import Pytest as Pytest
+from toolroom._stubs.python import Python as Python
+from toolroom._stubs.ruff import Ruff as Ruff
+from toolroom._stubs.ruff_format import RuffFormat as RuffFormat
+from toolroom._stubs.ssh import Ssh as Ssh
+from toolroom._stubs.ssh_keygen import SshKeygen as SshKeygen
+from toolroom._stubs.ssh_keyscan import SshKeyscan as SshKeyscan
+from toolroom._stubs.twine import Twine as Twine
+from toolroom._stubs.ty import Ty as Ty
+from toolroom._stubs.uv import Uv as Uv
+from toolroom._stubs.zensical import Zensical as Zensical
+from toolroom._stubs.zsh import Zsh as Zsh
+
+# The pre_record callback parameter: hosted, it receives footman's
+# ResultView; the stub says Any so type-checking toolroom never requires
+# footman installed. The callback is host-only either way.
+_ResultView = Any
+
+class Argv(list[str]):
+    """A command line built but not run — raw tokens, an ordinary list[str]."""
+
+    def posix(self) -> str: ...
+    def windows(self) -> str: ...
+
+class Result(int):
+    """One standalone call's outcome: the exit code, plus streams and tokens.
+
+    Hosted calls answer with footman's richer twin; both satisfy this
+    surface, which is the one the stubs promise.
+    """
+
+    def __new__(
+        cls,
+        code: int,
+        *,
+        stdout: str = ...,
+        stderr: str = ...,
+        tokens: tuple[str, ...] = ...,
+    ) -> Self: ...
+    @property
+    def ok(self) -> bool: ...
+    @property
+    def code(self) -> int: ...
+    @property
+    def stdout(self) -> str: ...
+    @property
+    def stderr(self) -> str: ...
+    @property
+    def command(self) -> str: ...
+    def to_argv(self) -> Argv: ...
+
+class ToolError(RuntimeError):
+    """A standalone call exited non-zero without nofail; carries the Result."""
+
+    result: Result
+    def __init__(self, result: Result) -> None: ...
 
 _QUIET: dict[str, str]
 

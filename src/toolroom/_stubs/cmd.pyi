@@ -3,8 +3,8 @@
 # `source="manual"`).
 from typing import Any, TypeVar
 
-from footman.tools import Argv as _Argv
-from footman.tools import Tool
+from toolroom import Argv as _Argv
+from toolroom import Tool
 
 _R = TypeVar("_R")
 

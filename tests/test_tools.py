@@ -7,9 +7,9 @@ import sys
 from pathlib import Path
 
 import pytest
-
-from footman import tools
 from footman.testing import recording
+
+import toolroom as tools
 
 
 def _one(call) -> str:
@@ -101,7 +101,7 @@ def test_verb_scoped_colour_flag_rides_with_the_flags(monkeypatch):
 
 
 def test_off_sentinel_emits_the_negation():
-    from footman.tools import off
+    from toolroom import off
 
     # `off` disables a default-on flag; equivalent to naming it directly.
     assert _one(lambda: tools.zensical.build(clean=True, strict=off)) == (
@@ -113,7 +113,7 @@ def test_off_sentinel_emits_the_negation():
 
 
 def test_off_can_be_variable_driven():
-    from footman.tools import off
+    from toolroom import off
 
     def render(directory_urls: bool):
         return _one(lambda: tools.mkdocs.build(directory_urls=directory_urls or off))
@@ -692,7 +692,7 @@ def test_off_uses_the_tools_own_negation():
     real commands: `mkdocs build --no-clean` is rejected outright — the
     flag is `--dirty`. The exceptions are extracted from the tools, not
     guessed."""
-    from footman.tools import _flags, off
+    from toolroom import _flags, off
 
     assert _flags({"clean": off}, "mkdocs") == ["--dirty"]
     assert _flags({"use_directory_urls": off}, "mkdocs") == ["--no-directory-urls"]
@@ -710,7 +710,6 @@ def test_click_extraction_reads_the_real_negations():
     # type-check job installs the shots group, not every tool footman
     # can drive.
     import mkdocs.__main__ as entry
-
     from footman._toolspec import from_click
 
     spec = from_click(entry.cli, name="mkdocs")
@@ -735,9 +734,9 @@ def test_negation_table_matches_what_the_tools_say():
     # type-check job installs the shots group, not every tool footman
     # can drive.
     import mkdocs.__main__ as entry
-
     from footman._toolspec import from_click
-    from footman.tools import _NEGATIONS
+
+    from toolroom import _NEGATIONS
 
     assert from_click(entry.cli, name="mkdocs").negations() == _NEGATIONS["mkdocs"]
 
@@ -777,7 +776,7 @@ def test_in_process_call_shows_the_command_not_the_flattened_title():
 
 
 def test_show_parts_tag_each_token_with_its_role():
-    from footman.tools import _show_parts
+    from toolroom import _show_parts
 
     parts = _show_parts("ruff", ["check"], ("src",), {"fix": True, "select": ["E"]})
     assert parts == (
@@ -793,7 +792,7 @@ def test_show_parts_tag_each_token_with_its_role():
 def test_the_shown_form_is_separated_the_executed_form_is_attached():
     # `_emit` is the single source both draw from. `_flags` (executed)
     # attaches long values; `_show_parts` (shown) keeps them separated.
-    from footman.tools import _emit, _flags, _show_parts
+    from toolroom import _emit, _flags, _show_parts
 
     kwargs = {"select": ["E", "F"], "fix": True}
     assert list(_emit(kwargs, "ruff")) == [
@@ -807,7 +806,7 @@ def test_the_shown_form_is_separated_the_executed_form_is_attached():
 
 
 def test_execution_attaches_only_where_a_space_would_break():
-    from footman.tools import _flags, _show_parts
+    from toolroom import _flags, _show_parts
 
     def shown(**kw):
         return " ".join(t for _, t in _show_parts("git", ["log"], (), kw))
@@ -939,11 +938,12 @@ def test_wrapper_raw_and_shown_agree_on_order():
     "verified here until CI generates the table too (post-1.0)",
 )
 def test_wrappers_table_matches_what_the_tools_declare():
-    # The runtime table is hand-written; this mirrors `fm footman.tools.audit`,
+    # The runtime table is hand-written; this mirrors `fm toolroom.audit`,
     # so drift fails fast in the local `fm check` gate. Skipped in CI (marker
     # above): CI's tool versions differ from the curated table.
     from footman import _drivers
-    from footman.tools import _WRAPPERS
+
+    from toolroom import _WRAPPERS
 
     for driver in _drivers.DRIVERS:
         if driver.base or not _drivers.installed(driver):

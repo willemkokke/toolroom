@@ -1,40 +1,45 @@
-"""Typed bridges to command-line tools, built on `footman.run`.
+"""Typed handles for command-line tools — the tool room.
 
-Every call runs through the current task context, so it inherits capture,
-replay-on-failure, dry-run, recording, and `--json` steps.
-
-footman deliberately does **not** transcribe each tool's flags into Python
-parameters. Transcription drifts: the wrapper pins the flag-set its author
-copied, the tool moves on, and one day `show_source=True` emits a flag the
-installed binary rejects. Instead, keyword arguments translate
-*mechanically* — the installed tool's own CLI stays the single source of
-truth, at whatever version it is:
+toolroom deliberately does **not** transcribe each tool's flags into
+Python parameters. Transcription drifts: the wrapper pins the flag-set
+its author copied, the tool moves on, and one day `show_source=True`
+emits a flag the installed binary rejects. Instead, keyword arguments
+translate *mechanically* — the installed tool's own CLI stays the
+single source of truth, at whatever version it is:
 
 - `fix=True` → `--fix` (`False`/`None` → omitted entirely)
 - `strict=off` → `--no-strict` (disable a default-on flag; `off` is the
-  `footman.tools.off` sentinel — `no_strict=True` is the same thing by name)
+  `toolroom.off` sentinel — `no_strict=True` is the same thing by name)
 - `output_format="github"` → `--output-format github`
 - `select=["E", "F"]` → `--select E --select F` (an empty list/tuple is
-  omitted entirely, so a task param's default passes straight through)
+  omitted entirely, so a parameter's default passes straight through)
 - `x=1` (single letter) → `-x 1`
 - a trailing underscore escapes Python keywords: `import_="x"` → `--import x`
 
-Attribute access chains subcommands (`tools.docker.compose.up(detach=True)`
+Attribute access chains subcommands (`toolroom.docker.compose.up(detach=True)`
 → `docker compose up --detach`), positional strings pass through verbatim,
 and *any* executable works without being declared here:
-`tools.terraform("plan")` just runs `terraform plan`.
+`toolroom.terraform("plan")` just runs `terraform plan`.
 
-`tool.installed_version()` returns the installed binary's version as an int
-tuple (cached per process, resolved outside the task context so dry-run and
-recording can't lie to it) — for the rare case where a task must branch on
-the tool's actual CLI generation.
+toolroom stands alone: with nothing else installed, a call spawns the
+tool with plain `subprocess` and answers in `Result`; a failure raises
+`ToolError` unless `nofail`. When [footman](https://willemkokke.github.io/footman/)
+is present in the process, the same call routes through footman's
+`run()` instead and inherits everything a task run means — capture,
+replay-on-failure, dry-run, `recording()`, `--json` receipts — without
+either package depending on the other. `_host` is the seam.
+
+`tool.installed_version()` returns the installed binary's version as an
+int tuple (cached per process, resolved outside any host so dry-run and
+recording can't lie to it) — for the rare case where code must branch
+on the tool's actual CLI generation.
 """
 
 from __future__ import annotations
 
-# Every module import is aliased private so `tools.<name>` never resolves to it:
-# module attribute lookup beats module `__getattr__`, so a public `run`/`sys`
-# would make `tools.run`/`tools.sys` the imported object instead of a Tool —
+# Every module import is aliased private so `toolroom.<name>` never resolves to
+# it: module attribute lookup beats module `__getattr__`, so a public `run`/`sys`
+# would make `toolroom.run`/`toolroom.sys` the imported object instead of a Tool —
 # typechecking as Tools (per the stub) but crashing at runtime (F50, F53).
 import os as _os
 import re as _re
@@ -47,18 +52,14 @@ from pathlib import Path as _Path
 from typing import Any, NamedTuple
 from typing import cast as _cast
 
-# `Result` is public, unlike the private aliases: every tool call returns one, and
-# the generated stubs import it from here (`from footman.tools import Result`), so
-# it must resolve to the class — a real module binding beats `__getattr__`.
-from footman.context import Argv as Argv
-from footman.context import Invocation as _Invocation
-from footman.context import Result as Result
-from footman.context import _target_cwd as _target_cwd_of
-from footman.context import color_on as _color_on
-from footman.context import container_error as _container_error
-from footman.context import current as _current
-from footman.context import real_stderr as _real_stderr
-from footman.context import run as _run
+# `Argv`/`Result`/`ToolError` are public, unlike the private aliases: every tool
+# call returns a Result, the generated stubs import Argv and Tool from here, so
+# each must resolve to the class — a real module binding beats `__getattr__`.
+# `_host` is the seam: execution, host detection, and the standalone executor.
+from toolroom import _host as _host
+from toolroom._host import Argv as Argv
+from toolroom._host import Result as Result
+from toolroom._host import ToolError as ToolError
 
 _QUIET = {"GH_NO_UPDATE_NOTIFIER": "1"}
 """Told not to phone home while being read — see `_toolhelp.QUIET`."""
@@ -235,7 +236,7 @@ def _load_color() -> dict[str, dict[str, _ColorFlag]]:
     direction reports `flag` for gets an entry; everyone else obeys the
     environment. A missing data file degrades to no flag-forcing (env only)."""
     try:
-        from footman import _colordata
+        from toolroom import _colordata
     except ImportError:  # not yet generated — env forcing still works
         return {}
     table: dict[str, dict[str, _ColorFlag]] = {}
@@ -278,7 +279,7 @@ def _color_tokens(argv0: str, base: list[str], kwargs: dict[str, Any]) -> _Color
     flag = _color_flag(argv0, base)
     if flag is None:
         return _ColorFlag((), ())
-    tokens = flag.on if _color_on() else flag.off
+    tokens = flag.on if _host.color_on() else flag.off
     return _ColorFlag(tokens, (), flag.pre_verb) if tokens else _ColorFlag((), ())
 
 
@@ -434,7 +435,7 @@ def _positionals(args: tuple[Any, ...], tool: str) -> list[str]:
         if isinstance(arg, _CONTAINERS):
             spread = "**" if isinstance(arg, dict) else "*"
             raise TypeError(
-                _container_error(arg, tool, example=f"{tool}({spread}value)")
+                _host.container_error(arg, tool, example=f"{tool}({spread}value)")
             )
         out.append(str(arg))
     return out
@@ -582,6 +583,11 @@ class Tool:
     signature) are called directly and capture through the per-task stdout
     router; even a legacy zero-arg `main()` parallelises — the argv router
     serves each call its own view of `sys.argv`.
+
+    The in-process lane is a host feature — those routers are footman's.
+    Standalone, a tool constructed with `in_process=True` simply spawns
+    (same command, same semantics), and `.opts(in_process=True)` — a
+    demand — is a taught refusal.
     """
 
     # The stub declares Tool generic over what a call returns, so a task
@@ -843,8 +849,10 @@ class Tool:
                 spawned = [self._path, *colour.on, *tail]
             else:
                 spawned = [self._path, *_tail([*flags, *colour.on])]
-            return _run(
+            return _host.run(
                 spawned,
+                parts=parts,
+                exact=tuple(spawned),
                 nofail=nofail,
                 capture=capture,
                 input=input_,
@@ -855,7 +863,6 @@ class Tool:
                 timeout=timeout,
                 cwd=cwd_opt,
                 rel=rel_opt,
-                _show=_Invocation(parts, tuple(spawned)),
             )
 
         wanted = self._prefer_in_process if in_process is None else in_process
@@ -871,14 +878,28 @@ class Tool:
             # the subprocess twin — the same choice a foreign cwd forces
             # below, and the timeout is the thing the caller actually asked
             # for.
-            if _current().verbose:
-                _real_stderr().write(
-                    f"note: {self._argv0}: ran as subprocess — a timeout needs "
-                    f"a process to bound\n"
+            _host.note(
+                f"note: {self._argv0}: ran as subprocess — a timeout needs "
+                f"a process to bound\n"
+            )
+            return _spawn()
+        if wanted and not _host.hosted():
+            # The in-process lane is a host feature: it needs footman's
+            # stdout router and argv router to capture and parallelise.
+            # Standalone, a *preference* degrades to the subprocess twin —
+            # same command, same semantics — and a *demand* is a taught
+            # refusal rather than an uncaptured surprise.
+            if in_process is True:
+                raise ValueError(
+                    f"{self._argv0}: in_process=True needs a footman host — "
+                    f"standalone toolroom always spawns. Drop in_process, "
+                    f"or run under footman."
                 )
             return _spawn()
         if wanted:
             from footman import _globals as _pg
+            from footman.context import _target_cwd as _target_cwd_of
+            from footman.context import current as _current
 
             target = _target_cwd_of(_current(), cwd_opt, rel_opt)
             if target is not None and target.resolve() != _Path(_pg.real_getcwd()):
@@ -887,11 +908,10 @@ class Tool:
                 # command, same semantics, still fully parallel; the
                 # in-process speedup is the only loss. A serial task's cwd is
                 # really applied, so it compares equal and stays in-process.
-                if _current().verbose:
-                    _real_stderr().write(
-                        f"note: {self._argv0}: ran as subprocess — in-process "
-                        f"can't apply cwd in parallel\n"
-                    )
+                _host.note(
+                    f"note: {self._argv0}: ran as subprocess — in-process "
+                    f"can't apply cwd in parallel\n"
+                )
                 return _spawn()
             loader = self._inprocess_loader()  # metadata only — no import
             if loader is None:
@@ -901,8 +921,6 @@ class Tool:
                         f"in-process entry ({self._entry or self._argv0!r})"
                     )
                 return _spawn()  # prefer → subproc
-
-            show = _Invocation(parts, tuple(argv))
 
             def _invoke() -> Any:
                 entry = loader()  # the tool's import — deferred to execution,
@@ -922,8 +940,10 @@ class Tool:
                     finally:
                         _sys.argv = saved
 
-            return _run(
+            return _host.run(
                 _invoke,
+                parts=parts,
+                exact=tuple(argv),
                 nofail=nofail,
                 capture=capture,
                 # Forwarded so run()'s refusal teaches: an in-process tool
@@ -936,7 +956,6 @@ class Tool:
                 timeout=timeout,
                 cwd=cwd_opt,
                 rel=rel_opt,
-                _show=show,
             )
         return _spawn()
 
