@@ -51,5 +51,5 @@ pip install toolroom
 ```
 
 toolroom has **zero runtime dependencies** and needs Python 3.11+.
-Pre-release: PyPI currently holds the name-reservation placeholder;
-the first real release will be tagged from this repository.
+Pre-1.0: the API may move without a deprecation cycle; the
+[changelog](changelog.md) carries every step.
