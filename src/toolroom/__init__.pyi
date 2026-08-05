@@ -80,6 +80,8 @@ from toolroom._stubs.zsh import Zsh as Zsh
 # footman installed. The callback is host-only either way.
 _ResultView = Any
 
+__version__: str
+
 class Argv(list[str]):
     """A command line built but not run — raw tokens, an ordinary list[str]."""
 

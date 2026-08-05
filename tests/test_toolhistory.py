@@ -2901,22 +2901,15 @@ def test_a_platform_new_to_a_tool_backfills_the_version_people_run(
 
 
 def _repo(tmp_path, version="1.2.3", entries=("- **A thing.** It happened.",)):
-    """A miniature checkout: the two files that must agree, and the docs
-    references a drift test guards."""
-    (tmp_path / "src" / "footman").mkdir(parents=True)
-    (tmp_path / "docs").mkdir()
+    """A miniature checkout: the two files that must agree."""
+    (tmp_path / "src" / "toolroom").mkdir(parents=True)
     (tmp_path / "pyproject.toml").write_text(
-        f'[project]\nname = "footman"\nversion = "{version}"\n', encoding="utf-8"
+        f'[project]\nname = "toolroom"\nversion = "{version}"\n', encoding="utf-8"
     )
-    (tmp_path / "src" / "footman" / "__init__.py").write_text(
+    (tmp_path / "src" / "toolroom" / "__init__.py").write_text(
         f'__version__ = "{version}"\n', encoding="utf-8"
     )
-    (tmp_path / "docs" / "json.md").write_text(
-        f'{{"schema": 1, "name": "footman", "version": "{version}"}}\n'
-        f"Pin the minor with `footman~=1.2.0` if you build on it.\n",
-        encoding="utf-8",
-    )
-    repo = "https://github.com/willemkokke/footman"
+    repo = "https://github.com/willemkokke/toolroom"
     (tmp_path / "CHANGELOG.md").write_text(
         "# Changelog\n\n## [Unreleased]\n\n### Changed\n\n"
         + "\n".join(entries)
@@ -2930,9 +2923,8 @@ def _repo(tmp_path, version="1.2.3", entries=("- **A thing.** It happened.",)):
 def test_a_stub_only_release_is_a_patch_and_moves_what_must_agree(
     tmp_path, monkeypatch
 ):
-    """The tools moved, footman did not — decision 9. Two files must agree
-    or the release workflow refuses the tag, and the JSON page's `--version`
-    example is drift-tested against every release."""
+    """The tools moved, toolroom did not. Two files must agree or the
+    release workflow refuses the tag."""
     from machinery import _tasks as tools
 
     root = _repo(tmp_path)
@@ -2946,13 +2938,8 @@ def test_a_stub_only_release_is_a_patch_and_moves_what_must_agree(
     )
     assert 'version = "1.2.4"' in (root / "pyproject.toml").read_text(encoding="utf-8")
     assert '__version__ = "1.2.4"' in (
-        root / "src" / "footman" / "__init__.py"
+        root / "src" / "toolroom" / "__init__.py"
     ).read_text(encoding="utf-8")
-
-    page = (root / "docs" / "json.md").read_text(encoding="utf-8")
-    assert '"version": "1.2.4"' in page
-    # ...and the minor pin stays put: it tracks the minor, not the patch.
-    assert "footman~=1.2.0" in page
 
 
 def test_rolling_the_changelog_dates_the_release_and_repoints_the_links(
@@ -2970,7 +2957,7 @@ def test_rolling_the_changelog_dates_the_release_and_repoints_the_links(
     assert "## [Unreleased]" in text.split("## [1.2.4]")[0]  # kept, and empty
     assert "compare/v1.2.4...HEAD" in text
     assert (
-        "[1.2.4]: https://github.com/willemkokke/footman/compare/v1.2.3...v1.2.4"
+        "[1.2.4]: https://github.com/willemkokke/toolroom/compare/v1.2.3...v1.2.4"
         in text
     )
 

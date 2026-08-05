@@ -61,6 +61,8 @@ from toolroom._host import Argv as Argv
 from toolroom._host import Result as Result
 from toolroom._host import ToolError as ToolError
 
+__version__ = "0.0.1"
+
 _QUIET = {"GH_NO_UPDATE_NOTIFIER": "1"}
 """Told not to phone home while being read — see `_toolhelp.QUIET`."""
 

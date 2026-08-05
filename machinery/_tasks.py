@@ -1306,6 +1306,27 @@ def assemble(
     )
 
 
+def _additions_only(events: dict[str, list[str]]) -> bool:
+    """Whether every announced event span only added surface.
+
+    `changes()` is a step back from newest to the predecessor, so its
+    `add` key holds what the newer releases *removed* — pure forward
+    additions means every span's `add` is empty. Empty events answer
+    False: the graded trigger asks "is this safe to ship unattended",
+    and nothing to ship is not an answer.
+    """
+    if not any(events.values()):
+        return False
+    for key, versions in events.items():
+        doc = _toolhistory.load(_history_path(key)) or {}
+        span = _toolhistory.changes(
+            doc, since=_predecessor(doc, versions[0]), until=versions[-1]
+        )
+        if span.get("add"):
+            return False
+    return True
+
+
 def _finish(found: Refreshed, changelog: bool) -> Refreshed:
     """Write the note, say what happened, and refuse to call ignorance news.
 
@@ -1313,6 +1334,8 @@ def _finish(found: Refreshed, changelog: bool) -> Refreshed:
     nested task buffers its own output, and the report belongs to whichever
     of the two the caller actually asked for.
     """
+    if found.events:
+        found = replace(found, additions_only=_additions_only(found.events))
     if changelog and found.events:
         entries = [
             _entry_for(key, _toolhistory.load(_history_path(key)) or {}, versions)
@@ -1479,6 +1502,15 @@ class Refreshed:
     rather than a property, and recomputed from `events` on construction:
     `dataclasses.asdict` serialises fields only, and this is the one value
     the scheduled job reads out of `fm --json tools.refresh`."""
+
+    additions_only: bool = False
+    """Whether every surface change across every announced event only ADDED
+    to a tool's surface — nothing dropped, no verb withdrawn. The graded
+    release trigger's green light: additions cannot break a caller, so a
+    graded refresh ships them unattended and holds anything else for a
+    human. False when there are no events at all (nothing to ship is not
+    "safe to ship"). Rewordings count as additions-safe: they change what a
+    stub *says*, never what a tool accepts."""
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "release", any(self.events.values()))
@@ -2112,16 +2144,12 @@ def prepare_release(
 ) -> Prepared:
     """Roll the version and the changelog, the way the runbook does by hand.
 
-    A stub-only release is a patch bump — the tools moved, footman did not
-    (decision 9) — which is why `patch` is the default and the automatic
-    path never chooses anything else.
+    A stub-only release is a patch bump — the tools moved, toolroom did
+    not — which is why `patch` is the default and the automatic path never
+    chooses anything else.
 
     Two files must agree or the release workflow refuses the tag
-    (`pyproject.toml` and `__init__.__version__`), and the docs carry version
-    references a drift test guards: the `--version` example on the JSON page
-    tracks every release, while the `footman~=X.Y.0` pins in README and the
-    docs home track only the minor — so a patch bump must leave them alone,
-    and this does.
+    (`pyproject.toml` and `__init__.__version__`).
 
     `[Unreleased]` becomes `[X.Y.Z]` dated today, with the compare links
     repointed. Refuses rather than guesses when there is nothing to release.
@@ -2154,14 +2182,9 @@ def prepare_release(
             f'version = "{version}"',
         ),
         (
-            root / "src" / "footman" / "__init__.py",
+            root / "src" / "toolroom" / "__init__.py",
             rf'^__version__ = "{previous}"',
             f'__version__ = "{version}"',
-        ),
-        (
-            root / "docs" / "json.md",
-            rf'"version": "{previous}"',
-            f'"version": "{version}"',
         ),
     ):
         text = path.read_text(encoding="utf-8")
@@ -2203,7 +2226,7 @@ def _roll_changelog(path: Path, version: str, previous: str) -> int:
         f"## [{version}] — {today}",
     ]
     rolled = "\n".join(lines)
-    repo = "https://github.com/willemkokke/footman"
+    repo = "https://github.com/willemkokke/toolroom"
     rolled = rolled.replace(
         f"[Unreleased]: {repo}/compare/v{previous}...HEAD",
         f"[Unreleased]: {repo}/compare/v{version}...HEAD\n"

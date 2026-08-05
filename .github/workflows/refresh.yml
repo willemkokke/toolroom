@@ -1,0 +1,214 @@
+# The weekly tool refresh, across the platforms the tools actually run on.
+#
+# Split the way the work splits: each platform *gathers* (observes releases,
+# writes a document of what it saw) and one job *assembles*, folding all
+# three into tool-history/ — one process holds the pen. The release decision
+# is "were any events appended", never "did a version move".
+#
+# THE TRIGGER HAS THREE MODES, chosen by the repo variable REFRESH_MODE
+# (a config change, never a design conversation):
+#
+#   human  — the default, and the value when the variable is unset. The
+#            refresh opens a PR carrying the observations, the stubs, and
+#            the prepared release bump; a human merges; the merge releases
+#            (the tag step waits for the merge, then tags).
+#   graded — additions ship unattended: when every appended event only
+#            ADDED surface (nothing dropped, no verb withdrawn), the PR
+#            auto-merges on a green gate and tags itself; anything else
+#            waits for a human exactly as `human` does.
+#   auto   — every refresh PR auto-merges on a green gate and tags itself.
+#
+# Escalating past `human` needs the repo prepared once: branch protection
+# requiring the `gate` check, auto-merge allowed in settings, and the
+# REFRESH_TOKEN secret (a fine-grained PAT: contents + pull-requests write)
+# — a PR opened with the default GITHUB_TOKEN never triggers CI.
+
+name: refresh
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  gather:
+    strategy:
+      fail-fast: false # every leg's findings are worth having, even if one dies
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash # a Windows `run:` is pwsh by default; these steps are shell script
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync
+
+      - name: uv first, so the question can be answered truthfully
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uv run fm tools.provision --only=uv --strict
+
+      - name: is there anything to read?
+        id: owed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          uv run fm --json tools.owed --prefix=.tools-latest > owed.json
+          total=$(jq '[.items[] | select(.task) | select(.task | endswith("owed"))
+                       | .returned.releases[] | length] | add // 0' owed.json)
+          blocked=$(jq '[.items[] | select(.task) | select(.task | endswith("owed"))
+                         | .returned.unreachable | length] | add // 0' owed.json)
+          echo "total=$total blocked=$blocked"
+          if [ "$total" = "0" ] && [ "$blocked" = "0" ]; then
+            echo "work=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "work=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: provision what a gather actually drives
+        if: steps.owed.outputs.work == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uv run fm tools.provision --only=uv,bun --strict
+
+      - name: observe what this platform sees
+        if: steps.owed.outputs.work == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          uv run fm tools.gather --prefix=.tools-latest
+          --out=observations/${{ matrix.os }}.json
+
+      - uses: actions/upload-artifact@v4
+        if: steps.owed.outputs.work == 'true'
+        with:
+          name: observations-${{ matrix.os }}
+          path: observations/
+
+  assemble:
+    needs: gather
+    runs-on: ubuntu-latest
+    steps:
+      - name: refuse to run without the PAT
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          if [ -z "$REFRESH_TOKEN" ]; then
+            echo "::error::secrets.REFRESH_TOKEN is unset. Create a fine-grained PAT" \
+                 "(this repo; contents: write, pull-requests: write) and store it as" \
+                 "REFRESH_TOKEN — a PR opened with the default GITHUB_TOKEN never" \
+                 "triggers CI."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.REFRESH_TOKEN }}
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: observations
+          pattern: observations-*
+          merge-multiple: true
+
+      - name: what reported
+        id: reported
+        run: |
+          count=$(ls observations/*.json 2>/dev/null | wc -l | tr -d " ")
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "$count platform(s) had something to read"
+
+      - name: fold them into the store
+        if: steps.reported.outputs.count != '0'
+        run: uv run fm --json tools.assemble observations/*.json > assembled.json
+
+      - name: what changed, and how safe it is
+        if: steps.reported.outputs.count != '0'
+        run: |
+          git add -A -- tool-history src/toolroom/_stubs CHANGELOG.md
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_ENV"
+          else
+            echo "changed=true" >> "$GITHUB_ENV"
+          fi
+          jq -r '.items[] | select(.task) | select(.task | endswith("assemble"))
+                 | .returned
+                 | "release=\(.release)", "additions_only=\(.additions_only)"' \
+            assembled.json >> "$GITHUB_ENV"
+          echo "mode=${REFRESH_MODE:-human}" >> "$GITHUB_ENV"
+        env:
+          REFRESH_MODE: ${{ vars.REFRESH_MODE }}
+
+      - name: roll the release into the PR
+        # Every mode carries the bump in the PR, so a human merge IS a
+        # release — the tag step below waits for the merge and tags it.
+        if: steps.reported.outputs.count != '0' && env.changed == 'true'
+          && env.release == 'true'
+        run: |
+          uv run fm --json tools.prepare-release > prepared.json
+          jq -r '.items[] | select(.task) | select(.task | endswith("prepare-release"))
+                 | .returned | "tag=v\(.version)"' prepared.json >> "$GITHUB_ENV"
+          git add -A -- pyproject.toml src/toolroom/__init__.py CHANGELOG.md
+
+      - name: open the pull request
+        if: steps.reported.outputs.count != '0' && env.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          branch="chore/tool-refresh-$(date -u +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git commit -m "chore(tools): weekly refresh${tag:+ — release $tag}"
+          git fetch origin "$branch" --depth=1 2>/dev/null || true
+          git push --force-with-lease origin "$branch"
+          if [ -n "$(gh pr list --head "$branch" --state open --json number \
+                     --jq '.[].number')" ]; then
+            echo "refreshed the open PR for $branch"
+          else
+            gh pr create --base main --head "$branch" \
+              --title "chore(tools): weekly tool refresh${tag:+ ($tag)}" \
+              --body "$(printf 'Observed on ubuntu, macOS and Windows; folded by one assembler. Trigger mode: %s; additions only: %s.\n\n```\n%s\n```\n\nThe gate is the reviewer here: it replays every chain, regenerates every stub, and runs the drift tests.' \
+                "$mode" "${additions_only:-false}" \
+                "$(jq -r '.items[] | select(.task) | select(.task | endswith("assemble")) | .output' assembled.json)")"
+          fi
+          # The graded call: additions ship unattended, anything else waits.
+          merge=false
+          [ "$mode" = "auto" ] && merge=true
+          [ "$mode" = "graded" ] && [ "$additions_only" = "true" ] && merge=true
+          if [ "$merge" = "true" ]; then
+            gh pr merge "$branch" --auto --merge \
+              || echo "::warning::auto-merge unavailable (enable it in settings and protect main on the gate check) — the PR waits for a human"
+          fi
+
+      - name: tag the release once it lands
+        # In every mode: the tag follows the MERGE, whoever performed it. A
+        # PAT-pushed tag triggers release.yml (trusted publishing); a
+        # GITHUB_TOKEN-pushed one would not.
+        if: steps.reported.outputs.count != '0' && env.changed == 'true' && env.tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          for _ in $(seq 60); do
+            state=$(gh pr view "chore/tool-refresh-$(date -u +%Y%m%d)" --json state -q .state || echo UNKNOWN)
+            [ "$state" = "MERGED" ] && break
+            sleep 60
+          done
+          if [ "$state" != "MERGED" ]; then
+            echo "::warning::the refresh PR has not merged within the hour; tag $tag by hand once it does"
+            exit 0
+          fi
+          git fetch origin main
+          git tag "$tag" origin/main
+          git push origin "$tag"
