@@ -50,12 +50,12 @@ from toolroom import version_tuple as _version_tuple
 
 tasks: Group = Group("tools", help="Keep the tools.* stubs honest")
 
-_STUBS = Path(__file__).resolve().parents[1] / "src" / "toolroom" / "_stubs"
+_STUBS = Path(__file__).resolve().parents[3] / "src" / "toolroom" / "_stubs"
 # Repo-only, deliberately outside `src/`: generation reads the history and
 # generation is a maintainer task run from a checkout, while users read the
 # stubs — which already carry everything the log is for. Shipping it would
 # make every install pay for history nobody reads.
-_HISTORY = Path(__file__).resolve().parents[1] / "tool-history"
+_HISTORY = Path(__file__).resolve().parents[3] / "tool-history"
 
 
 class _Ambiguous(Exception):
@@ -898,7 +898,7 @@ def _color_probe_and_write(only: str, write: bool, on: bool) -> None:
     if write and not only:
         data = Path(__file__).resolve().parent.parent / "_colordata.py"
         data.write_text(_formatted(_colorprobe.render(results)), encoding="utf-8")
-        docs = Path(__file__).resolve().parents[1] / "docs" / "color-support.md"
+        docs = Path(__file__).resolve().parents[3] / "docs" / "color-support.md"
         docs.write_text(_color_docs_table(results), encoding="utf-8")
         print(f"\nwrote {data.name} + {docs.name} ({len(results)} tools)")
 

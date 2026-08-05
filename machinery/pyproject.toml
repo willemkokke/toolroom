@@ -1,0 +1,18 @@
+[build-system]
+requires = ["uv_build>=0.11,<0.13"]
+build-backend = "uv_build"
+
+[project]
+name = "toolroom-machinery"
+version = "0.0.0"
+description = "toolroom's repo-only stub machinery — installed from the repo path, never published."
+requires-python = ">=3.11"
+classifiers = [
+    # PyPI refuses any dist carrying this classifier: the hard guard on
+    # "the machinery never ships" (the lean-install ruling).
+    "Private :: Do Not Upload",
+]
+dependencies = []
+
+[tool.uv.build-backend]
+module-name = "machinery"

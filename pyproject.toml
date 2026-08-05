@@ -5,7 +5,7 @@ build-backend = "uv_build"
 [project]
 name = "toolroom"
 version = "0.0.1"
-description = "Typed surfaces for command-line tools, generated from the tools themselves. Name reserved — under construction."
+description = "Typed surfaces for command-line tools, generated from the tools themselves."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -13,7 +13,7 @@ requires-python = ">=3.11"
 authors = [{ name = "Willem Kokke", email = "willem@humain-studios.com" }]
 keywords = ["cli", "typed", "stubs", "subprocess", "tools"]
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
@@ -50,8 +50,15 @@ dev = [
     "mkdocs>=1.6",
     "ruff>=0.14",
     "basedpyright>=1.29",
+    # The repo-only machinery, installed editable from ./machinery — a real
+    # package so fm tasks and tests import it anywhere, and unpublishable by
+    # classifier ("Private :: Do Not Upload").
+    "toolroom-machinery",
 ]
 docs = ["zensical>=0.0.50"]
+
+[tool.uv.sources]
+toolroom-machinery = { path = "machinery", editable = true }
 
 [tool.ruff]
 line-length = 88
@@ -72,7 +79,6 @@ reportMissingModuleSource = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
 # `-n auto` fans the suite across cores (pytest-xdist); override with -n0 to
 # debug one test serially.
 addopts = "-n auto --dist worksteal"
