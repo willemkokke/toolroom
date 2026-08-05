@@ -19,6 +19,7 @@ from typing import Any
 
 import pytest
 from footman import _globals
+
 from machinery import _drivers, _stubgen, _toolhelp, _toolspec
 from machinery._toolspec import Option, ToolSpec, Verb
 
@@ -952,9 +953,8 @@ def test_audit_strict_gives_automation_something_to_trip_on(stubs, capsys):
 
 @needs_ruff
 def test_audit_reports_a_runtime_table_that_disagrees(stubs, monkeypatch):
-    from machinery import _tasks as tools_tasks
-
     import toolroom as bridge
+    from machinery import _tasks as tools_tasks
 
     monkeypatch.setitem(bridge._NEGATIONS, "ruff", {"fix": "--never-fix"})
     with pytest.raises(SystemExit, match=r"_NEGATIONS\['ruff'\]"):
@@ -963,9 +963,8 @@ def test_audit_reports_a_runtime_table_that_disagrees(stubs, monkeypatch):
 
 @needs_uv
 def test_audit_reports_a_wrappers_table_that_disagrees(stubs, monkeypatch):
-    from machinery import _tasks as tools_tasks
-
     import toolroom as bridge
+    from machinery import _tasks as tools_tasks
 
     monkeypatch.setitem(bridge._WRAPPERS, "uv", frozenset({"run"}))  # missing tool.run
     with pytest.raises(SystemExit, match=r"_WRAPPERS\['uv'\]"):

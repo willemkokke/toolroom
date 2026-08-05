@@ -14,6 +14,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
+
 from machinery import _provision
 from machinery._drivers import Driver, Provision
 
@@ -97,6 +98,7 @@ def test_strict_turns_a_failed_tier_into_a_failed_run(tmp_path, monkeypatch):
     — cspell and markdownlint were skipped for want of the tool that had
     failed two steps earlier."""
     from footman import Failed
+
     from machinery import _tasks as tools
 
     outcomes = [

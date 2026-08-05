@@ -16,6 +16,7 @@ import pathlib
 from typing import Any
 
 import pytest
+
 from machinery import _toolhistory
 from machinery._toolspec import Option, ToolSpec, Verb
 
@@ -1831,6 +1832,7 @@ def _tools_run(line):
     is about.
     """
     from footman.testing import Runner
+
     from machinery._tasks import tasks as tools_group
 
     return Runner().invoke(line, tasks=tools_group)
@@ -2406,6 +2408,7 @@ def test_the_same_release_is_observed_once_per_run(tmp_path, monkeypatch):
     reported as a shared row, not re-installed."""
     from footman.registry import Group
     from footman.testing import Runner
+
     from machinery import _tasks as tools
     from machinery import _toolfetch
 
@@ -2448,6 +2451,7 @@ def test_a_bare_call_is_refused_with_directions(tmp_path, monkeypatch):
     does not exist, so the walk refuses and says how to run it instead of
     degrading into the exact race it was built to remove."""
     from footman.context import Failed
+
     from machinery import _tasks as tools
 
     _isolate(tools, monkeypatch, tmp_path)
@@ -2967,6 +2971,7 @@ def test_a_release_is_refused_when_there_is_nothing_to_release(tmp_path, monkeyp
     rather than cut, which is what stops an automatic path from shipping
     noise every week it finds none."""
     from footman.context import Failed
+
     from machinery import _tasks as tools
 
     root = _repo(tmp_path, entries=())
@@ -3202,6 +3207,7 @@ def test_a_run_whose_holes_outnumber_its_readings_fails(capsys):
     mean the machine, not the tools.
     """
     from footman.context import Failed
+
     from machinery import _tasks as tools
 
     with pytest.raises(Failed) as failed:
@@ -3245,6 +3251,7 @@ def test_a_disk_with_no_room_stops_the_walk_instead_of_recording_holes(
     import shutil
 
     from footman.context import Failed
+
     from machinery import _tasks as tools
 
     Usage = collections.namedtuple("Usage", "total used free")
