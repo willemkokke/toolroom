@@ -1,0 +1,37 @@
+name: tag-refresh
+
+# Tags a merged weekly-refresh PR — whenever the merge happens. The
+# refresh run itself never waits: in human mode a merge may be days
+# away, and a polling step would burn an hour of runner per refresh.
+# A PAT-pushed tag triggers release.yml (trusted publishing); the
+# default GITHUB_TOKEN's would not.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  tag:
+    if: >-
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'chore/tool-refresh-')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          token: ${{ secrets.REFRESH_TOKEN }}
+      - name: tag the version the merge landed
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
+          if git rev-parse "v$version" >/dev/null 2>&1; then
+            echo "v$version already tagged — the merged refresh carried no bump"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "v$version"
+          git push origin "v$version"

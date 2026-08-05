@@ -3,8 +3,8 @@
  "tool": "djlint",
  "observed_from": "1.40.8",
  "base": {
-  "version": "1.43.2",
-  "date": "2026-08-01",
+  "version": "1.44.0",
+  "date": "2026-08-04",
   "platforms": [
    "Linux",
    "Windows",
@@ -20,6 +20,16 @@
      "positional": "required",
      "lead": "src",
      "options": {
+      "allow_empty_input": {
+       "flags": [
+        "--allow-empty-input"
+       ],
+       "negation": "",
+       "help": "Exit with 0 instead of 2 when the given paths match no files",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "blank_line_after_tag": {
        "flags": [
         "--blank-line-after-tag"
@@ -499,6 +509,18 @@
   }
  },
  "deltas": {
+  "1.43.2": {
+   "date": "2026-08-01",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2,
+   "drop": [
+    "\tallow_empty_input"
+   ]
+  },
   "1.43.1": {
    "date": "2026-07-29",
    "platforms": [

@@ -11,7 +11,7 @@
 #   human  — the default, and the value when the variable is unset. The
 #            refresh opens a PR carrying the observations, the stubs, and
 #            the prepared release bump; a human merges; the merge releases
-#            (the tag step waits for the merge, then tags).
+#            (tag-refresh.yml fires on the merge, whenever it happens).
 #   graded — additions ship unattended: when every appended event only
 #            ADDED surface (nothing dropped, no verb withdrawn), the PR
 #            auto-merges on a green gate and tags itself; anything else
@@ -151,8 +151,8 @@ jobs:
           REFRESH_MODE: ${{ vars.REFRESH_MODE }}
 
       - name: roll the release into the PR
-        # Every mode carries the bump in the PR, so a human merge IS a
-        # release — the tag step below waits for the merge and tags it.
+        # Every mode carries the bump in the PR, so a merge IS a release —
+        # tag-refresh.yml tags it on the merge event, whenever that is.
         if: steps.reported.outputs.count != '0' && env.changed == 'true'
           && env.release == 'true'
         run: |
@@ -191,24 +191,3 @@ jobs:
             gh pr merge "$branch" --auto --merge \
               || echo "::warning::auto-merge unavailable (enable it in settings and protect main on the gate check) — the PR waits for a human"
           fi
-
-      - name: tag the release once it lands
-        # In every mode: the tag follows the MERGE, whoever performed it. A
-        # PAT-pushed tag triggers release.yml (trusted publishing); a
-        # GITHUB_TOKEN-pushed one would not.
-        if: steps.reported.outputs.count != '0' && env.changed == 'true' && env.tag != ''
-        env:
-          GH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-        run: |
-          for _ in $(seq 60); do
-            state=$(gh pr view "chore/tool-refresh-$(date -u +%Y%m%d)" --json state -q .state || echo UNKNOWN)
-            [ "$state" = "MERGED" ] && break
-            sleep 60
-          done
-          if [ "$state" != "MERGED" ]; then
-            echo "::warning::the refresh PR has not merged within the hour; tag $tag by hand once it does"
-            exit 0
-          fi
-          git fetch origin main
-          git tag "$tag" origin/main
-          git push origin "$tag"
