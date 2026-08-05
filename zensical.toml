@@ -66,9 +66,10 @@ extra_javascript = [
 
 [project.theme]
 language = "en"
-# The wrench on the shadow board: the tool room's own glyph, same lucide
-# family as the palette toggles; the favicon is the identical glyph.
-icon.logo = "lucide/wrench"
+# The shadow board's painted outline: a dashed wrench — the silhouette
+# where the tool hangs, which is what a typed stub is. The favicon is the
+# identical glyph in the palette colours.
+logo = "assets/logo.svg"
 favicon = "assets/favicon.svg"
 features = [
   "announce.dismiss",
