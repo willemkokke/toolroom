@@ -1,0 +1,76 @@
+name: Release
+
+# Publishes to PyPI via Trusted Publishing (OIDC — no API token stored).
+# One-time setup on PyPI: add a trusted publisher for this repo with
+# workflow `release.yml` and environment `pypi`. Push a `vX.Y.Z` tag to release.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-version:
+    name: tag == pyproject == __version__
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify version consistency
+        run: |
+          python3 - "$GITHUB_REF_NAME" << 'EOF'
+          import re
+          import sys
+          import tomllib
+
+          tag = sys.argv[1].removeprefix("v")
+          with open("pyproject.toml", "rb") as f:
+              pyproject = tomllib.load(f)["project"]["version"]
+          init_text = open("src/toolroom/__init__.py", encoding="utf-8").read()
+          match = re.search(r'__version__ = "([^"]+)"', init_text)
+          init = match[1] if match else "(missing)"
+
+          problems = []
+          if pyproject != tag:
+              problems.append(f"pyproject.toml says {pyproject}, tag says {tag}")
+          if init != tag:
+              problems.append(f"__init__.__version__ says {init}, tag says {tag}")
+          if problems:
+              print("version mismatch — refusing to release:")
+              print("\n".join(f"  - {p}" for p in problems))
+              sys.exit(1)
+          print(f"version {tag} is consistent across tag, pyproject, __init__")
+          EOF
+
+  build:
+    needs: [verify-version]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Build sdist and wheel
+        run: uv build
+      - name: Wheel must ship py.typed
+        run: unzip -l dist/*.whl | grep -q "toolroom/py.typed"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # required for Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: true
