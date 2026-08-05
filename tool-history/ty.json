@@ -3,8 +3,8 @@
  "tool": "ty",
  "observed_from": "0.0.55",
  "base": {
-  "version": "0.0.65",
-  "date": "2026-07-29",
+  "version": "0.0.66",
+  "date": "2026-08-04",
   "platforms": [
    "Linux",
    "Windows",
@@ -317,6 +317,15 @@
   }
  },
  "deltas": {
+  "0.0.65": {
+   "date": "2026-07-29",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
   "0.0.64": {
    "date": "2026-07-29",
    "platforms": [

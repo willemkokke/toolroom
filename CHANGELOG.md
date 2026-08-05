@@ -7,6 +7,8 @@ breaking changes.
 
 ## [Unreleased]
 
+## [0.0.2] — 2026-08-05
+
 ### Added
 
 - The bridge, extracted from footman (`footman.tools` → `toolroom`) and
@@ -24,6 +26,10 @@ breaking changes.
   on `toolroom`, with `Argv`, `Result`, and `ToolError` declared
   locally so type-checking toolroom never requires footman installed.
 
+### Changed
+
+- **djlint 1.44.0** adds `--allow-empty-input`.
+
 ## [0.0.1] — 2026-08-05
 
 ### Added
@@ -31,5 +37,6 @@ breaking changes.
 - Name reservation on PyPI: an empty typed module and the
   trusted-publishing release workflow. Nothing importable of substance.
 
-[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/willemkokke/toolroom/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/willemkokke/toolroom/releases/tag/v0.0.1

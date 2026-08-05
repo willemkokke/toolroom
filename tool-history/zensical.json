@@ -3,8 +3,8 @@
  "tool": "zensical",
  "observed_from": "0.0.41",
  "base": {
-  "version": "0.0.52",
-  "date": "2026-07-30",
+  "version": "0.0.53",
+  "date": "2026-08-04",
   "platforms": [
    "Linux",
    "Windows",
@@ -125,6 +125,15 @@
   }
  },
  "deltas": {
+  "0.0.52": {
+   "date": "2026-07-30",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
   "0.0.51": {
    "date": "2026-07-29",
    "platforms": [
