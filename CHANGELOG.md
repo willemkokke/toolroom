@@ -7,6 +7,8 @@ breaking changes.
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-08-05
+
 ### Fixed
 
 - `.opts(env=…)` standalone now means what it means hosted: the child's
@@ -44,6 +46,7 @@ breaking changes.
 - Name reservation on PyPI: an empty typed module and the
   trusted-publishing release workflow. Nothing importable of substance.
 
-[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/willemkokke/toolroom/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/willemkokke/toolroom/compare/v0.0.1...v0.1.0
 [0.0.1]: https://github.com/willemkokke/toolroom/releases/tag/v0.0.1
