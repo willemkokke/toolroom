@@ -53,15 +53,16 @@ def test() -> None:
 def docs() -> None:
     """Build the documentation site, strictly.
 
-    The per-tool reference pages regenerate first, from the checked-in
-    stubs — the build needs no tool on PATH, and the sidebar can never
-    fall behind the drivers.
+    The per-tool reference pages and the colour table regenerate first,
+    both from checked-in data — the build needs no tool on PATH, and the
+    sidebar can never fall behind the drivers.
     """
     from pathlib import Path
 
-    from machinery._tasks import pages
+    from machinery._tasks import colour_page, pages
 
     pages(Path("docs/_generated/tools"), nav=Path("zensical.toml"))
+    Path("docs/_generated/colour.md").write_text(colour_page(), encoding="utf-8")
     tools.zensical.build(clean=True, strict=True)
 
 

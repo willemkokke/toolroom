@@ -15,6 +15,7 @@ nav = [
   { "Using the tools" = "usage.md" },
   { "With footman" = "footman.md" },
   { "Typing & the stubs" = "typing.md" },
+  { "Colour" = "_generated/colour.md" },
   { "API reference" = "api.md" },
   { "Tools" = [
     { "The curated tools" = "_generated/tools/index.md" },
@@ -146,7 +147,13 @@ base_path = ["."]
 check_paths = true
 
 [project.plugins.mkdocstrings.handlers.python]
-inventories = ["https://docs.python.org/3/objects.inv"]
+inventories = [
+  "https://docs.python.org/3/objects.inv",
+  # footman's symbols, so a mention of `run()` or `Result` on this site
+  # links straight into its API reference. The seam is documented from
+  # both sides; neither package depends on the other.
+  "https://willemkokke.github.io/footman/objects.inv",
+]
 paths = ["src"]
 
 [project.plugins.mkdocstrings.handlers.python.options]
