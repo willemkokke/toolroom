@@ -7,6 +7,25 @@ breaking changes.
 
 ## [Unreleased]
 
+### Added
+
+- **A Colour page**, listing how each curated tool is talked into (and
+  out of) colour over a pipe. It renders from the checked-in colour data
+  on every docs build, so it needs no tool on PATH and cannot drift from
+  what ships — the rule the per-tool pages already follow. The table came
+  over from footman, where it was left orphaned by the split: its data
+  lives here, so its page does too.
+- The docs resolve **footman's symbol inventory**, so a mention of
+  `run()` or `Result` links straight into footman's API reference (and
+  footman's site resolves toolroom's, the other way).
+
+### Fixed
+
+- `fm tools.color --write` writes `src/toolroom/_colordata.py` again. It
+  had been writing `src/_colordata.py` since the split — the module moved
+  into the package and the path did not follow — so a re-probe wrote a
+  file nothing imports and left the real data untouched.
+
 ## [0.1.1] — 2026-08-05
 
 ### Fixed
