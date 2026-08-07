@@ -23,6 +23,29 @@ are kept with the version they were read from; a weekly refresh
 re-takes them when the tool moves; and the bridge issues any tool as
 a Python handle — including tools no stub has ever described.
 
+## Where this came from
+
+Most task runners exist, in the end, to call other command-line
+applications. Whatever else a `check` task does, it eventually shells out
+to ruff, to pytest, to git. So when [footman](https://willemkokke.github.io/footman/)
+was built, a lot of the effort went into making that one act ergonomic:
+calling a tool with real keyword arguments, having the flags translate
+mechanically instead of being transcribed by hand, and having a wrong
+flag be a type error in your editor rather than a subprocess exit code
+you read later.
+
+That work turned out not to need a task runner at all. It is useful in a
+script, in a notebook, in a test — anywhere you would otherwise write a
+list of strings and hope. So it moved out here, unchanged in what it
+does: **toolroom is exactly what footman's tools were**, with the same
+translation, the same stubs, the same in-process fast path.
+
+The split is a clean one, and deliberately so: neither package depends
+on the other, neither imports the other's names, and each is useful with
+the other absent. But they were designed together and they are better
+together — the recommendation is to use both, and everything below stays
+true either way.
+
 ## No transcription
 
 toolroom does **not** transcribe a tool's flags into Python
