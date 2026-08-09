@@ -297,6 +297,33 @@ def test_git_states_both_spellings_inline():
     assert got["signoff"].help == "add a Signed-off-by trailer"
 
 
+def test_one_option_in_two_dialects_keys_on_the_python_one():
+    """Claude Code prints `--allowedTools, --allowed-tools`: one option, two
+    spellings. The keyword is written in Python, so it takes the lowercase
+    one — and `allowed_tools=` then round-trips to a flag the tool takes.
+
+    The guard is that sameness folds case *and* dashes away. Two options
+    whose help ran into one block are not dialects of each other and must
+    keep their own keywords, which is markdownlint-cli2's `--configPointer,
+    --config` (its column alignment aligns to the longest option) and git's
+    `--column[=<options>], --no-column`.
+    """
+    text = (
+        "Options:\n"
+        "  --allowedTools, --allowed-tools <tools...>\n"
+        "      Tools to allow\n"
+        "  --bg, --background            Run in the background\n"
+        "  --configPointer, --config <p>  A JSON pointer\n"
+        "  --column[=<options>], --no-column  Paginate\n"
+    )
+    got = flags(_toolhelp.parse_help(text))
+    assert "allowed_tools" in got and "allowedTools" not in got
+    assert "--allowedTools" in got["allowed_tools"].flags  # both still recorded
+    assert "bg" in got, "already lowercase — the first spelling still wins"
+    assert "configPointer" in got, "a neighbour, not a dialect"
+    assert "column" in got and "no_column" not in got
+
+
 def test_optional_value_option_is_neither_switch_nor_required_value():
     # git glues an optional-value placeholder to the flag with no space.
     # Read as a switch, `--gpg-sign[=<key-id>]` would reject a key; read as
@@ -607,6 +634,37 @@ def test_rendered_stub_never_repeats_a_keyword():
     assert text.count("dirty: _Flag") == 1
 
 
+def test_a_lone_summary_leaves_room_for_the_quotes_ruff_will_join():
+    """A docstring with nothing under it is folded onto one line by the
+    formatter — closing quotes included — so the wrap has to leave room for
+    six characters rather than three.
+
+    Claude Code's `setup-token` is the one that found this: a summary of
+    exactly 71 characters wrapped to a line of 86, and the fold ruff applied
+    straight afterwards took it to 89. The stub generator wrote a file its
+    own gate then refused.
+    """
+    lone = "Set up a long-lived authentication token (requires Claude subscription)"
+    summary = ToolSpec(name="demo", verbs=(Verb(name="setup_token", help=lone),))
+    (line,) = [ln for ln in _stubgen.render(summary).splitlines() if '"""Set up' in ln]
+    assert len(line) + len('"""') <= 88
+
+    # An `Args:` block below keeps the closing quotes on their own line, so
+    # this summary is never joined and keeps the wider wrap: narrowing it
+    # would rewrap docstrings for characters they never see.
+    documented = ToolSpec(
+        name="demo",
+        verbs=(
+            Verb(
+                name="setup_token",
+                help=lone,
+                options=(Option("quiet", ("--quiet",), help="Hush", type_name="bool"),),
+            ),
+        ),
+    )
+    assert f'"""{lone}' in _stubgen.render(documented)
+
+
 def test_value_options_accept_a_sequence():
     """`select=["E", "F"]` works at run time, so it must type-check.
 
@@ -857,6 +915,25 @@ def test_colorprobe_ruff_obeys_the_environment():
     assert ruff is not None
     v = _colorprobe.probe("ruff", ruff, spec)
     assert v.on == "env" and v.off == "env" and v.flag is None
+
+
+def test_colorprobe_write_leaves_alone_what_it_could_not_probe():
+    """A probe needs a binary, and the man tier provisions pages — so git is
+    in no prefix, and a run that wrote only what it saw would drop its
+    `-c color.ui=always` and take the bridge's colour forcing with it."""
+    from machinery import _colorprobe
+
+    stored: dict[str, _colorprobe.Row] = {
+        "git": ("git", "flag", "env", ("-c", "color.ui=always"), (), True),
+        "ruff": ("ruff", "none", "n/a", (), (), False),  # a stale verdict
+    }
+    fresh = {"ruff": ("ruff", _colorprobe.Verdict("env", "env"))}
+    folded = _colorprobe.merged(stored, fresh)
+    assert folded["ruff"][1].on == "env", "what was probed here wins"
+    kept = folded["git"][1]
+    assert (kept.on, kept.off) == ("flag", "env")
+    assert kept.flag is not None
+    assert kept.flag.on == ("-c", "color.ui=always") and kept.flag.pre_verb
 
 
 def test_colorprobe_render_round_trips():

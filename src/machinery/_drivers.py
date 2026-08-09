@@ -413,6 +413,48 @@ DRIVERS: tuple[Driver, ...] = (
         url="https://github.com/DavidAnson/markdownlint-cli2",
     ),
     Driver(
+        "claude",
+        # Claude Code's npm package is a launcher for a per-platform native
+        # build, so the node tier fetches a release rather than a bundle —
+        # a few hundred megabytes each, and several published a day. The
+        # walk is priced accordingly: `gather` picks up the week's releases
+        # above the floor, and `prime` reaches back only as far as it is
+        # asked to.
+        provision=Provision(kind="node", package="@anthropic-ai/claude-code"),
+        url="https://docs.claude.com/en/docs/claude-code/cli-reference",
+        # The headless surface is the root call — `claude -p "…"` with its
+        # model, output-format and permission flags — so the verbs here are
+        # the ones a task reaches for around it: wiring MCP servers and
+        # plugins up, and asking after auth.
+        verbs=(
+            "agents",
+            "auth.login",
+            "auth.logout",
+            "auth.status",
+            "doctor",
+            "install",
+            "mcp.add",
+            "mcp.add-json",
+            "mcp.get",
+            "mcp.list",
+            "mcp.remove",
+            "mcp.serve",
+            "plugin.disable",
+            "plugin.enable",
+            "plugin.install",
+            "plugin.list",
+            "plugin.marketplace.add",
+            "plugin.marketplace.list",
+            "plugin.marketplace.remove",
+            "plugin.marketplace.update",
+            "plugin.uninstall",
+            "plugin.update",
+            "plugin.validate",
+            "setup-token",
+            "update",
+        ),
+    ),
+    Driver(
         "gh",
         provision=Provision(kind="github", repo="cli/cli"),
         url="https://cli.github.com/manual/",

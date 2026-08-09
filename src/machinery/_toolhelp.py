@@ -364,6 +364,32 @@ def _parse_default(text: str) -> str:
     return value.strip().strip("\"'")
 
 
+def _keyed_on(longs: list[str]) -> str:
+    """Which of an option's long spellings the Python keyword is taken from.
+
+    The first, unless the tool has printed the *same* option twice in two
+    dialects: Claude Code offers `--allowedTools, --allowed-tools`, and a
+    keyword is written in Python, so it takes the spelling Python is
+    written in. Nothing else moves — `--bg, --background` are both already
+    lowercase, and the first stays the keyword.
+
+    Sameness is decided by folding case and dashes away, which is what
+    separates a dialect from a neighbour. markdownlint-cli2 prints
+    `--configPointer, --config` — two distinct options its column
+    alignment ran into one block — and those fold apart, so both keep
+    their own keyword. So does a negation printed alongside its positive
+    (git's `--column[=<options>], --no-column`), which must never be the
+    one keyed on.
+    """
+    first = longs[0]
+    folded = first.lower().replace("-", "")
+    for spelling in longs:
+        same = spelling.lower().replace("-", "") == folded
+        if same and not any(char.isupper() for char in spelling):
+            return spelling
+    return first
+
+
 def _option(
     head: str,
     help_text: str,
@@ -415,8 +441,9 @@ def _option(
         # Only where the grammar has already settled arity: elsewhere that
         # first word may genuinely be the value's name.
         help_text = _after_flags(head)
-    inline = _INLINE_NEGATION.match(longs[0])
-    stem = inline["name"] if inline else longs[0].lstrip("-")
+    keyed = _keyed_on(longs)
+    inline = _INLINE_NEGATION.match(keyed)
+    stem = inline["name"] if inline else keyed.lstrip("-")
     name = stem.replace("-", "_").replace(".", "_")
     default = _parse_default(help_text)
     choices = _choices(help_text)

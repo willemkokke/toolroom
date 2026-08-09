@@ -61,7 +61,7 @@ from toolroom._host import Argv as Argv
 from toolroom._host import Result as Result
 from toolroom._host import ToolError as ToolError
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 _QUIET = {"GH_NO_UPDATE_NOTIFIER": "1"}
 """Told not to phone home while being read — see `_toolhelp.QUIET`."""
@@ -1070,6 +1070,7 @@ coverage = Tool("coverage", in_process=True)
 cspell = Tool("cspell")
 prek = Tool("prek")
 markdownlint = Tool("markdownlint-cli2")
+claude = Tool("claude")
 gh = Tool("gh")
 # The remote command is a positional: transport, then payload. `-V` is the
 # whole version surface (`--version` is an illegal option), answered on stderr.
