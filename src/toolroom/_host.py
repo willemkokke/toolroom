@@ -244,6 +244,20 @@ def color_on() -> bool:
     return os.environ.get("TERM") != "dumb"
 
 
+def colour_wanted(mode: str) -> bool:
+    """A colour mode resolved to an answer — the ladder, one rung at a time.
+
+    `always`/`never` are the answer; `auto` takes the ambient one. The
+    seam owns this because both lanes need it: the argv half must pick a
+    tool's on- or off-switch here whatever executes the call.
+    """
+    if mode == "always":
+        return True
+    if mode == "never":
+        return False
+    return color_on()
+
+
 def color_env(on: bool) -> dict[str, str]:
     """The colour variables to set on a child to force colour on (or off).
 
@@ -259,21 +273,26 @@ def color_env(on: bool) -> dict[str, str]:
     return {"NO_COLOR": "1"}
 
 
-def child_env(env: dict[str, str] | None, on: bool) -> dict[str, str] | None:
+def child_env(env: dict[str, str] | None, mode: str) -> dict[str, str] | None:
     """The child's environment with this call's colour answer written in.
 
-    *env* follows `run(env=…)`: None inherits, a mapping replaces. Only
-    the inheriting case is normalised — an explicit environment is the
-    caller's whole word, colour included, exactly as it is hosted (where
-    an explicit `env=` likewise replaces the run's published variables).
+    *env* follows `run(env=…)`: None inherits, a mapping replaces. A
+    *decided* colour merges on top of whichever of those the call has —
+    an instruction aimed at this child outranks the environment it was
+    handed, exactly as `run(color=…)` treats it hosted. `auto` leaves an
+    explicit environment alone, because ambient is what that environment
+    already carries; inheriting, it writes the ambient answer in, since
+    standalone has no run boundary to have published it.
+
     Every colour variable is cleared before this direction's are set, so
     off leaves no inherited `FORCE_COLOR` for a presence-checking tool to
     honour and on leaves no stray `NO_COLOR`.
     """
-    if env is not None:
+    if mode == "auto" and env is not None:
         return env
-    composed = {k: v for k, v in os.environ.items() if k not in _COLOR_VARS}
-    composed.update(color_env(on))
+    base = env if env is not None else os.environ
+    composed = {k: v for k, v in base.items() if k not in _COLOR_VARS}
+    composed.update(color_env(colour_wanted(mode)))
     return composed
 
 
@@ -291,6 +310,28 @@ def note(text: str) -> None:
             real_stderr().write(text)
 
 
+_RUN_COLOUR: bool | None = None
+
+
+def _run_takes_colour(fm_run: Any) -> bool:
+    """Whether this footman's `run()` takes the colour keyword.
+
+    Probed once per process rather than pinned by a version floor: the
+    keyword arrived in a footman later than the one toolroom's floor
+    names, and a bridge that reads the signature works against both
+    without either package waiting on the other's release.
+    """
+    global _RUN_COLOUR
+    if _RUN_COLOUR is None:
+        import inspect
+
+        try:
+            _RUN_COLOUR = "color" in inspect.signature(fm_run).parameters
+        except (TypeError, ValueError):  # unintrospectable — assume the older shape
+            _RUN_COLOUR = False
+    return _RUN_COLOUR
+
+
 def run(
     target: list[str] | Any,
     *,
@@ -306,7 +347,7 @@ def run(
     timeout: float | None = None,
     cwd: str | Path | None = None,
     rel: str | Path | None = None,
-    color: bool = True,
+    color: str = "auto",
 ) -> Any:
     """The one door every bridge call leaves through.
 
@@ -315,18 +356,29 @@ def run(
     of the same call (role-tagged for painting, literal for `--verbose`);
     standalone execution has no receipt to paint, so it reads neither.
 
-    *color* is the call's resolved colour decision, already carried into
-    the argv as a switch where the tool needs one. Spawning here, it is
-    also written into the child's environment. Hosted, footman owns the
-    child's environment and publishes the run's answer into it once at the
-    boundary, so an env-reading tool follows the *run* — a per-call
-    `.opts(color=…)` reaches such a tool only once footman takes a colour
-    argument of its own.
+    *color* is the call's colour mode, unresolved — `auto` means "follow
+    whoever owns the ambient", and hosted that is the run, so the mode
+    travels rather than an answer computed from the environment. The
+    argv half is already decided by the time a call reaches here; this is
+    the environment half, which hosted belongs to footman: `run(color=)`
+    applies it to that one child, merging over `env=` and reaching the
+    in-process lane too.
     """
     if hosted():
         from footman.context import Invocation
         from footman.context import run as fm_run
 
+        painted: dict[str, Any] = {}
+        if _run_takes_colour(fm_run):
+            painted["color"] = color
+        elif color != "auto":
+            # A footman too old for the keyword: the tool's own switch still
+            # carries the decision, so a flag tool obeys and an env-reading
+            # one follows the run. Worth a word, not a failure.
+            note(
+                f"colour: this footman has no run(color=), so color={color!r} "
+                f"reaches only the tools that take a switch\n"
+            )
         return fm_run(
             target,
             nofail=nofail,
@@ -339,6 +391,7 @@ def run(
             timeout=timeout,
             cwd=cwd,
             rel=rel,
+            **painted,
             _show=Invocation(parts, exact),
         )
     if not isinstance(target, list):
@@ -365,7 +418,7 @@ def _standalone(
     capture: bool,
     input: str | None,
     env: dict[str, str] | None,
-    color: bool,
+    color: str,
     timeout: float | None,
     cwd: str | Path | None,
     rel: str | Path | None,
