@@ -1436,19 +1436,39 @@ def _read_document(name: str) -> dict[str, Any]:
     return payload
 
 
+def _attributed(who_skipped: dict[str, list[str]], legs: int) -> list[str]:
+    """Each skip, and — where it was not unanimous — who said it.
+
+    A skip every leg reported is a fact about the tool: the six shells are
+    hand-written wherever you ask. A skip only some legs reported is a fact
+    about *those boxes*, and reads as the first kind unless it says so.
+    Windows has no `man`, so it alone skips the tools read from their
+    manuals; unattributed, `git (no man to read the pages with)` in a
+    refresh PR looks exactly like a tier nobody is refreshing, when git's
+    pages had in fact been read twice over — the same bytes on Linux and
+    macOS, which is all a manual has to be read on.
+    """
+    lines = []
+    for line, who in who_skipped.items():
+        unanimous = len(who) == legs
+        lines.append(line if unanimous else f"{line} — {_and(sorted(who))} only")
+    return lines
+
+
 def _assemble_documents(documents: list[dict[str, Any]]) -> Refreshed:
     """The fold-then-insert core, shared by `assemble` and `refresh`."""
     by_release: dict[str, dict[str, dict[str, dict[str, Any]]]] = {}
     meta: dict[str, dict[str, dict[str, Any]]] = {}
     unreachable: dict[str, str] = {}
-    skipped: list[str] = []
+    who_skipped: dict[str, list[str]] = {}
     holes: dict[str, list[str]] = {}
     for document in documents:
         platform = document["platform"]
         unreachable.update(document.get("unreachable", {}))
         for tool, missing in document.get("holes", {}).items():
             holes[tool] = sorted({*holes.get(tool, []), *missing})
-        skipped += [s for s in document.get("skipped", []) if s not in skipped]
+        for line in document.get("skipped", []):
+            who_skipped.setdefault(line, []).append(platform)
         for tool, versions in document.get("observations", {}).items():
             for version, seen in versions.items():
                 by_release.setdefault(tool, {}).setdefault(version, {})[platform] = (
@@ -1456,6 +1476,7 @@ def _assemble_documents(documents: list[dict[str, Any]]) -> Refreshed:
                 )
                 meta.setdefault(tool, {})[version] = seen
 
+    skipped = _attributed(who_skipped, len(documents))
     read: dict[str, list[str]] = {}
     events: dict[str, list[str]] = {}
     for tool, versions in sorted(by_release.items()):

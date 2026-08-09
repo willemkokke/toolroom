@@ -3266,6 +3266,33 @@ def test_a_disk_with_no_room_stops_the_walk_instead_of_recording_holes(
     tools._refuse_a_broken_environment(tmp_path)
 
 
+def test_a_skip_only_some_legs_reported_says_which():
+    """Unattributed, one leg's skip reads as every leg's.
+
+    Windows has no `man`, so it alone skips the tools read from their
+    manuals — and `git (no man to read the pages with)` in a refresh PR
+    then looks exactly like a tier nobody refreshes, when git's pages had
+    been read on both Linux and macOS. A skip every leg reported needs no
+    attribution: it is a fact about the tool, not about a box.
+    """
+    from machinery._tasks import _attributed
+
+    lines = _attributed(
+        {
+            "bash (hand-written)": ["Linux", "macOS", "Windows"],
+            "git (no man to read the pages with)": ["Windows"],
+            "cspell (no bun to install with)": ["Windows", "macOS"],
+        },
+        legs=3,
+    )
+    assert "bash (hand-written)" in lines
+    assert "git (no man to read the pages with) — Windows only" in lines
+    assert "cspell (no bun to install with) — Windows and macOS only" in lines
+
+    # One document has nothing to contrast with, so nothing is claimed.
+    assert _attributed({"git (no man)": ["Windows"]}, legs=1) == ["git (no man)"]
+
+
 def test_a_hand_written_stub_is_not_a_uv_tier_tool():
     """A `source="manual"` driver carries the *default* provision kind, so
     asking it names the `uv` tier for a shell nobody fetches — six of them in
