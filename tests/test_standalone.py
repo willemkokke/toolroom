@@ -132,13 +132,122 @@ def test_reporting_lane_opts_are_accepted_and_ignored():
     assert r.stdout.strip() == "ok"
 
 
-def test_color_on_reads_the_conventional_environment(monkeypatch):
+@pytest.fixture
+def uncoloured(monkeypatch):
+    """A process with no colour opinion inherited from the outside."""
+    for var in _host._COLOR_VARS:
+        monkeypatch.delenv(var, raising=False)
+    monkeypatch.delenv("TERM", raising=False)
+
+
+def test_color_on_reads_the_conventional_environment(monkeypatch, uncoloured):
     monkeypatch.setenv("NO_COLOR", "1")
-    monkeypatch.delenv("FORCE_COLOR", raising=False)
     assert _host.color_on() is False
     monkeypatch.delenv("NO_COLOR")
     monkeypatch.setenv("FORCE_COLOR", "1")
     assert _host.color_on() is True
+
+
+def test_color_on_reads_the_whole_force_set(monkeypatch, uncoloured):
+    # A tool-facing seam has to speak every spelling the tools do, not just
+    # the modern one.
+    for var in _host._FORCE_VARS:
+        monkeypatch.setenv(var, "1")
+        assert _host.color_on() is True, var
+        monkeypatch.delenv(var)
+
+
+def test_force_color_zero_does_not_force(monkeypatch, uncoloured):
+    # Consumed by truthiness: `FORCE_COLOR=0` is a request *not* to force,
+    # and stdout is not a terminal under pytest's capture either way.
+    monkeypatch.setenv("FORCE_COLOR", "0")
+    assert _host.color_on() is False
+
+
+def test_no_color_beats_a_force_variable(monkeypatch, uncoloured):
+    monkeypatch.setenv("FORCE_COLOR", "1")
+    monkeypatch.setenv("NO_COLOR", "1")
+    assert _host.color_on() is False
+
+
+def test_a_dumb_terminal_is_no_terminal(monkeypatch, uncoloured):
+    monkeypatch.setattr(_host.sys, "stdout", _Tty())
+    assert _host.color_on() is True
+    monkeypatch.setenv("TERM", "dumb")
+    assert _host.color_on() is False
+
+
+class _Tty:
+    """Stands in for a terminal on stdout, which pytest's capture is not."""
+
+    def isatty(self) -> bool:
+        return True
+
+
+def test_child_env_writes_the_force_set_and_clears_the_other_side(
+    monkeypatch, uncoloured
+):
+    monkeypatch.setenv("FORCE_COLOR", "1")
+    composed = _host.child_env(None, _host.color_on())
+    assert composed is not None
+    assert all(composed[var] == "1" for var in _host._FORCE_VARS)
+    assert "NO_COLOR" not in composed
+
+
+def test_child_env_forcing_off_leaves_no_inherited_force_variable(
+    monkeypatch, uncoloured
+):
+    # The whole point of clearing: a tool that reads mere presence would
+    # honour a stray inherited FORCE_COLOR straight past NO_COLOR.
+    monkeypatch.setenv("CLICOLOR_FORCE", "1")
+    monkeypatch.setenv("NO_COLOR", "1")
+    composed = _host.child_env(None, _host.color_on())
+    assert composed is not None
+    assert composed["NO_COLOR"] == "1"
+    assert not any(var in composed for var in _host._FORCE_VARS)
+
+
+def test_child_env_leaves_an_explicit_environment_alone(monkeypatch, uncoloured):
+    # `env=` replaces rather than merges, colour included — the same word it
+    # is hosted, where an explicit env likewise drops the run's variables.
+    monkeypatch.setenv("FORCE_COLOR", "1")
+    assert _host.child_env({"PATH": "/nowhere"}, True) == {"PATH": "/nowhere"}
+
+
+def test_a_spawned_tool_inherits_the_forced_colour(monkeypatch, uncoloured):
+    monkeypatch.setenv("FORCE_COLOR", "1")
+    r = tools.python(
+        "-c",
+        "import os; print(','.join(sorted(k for k in os.environ if 'COLOR' in k)))",
+    )
+    assert r.stdout.strip() == "CLICOLOR,CLICOLOR_FORCE,FORCE_COLOR"
+
+
+def test_a_spawned_tool_inherits_the_silence(monkeypatch, uncoloured):
+    monkeypatch.setenv("NO_COLOR", "1")
+    r = tools.python(
+        "-c",
+        "import os; print(','.join(sorted(k for k in os.environ if 'COLOR' in k)))",
+    )
+    assert r.stdout.strip() == "NO_COLOR"
+
+
+def test_the_flag_half_follows_the_same_bit(monkeypatch, uncoloured):
+    # git ignores the environment and takes a switch, so the two halves must
+    # answer to one decision: forced on, the switch rides the executed argv.
+    monkeypatch.setenv("FORCE_COLOR", "1")
+    assert tools.git("--version").to_argv()[:3] == ["git", "-c", "color.ui=always"]
+    monkeypatch.delenv("FORCE_COLOR")
+    monkeypatch.setenv("NO_COLOR", "1")
+    assert tools.git("--version").to_argv() == ["git", "--version"]
+
+
+def test_standalone_command_shows_what_actually_ran(monkeypatch, uncoloured):
+    # Hosted, `.command` is the tool's own call and the forced switch shows
+    # only under `--verbose`; standalone there is no second spelling to keep,
+    # so a `Result` renders the argv it spawned — colour switch included.
+    monkeypatch.setenv("FORCE_COLOR", "1")
+    assert tools.git("--version").command == "git -c color.ui=always --version"
 
 
 def test_container_error_wording_matches_the_doors():

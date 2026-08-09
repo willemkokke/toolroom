@@ -7,6 +7,58 @@ breaking changes.
 
 ## [Unreleased]
 
+### Added
+
+- **`.opts(color="auto"|"always"|"never")`** — colour, decided per call.
+  `"always"`/`"never"` settle that call outright; `"auto"` (the default)
+  takes the ambient answer. An explicit choice beats `NO_COLOR`, the same
+  way a `--color=always` does: an instruction aimed at one call is not
+  the same kind of thing as an environment-wide preference, and it is
+  what lets a colour assertion hold on CI that exports one. An unknown
+  mode is a taught error.
+
+  The decision travels on the call rather than through the environment
+  because `os.environ` is one per process and calls are not — two threads
+  wanting different answers can both have one this way. It drives
+  whichever half of the forcing each tool needs, so a caller never has to
+  know which half that is.
+
+### Changed
+
+- **Colour is toolroom's to arrange, from one bit.** The seam is now two
+  environment variable names and nothing else: whoever decides — a
+  footman run publishing its answer, a user exporting one, or toolroom
+  reading the terminal — spells it `FORCE_COLOR` or `NO_COLOR`, and
+  toolroom translates that into what each tool actually needs. Tools that
+  read the environment get the whole force set written into the child;
+  the few that ignore it get their own switch, as the colour probe found
+  (git's `-c color.ui=always`). Forcing off clears any inherited force
+  variable rather than setting `"0"`, which a tool reading mere presence
+  would honour straight past `NO_COLOR`.
+- Standalone, that closes a gap: a spawned tool's stdout is a pipe
+  whenever toolroom captures it, and nothing was writing the force set,
+  so everything but git and cspell came back monochrome even with colour
+  asked for. Forcing over a pipe is what those variables are for.
+- The ambient answer is read from the environment, hosted or not:
+  `FORCE_COLOR`, `CLICOLOR_FORCE`, `CLICOLOR`, `NO_COLOR`, with
+  `FORCE_COLOR` taken by truthiness — so an explicit `FORCE_COLOR=0` no
+  longer forces — and a dumb terminal counted as no terminal. Inside a
+  footman run that reads the answer the run published at its boundary, so
+  nothing about the outcome changes; what goes is toolroom's last import
+  of footman, and with it the wart where the same call coloured
+  differently depending on whether footman happened to be imported.
+- `recording(force_color=True)` no longer influences the argv toolroom
+  builds — it never could standalone. Say `.opts(color="always")` on the
+  call under test instead, which is the more honest spelling anyway: the
+  assertion is about that call.
+- An explicit `env=` still replaces rather than merges, colour included —
+  the same word it is hosted.
+- The footman dev floor moves to 0.36, whose removal of its own tools
+  bridge finished the split. The repo's tests reached into
+  `footman._toolspec` and `footman._drivers` for the drivers and the
+  click reader; both have lived in `machinery/` since the split, and now
+  they are read from there.
+
 ### Fixed
 
 - A refresh now says *which* platforms skipped a tool, where they did not
