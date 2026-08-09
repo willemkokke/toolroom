@@ -354,6 +354,38 @@ def _annotation(option: Option) -> str:
     return "_Value"
 
 
+def _summary(help_text: str, depth: int, *, alone: bool) -> list[str]:
+    """The verb's help, wrapped to survive the formatter that follows.
+
+    The width leaves room for the opening `\"\"\"` glued on afterwards, which
+    is all a docstring with an `Args:` block under it ever needs. A summary
+    standing *alone* is different: the formatter pulls the whole docstring
+    onto one line, closing quotes included, three characters past what the
+    wrap allowed for. So an alone summary that comes out as one line is
+    wrapped again three narrower — it either still fits on one, or it
+    becomes two and there is no join left to fit.
+
+    Not applied to every summary, because a summary that will not be joined
+    would be rewrapped for quotes it never sees: a stub's diff should move
+    when its tool does.
+    """
+
+    def wrapped(width: int) -> list[str]:
+        return textwrap.wrap(
+            help_text,
+            width=width,
+            initial_indent=" " * 8,
+            subsequent_indent=" " * 8,
+            break_long_words=False,
+            break_on_hyphens=False,
+        ) or [" " * 8 + "Run this verb."]
+
+    lines = wrapped(84 - 4 * depth)
+    if alone and len(lines) == 1:
+        lines = wrapped(82 - 4 * depth)
+    return lines
+
+
 def _docstring(verb: Verb, depth: int = 0) -> str:
     """The verb's own help, plus one `Args:` entry per flag.
 
@@ -365,15 +397,9 @@ def _docstring(verb: Verb, depth: int = 0) -> str:
     documented = [o for o in _unique(verb.options) if o.help or o.negation]
     if not verb.help and not documented:
         return ""
-    summary = textwrap.wrap(
-        _esc(verb.help) or "Run this verb.",
-        width=84 - 4 * depth,
-        initial_indent=" " * 8,
-        subsequent_indent=" " * 8,
-        break_long_words=False,
-        break_on_hyphens=False,
-    ) or [" " * 8 + "Run this verb."]
-    summary = _md_safe(summary)
+    summary = _md_safe(
+        _summary(_esc(verb.help) or "Run this verb.", depth, alone=not documented)
+    )
     summary[0] = '        """' + summary[0].lstrip()
     lines = list(summary)
     if documented:

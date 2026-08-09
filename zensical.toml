@@ -24,6 +24,7 @@ nav = [
     { "bash" = "_generated/tools/bash.md" },
     { "build" = "_generated/tools/build.md" },
     { "bun" = "_generated/tools/bun.md" },
+    { "claude" = "_generated/tools/claude.md" },
     { "cmake" = "_generated/tools/cmake.md" },
     { "cmd" = "_generated/tools/cmd.md" },
     { "coverage" = "_generated/tools/coverage.md" },

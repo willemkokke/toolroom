@@ -9,6 +9,12 @@ breaking changes.
 
 ### Added
 
+- **claude** joins the curated tools — Claude Code, read from the
+  `@anthropic-ai/claude-code` package on the node tier. The headless
+  surface is the root call, so `tools.claude("explain this", print=True,
+  output_format="json", model="sonnet")` types and completes; the stubbed
+  verbs are the ones a task reaches for around it (`mcp.*`, `plugin.*`,
+  `auth.*`, `agents`, `doctor`, `update`).
 - **A Colour page**, listing how each curated tool is talked into (and
   out of) colour over a pipe. It renders from the checked-in colour data
   on every docs build, so it needs no tool on PATH and cannot drift from
@@ -19,8 +25,33 @@ breaking changes.
   `run()` or `Result` links straight into footman's API reference (and
   footman's site resolves toolroom's, the other way).
 
+### Changed
+
+- `fm tools.color` reads only what was provisioned. A verdict is a claim
+  about a release, so it has to come from a release someone fetched: with
+  a `--prefix` a tool the prefix does not carry is skipped rather than
+  falling through to the host's copy, and without one the probe still
+  prints its table but writes nothing. The write also *folds* into the
+  checked-in data instead of replacing it — git and the other tools read
+  from their manuals have no binary in any prefix, and a run that wrote
+  only what it saw would have dropped git's `-c color.ui=always` and
+  taken the bridge's colour forcing with it.
+
 ### Fixed
 
+- An option a tool spells two ways now takes its keyword from the
+  spelling Python is written in. Claude Code prints `--allowedTools,
+  --allowed-tools`, and the first one won, so the stub suggested
+  `allowedTools=`. Sameness folds case and dashes away before choosing,
+  which is what keeps a *neighbour* from being mistaken for a dialect:
+  markdownlint-cli2's `--configPointer, --config` are two different
+  options its column alignment runs into one block, and git prints
+  `--column[=<options>], --no-column` the same way.
+- The stub generator no longer writes a line its own gate refuses. A
+  summary with no `Args:` block under it is folded onto one line by the
+  formatter, closing quotes and all, and the wrap left room for only the
+  opening ones — so a summary landing in a two-character band came out at
+  89. An alone summary is now wrapped for both.
 - `fm tools.color --write` writes `src/toolroom/_colordata.py` again. It
   had been writing `src/_colordata.py` since the split — the module moved
   into the package and the path did not follow — so a re-probe wrote a

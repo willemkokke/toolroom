@@ -855,15 +855,22 @@ def color(
     `-c color.ui=always`), `none`, or `unprobed` (no trigger figured out).
 
     Writes `src/toolroom/_colordata.py`, which the bridge reads for its forcing
-    table and the docs read for the support table. Point `--prefix` at a
-    `fm tools.provision` directory to probe the complete, latest set
-    rather than whatever happens to be on PATH.
+    table and the docs read for the support table — and only ever from a
+    `--prefix`, a `fm tools.provision` directory. A verdict is a claim about a
+    *release*, so it has to come from a release someone fetched on purpose:
+    without a prefix this machine's own binaries answer, at whatever versions
+    it happens to carry and missing whatever it never installed. That reads
+    fine as a table on a terminal, which is why it still prints one; it is not
+    something to check in.
     """
+    root = _prefix_root(prefix)
     with _on_path(prefix):
-        _color_probe_and_write(only, write, wants_color(sys.stdout))
+        _color_probe_and_write(only, write, wants_color(sys.stdout), root)
 
 
-def _color_probe_and_write(only: str, write: bool, on: bool) -> None:
+def _color_probe_and_write(
+    only: str, write: bool, on: bool, root: Path | None = None
+) -> None:
     from machinery import _colorprobe
 
     installed: list[tuple[str, str, str, _toolspec.ToolSpec]] = []
@@ -874,6 +881,11 @@ def _color_probe_and_write(only: str, write: bool, on: bool) -> None:
             continue
         binary = _drivers._resolve(driver.name)
         if binary is None:
+            continue
+        if root is not None and not _from_prefix(binary, root):
+            # The same rule `sync` reads by: a tool the prefix does not have
+            # must not quietly fall through to the host's. A probe is worth
+            # nothing if it cannot say which build it ran.
             continue
         # Only a triggered, non-curated tool needs its stub read for a `--color`
         # candidate; a curated tool (git) and an untriggered one (→ `unprobed`)
@@ -895,22 +907,43 @@ def _color_probe_and_write(only: str, write: bool, on: bool) -> None:
         switch = " ".join(verdict.flag.on) if verdict.flag else ""
         print(f"{key.ljust(width)}  {verdict.on:<8}  {verdict.off:<8}  {switch}")
 
-    if write and not only:
-        # `parents[2]` is the repo root; the data lives in the package, which
-        # is one level in from `src/` (it wrote to `src/_colordata.py` while
-        # the file sat in `src/toolroom/` — the module moved at the split and
-        # the path did not). The docs table is no longer written here: it is
-        # rendered from this file on every docs build, so it follows the data
-        # without needing the tools on PATH.
-        root = Path(__file__).resolve().parents[2]
-        data = root / "src" / "toolroom" / "_colordata.py"
-        data.write_text(_formatted(_colorprobe.render(results)), encoding="utf-8")
-        print(f"\nwrote {data.name} ({len(results)} tools)")
+    if not write:
+        return
+    if only or root is None:
+        why = "one tool is not the table" if only else "no --prefix: host binaries"
+        print(f"\nnot written ({why})")
+        return
+    # `parents[2]` is the repo root; the data lives in the package, which
+    # is one level in from `src/` (it wrote to `src/_colordata.py` while
+    # the file sat in `src/toolroom/` — the module moved at the split and
+    # the path did not). The docs table is no longer written here: it is
+    # rendered from this file on every docs build, so it follows the data
+    # without needing the tools on PATH.
+    from toolroom import _colordata
+
+    repo = Path(__file__).resolve().parents[2]
+    data = repo / "src" / "toolroom" / "_colordata.py"
+    folded = _colorprobe.merged(_colordata.COLOUR, results)
+    data.write_text(_formatted(_colorprobe.render(folded)), encoding="utf-8")
+    print(f"\nwrote {data.name} ({len(folded)} tools, {len(results)} probed here)")
 
 
 # How each probed verdict reads in the docs support table.
-_ON_WORD = {"env": "environment", "none": "— *(no colour over a pipe)*", "n/a": ""}
-_OFF_WORD = {"env": "environment", "none": "**can't silence**", "n/a": "—"}
+# `unprobed` is a gap in `_colorprobe.TRIGGERS` rather than a fact about the
+# tool — but it is a verdict the store can hold, and a page that raised a
+# KeyError on one would take the whole docs build down with it.
+_ON_WORD = {
+    "env": "environment",
+    "none": "— *(no colour over a pipe)*",
+    "n/a": "",
+    "unprobed": "*(not probed)*",
+}
+_OFF_WORD = {
+    "env": "environment",
+    "none": "**can't silence**",
+    "n/a": "—",
+    "unprobed": "*(not probed)*",
+}
 
 
 _COLOUR_PAGE = """\

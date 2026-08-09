@@ -86,6 +86,10 @@ TRIGGERS: dict[str, Trigger] = {
     "coverage": Trigger(("report",)),
     "python": Trigger(("--version",)),  # the interpreter emits no colour
     "zensical": Trigger(("--help",)),
+    # Every other claude verb either reaches the network or starts a session;
+    # `--help` is the one that is local, quick and certain to print something.
+    "claude": Trigger(("--help",)),
+    "tea": Trigger(("--help",)),  # its verbs all want a login and a forge
 }
 
 # A tool's own colour switch, when the stub's `color_flags()` can't surface it:
@@ -303,6 +307,33 @@ _Row = tuple[str, str, str, tuple[str, ...], tuple[str, ...], bool]
 
 COLOUR: dict[str, _Row] = {
 """
+
+
+Row = tuple[str, str, str, tuple[str, ...], tuple[str, ...], bool]
+"""One stored line of `_colordata.py` — see its `_Row`."""
+
+
+def merged(
+    stored: dict[str, Row], fresh: dict[str, tuple[str, Verdict]]
+) -> dict[str, tuple[str, Verdict]]:
+    """*fresh* over *stored*: a probe records what it ran and leaves the rest.
+
+    A probe needs a binary, and the man tier provisions pages — so git, ssh
+    and their siblings are in no prefix, and a run that wrote only what it
+    saw would drop git's `-c color.ui=always` and take the bridge's colour
+    forcing out with it. The same shape as a platform's reading folding
+    into the option history: what was looked at is recorded, and what was
+    not is left exactly as it was.
+    """
+    kept = {
+        key: (
+            argv0,
+            Verdict(on, off, ColourFlag(f_on, f_off, pre) if f_on or f_off else None),
+        )
+        for key, (argv0, on, off, f_on, f_off, pre) in stored.items()
+        if key not in fresh
+    }
+    return {**kept, **fresh}
 
 
 def render(results: dict[str, tuple[str, Verdict]]) -> str:

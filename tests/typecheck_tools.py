@@ -105,6 +105,19 @@ def _node_and_rust() -> None:
     tools.markdownlint("**/*.md", fix=True)
 
 
+def _claude() -> None:
+    """Claude Code's headless surface is the root call, so the prompt is a
+    positional and the flags hang off `__call__`; the verbs are what wires a
+    session up around it. `continue_` carries footman's trailing underscore —
+    `continue` is a Python keyword, and the bridge strips it back off."""
+    tools.claude("explain this diff", print=True, output_format="json")
+    tools.claude("review", model="sonnet", permission_mode="plan", effort="high")
+    tools.claude(continue_=True, fork_session=True)
+    tools.claude.mcp.add("sentry", "https://mcp.sentry.dev/mcp", transport="http")
+    tools.claude.plugin.marketplace.add("owner/repo", scope="project")
+    tools.claude.auth.status(json=True)
+
+
 def _tool_globals_via_flags() -> None:
     """`.flags()` binds a tool's global options before the verb, stays typed,
     and returns the tool so the chain keeps checking."""
@@ -170,6 +183,9 @@ def _flags_are_declared_and_typed() -> None:
     tools.cspell.lint(quiet="yes")  # type: ignore[arg-type]
     tools.prek.run(all_files="yes")  # type: ignore[arg-type]
     tools.markdownlint(fix="yes")  # type: ignore[arg-type]
+    tools.claude(print="yes")  # type: ignore[arg-type]
+    tools.claude(continue_="yes")  # type: ignore[arg-type]
+    tools.claude.auth.status(json="yes")  # type: ignore[arg-type]
     tools.docker.flags(debug="yes")  # type: ignore[arg-type]
     tools.git.opts(nofail="yes")  # type: ignore[arg-type]
     tools.git.opts(bogus=True)  # type: ignore[call-arg]

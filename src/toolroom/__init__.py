@@ -1070,6 +1070,7 @@ coverage = Tool("coverage", in_process=True)
 cspell = Tool("cspell")
 prek = Tool("prek")
 markdownlint = Tool("markdownlint-cli2")
+claude = Tool("claude")
 gh = Tool("gh")
 # The remote command is a positional: transport, then payload. `-V` is the
 # whole version surface (`--version` is an illegal option), answered on stderr.

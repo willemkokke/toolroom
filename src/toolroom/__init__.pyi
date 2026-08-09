@@ -43,6 +43,7 @@ from toolroom._stubs.basedpyright import Basedpyright as Basedpyright
 from toolroom._stubs.bash import Bash as Bash
 from toolroom._stubs.build import Build as Build
 from toolroom._stubs.bun import Bun as Bun
+from toolroom._stubs.claude import Claude as Claude
 from toolroom._stubs.cmake import Cmake as Cmake
 from toolroom._stubs.cmd import Cmd as Cmd
 from toolroom._stubs.coverage import Coverage as Coverage
@@ -288,6 +289,7 @@ coverage: Coverage[Result]
 cspell: Cspell[Result]
 prek: Prek[Result]
 markdownlint: Markdownlint[Result]
+claude: Claude[Result]
 gh: Gh[Result]
 ssh: Ssh[Result]
 ssh_keygen: SshKeygen[Result]
