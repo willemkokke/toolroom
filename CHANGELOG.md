@@ -7,8 +7,6 @@ breaking changes.
 
 ## [Unreleased]
 
-## [0.2.0] — 2026-08-09
-
 ### Added
 
 - **claude** joins the curated tools — Claude Code, read from the
@@ -105,8 +103,7 @@ breaking changes.
 - Name reservation on PyPI: an empty typed module and the
   trusted-publishing release workflow. Nothing importable of substance.
 
-[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/willemkokke/toolroom/compare/v0.1.1...v0.2.0
+[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.1.1...HEAD
 [0.1.1]: https://github.com/willemkokke/toolroom/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/willemkokke/toolroom/compare/v0.0.1...v0.1.0
 [0.0.1]: https://github.com/willemkokke/toolroom/releases/tag/v0.0.1
