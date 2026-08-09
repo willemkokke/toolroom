@@ -7,6 +7,17 @@ breaking changes.
 
 ## [Unreleased]
 
+### Fixed
+
+- A refresh now says *which* platforms skipped a tool, where they did not
+  all skip it. The assembler folded three legs' skip lists into one and
+  dropped who reported each line, so `git (no man to read the pages
+  with)` — true only of Windows, which has no `man` — read in the PR as a
+  tier nobody refreshes. git's pages had in fact been read twice over, on
+  Linux and macOS, which is all a manual needs: the same bytes
+  everywhere. A skip every leg reported still says nothing extra, because
+  that one is a fact about the tool.
+
 ## [0.2.0] — 2026-08-09
 
 ### Added
