@@ -188,7 +188,7 @@ def test_child_env_writes_the_force_set_and_clears_the_other_side(
     monkeypatch, uncoloured
 ):
     monkeypatch.setenv("FORCE_COLOR", "1")
-    composed = _host.child_env(None, _host.color_on())
+    composed = _host.child_env(None, "auto")
     assert composed is not None
     assert all(composed[var] == "1" for var in _host._FORCE_VARS)
     assert "NO_COLOR" not in composed
@@ -201,17 +201,35 @@ def test_child_env_forcing_off_leaves_no_inherited_force_variable(
     # honour a stray inherited FORCE_COLOR straight past NO_COLOR.
     monkeypatch.setenv("CLICOLOR_FORCE", "1")
     monkeypatch.setenv("NO_COLOR", "1")
-    composed = _host.child_env(None, _host.color_on())
+    composed = _host.child_env(None, "auto")
     assert composed is not None
     assert composed["NO_COLOR"] == "1"
     assert not any(var in composed for var in _host._FORCE_VARS)
 
 
-def test_child_env_leaves_an_explicit_environment_alone(monkeypatch, uncoloured):
-    # `env=` replaces rather than merges, colour included — the same word it
-    # is hosted, where an explicit env likewise drops the run's variables.
+def test_auto_leaves_an_explicit_environment_alone(monkeypatch, uncoloured):
+    # `env=` replaces rather than merges, and ambient is what that environment
+    # already carries — so `auto` has nothing to add to it.
     monkeypatch.setenv("FORCE_COLOR", "1")
-    assert _host.child_env({"PATH": "/nowhere"}, True) == {"PATH": "/nowhere"}
+    assert _host.child_env({"PATH": "/nowhere"}, "auto") == {"PATH": "/nowhere"}
+
+
+@pytest.mark.parametrize(
+    ("mode", "expected"),
+    [("always", "FORCE_COLOR"), ("never", "NO_COLOR")],
+)
+def test_a_decided_colour_merges_over_an_explicit_environment(mode, expected):
+    # An instruction aimed at this child outranks the environment it was
+    # handed — the same word `run(color=)` gives it hosted. The caller's own
+    # variables survive; only the colour ones are overruled.
+    composed = _host.child_env({"PATH": "/nowhere", "NO_COLOR": "1"}, mode)
+    assert composed is not None
+    assert composed["PATH"] == "/nowhere"
+    assert composed[expected] == "1"
+    if mode == "always":
+        assert "NO_COLOR" not in composed
+    else:
+        assert not any(var in composed for var in _host._FORCE_VARS)
 
 
 def test_a_spawned_tool_inherits_the_forced_colour(monkeypatch, uncoloured):

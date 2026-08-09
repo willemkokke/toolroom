@@ -267,20 +267,6 @@ def _color_flag(argv0: str, base: list[str]) -> _ColorFlag | None:
     return table.get(verb) or table.get("")
 
 
-def _colour_wanted(mode: str | None) -> bool:
-    """This call's colour decision — the ladder, resolved.
-
-    An explicit `always`/`never` is the answer; `auto` (the default) reads
-    the ambient tier, which is the run's published answer inside a footman
-    run and the user's environment outside one.
-    """
-    if mode == "always":
-        return True
-    if mode == "never":
-        return False
-    return _host.color_on()
-
-
 def _color_tokens(
     argv0: str, base: list[str], kwargs: dict[str, Any], on: bool
 ) -> _ColorFlag:
@@ -850,7 +836,11 @@ class Tool:
         timeout = self._opts.get("timeout", None)
         pre_record = self._opts.get("pre_record", None)
         env_opt = self._opts.get("env", None)
-        colour_on = _colour_wanted(self._opts.get("color", None))
+        # The mode travels to the executor unresolved — `auto` means "follow
+        # whoever owns the ambient", and hosted that is the run. Only the argv
+        # half is decided here, because a switch has to be a switch.
+        colour_mode = self._opts.get("color", "auto")
+        colour_on = _host.colour_wanted(colour_mode)
         # `input=` is consumed *at entry*: one `.opts(input=…)` is one
         # delivery, wherever in the chain the call lands. Entry rather than
         # after execution, so a dry-run or `recording()` rehearsal consumes
@@ -916,7 +906,7 @@ class Tool:
                 timeout=timeout,
                 cwd=cwd_opt,
                 rel=rel_opt,
-                color=colour_on,
+                color=colour_mode,
             )
 
         wanted = self._prefer_in_process if in_process is None else in_process

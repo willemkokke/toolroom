@@ -128,6 +128,66 @@ def test_auto_reads_the_ambient_answer(monkeypatch):
     assert steps[0].raw == "git diff --stat"
 
 
+def _intercept_run(monkeypatch, *, takes_colour: bool):
+    """Stand in for footman's `run()`, with or without the colour keyword.
+
+    The installed footman may be either side of `run(color=)` landing, so the
+    pass-through is tested against both shapes rather than against whichever
+    one happens to be resolved here.
+    """
+    from typing import Any
+
+    import footman.context
+
+    seen: dict[str, Any] = {}
+
+    def with_colour(target, *, color="auto", **kwargs):
+        seen["color"] = color
+        seen["target"] = target
+        return 0
+
+    def without_colour(target, **kwargs):
+        seen.update(kwargs)
+        seen["target"] = target
+        return 0
+
+    monkeypatch.setattr(
+        footman.context, "run", with_colour if takes_colour else without_colour
+    )
+    monkeypatch.setattr(tools._host, "hosted", lambda: True)
+    monkeypatch.setattr(tools._host, "_RUN_COLOUR", None)  # the probe is cached
+    return seen
+
+
+@pytest.mark.parametrize("mode", ["auto", "always", "never"])
+def test_the_mode_reaches_footmans_run_unresolved(monkeypatch, mode):
+    # `auto` means "follow whoever owns the ambient", and hosted that is the
+    # run — so the mode travels, not an answer computed from the environment.
+    seen = _intercept_run(monkeypatch, takes_colour=True)
+    tools.git.opts(color=mode).diff("--stat")
+    assert seen["color"] == mode
+
+
+def test_an_older_footman_is_not_passed_the_keyword(monkeypatch):
+    # The keyword arrived after the floor toolroom names, so the bridge probes
+    # for it: against a run() without one, the call must still go through.
+    seen = _intercept_run(monkeypatch, takes_colour=False)
+    tools.git.opts(color="always").diff("--stat")
+    assert "color" not in seen
+    assert seen["target"][:3] == ["git", "-c", "color.ui=always"]  # switch still
+
+
+def test_the_colour_probe_reads_the_signature():
+    def with_colour(target, *, color="auto"): ...
+    def without(target): ...
+
+    tools._host._RUN_COLOUR = None
+    assert tools._host._run_takes_colour(with_colour) is True
+    tools._host._RUN_COLOUR = None
+    assert tools._host._run_takes_colour(without) is False
+    tools._host._RUN_COLOUR = None
+
+
 def test_verb_scoped_colour_flag_rides_with_the_flags(monkeypatch):
     # A tool that takes `--color=always` (not git's pre-verb global) gets it
     # appended with the call's flags — both directions, keyed by verb.

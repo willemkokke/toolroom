@@ -7,6 +7,27 @@ breaking changes.
 
 ## [Unreleased]
 
+### Changed
+
+- **`.opts(color=)` now reaches a tool's environment hosted, not just its
+  flags.** The mode travels to the executor unresolved — `auto` means
+  "follow whoever owns the ambient", and inside a run that is the run —
+  so footman's `run(color=)` applies it to that one child. Before, a
+  per-call colour reached only the tools that take a switch; a tool that
+  reads the environment followed the run-wide answer, because footman
+  owns the child's environment inside a run. One keyword now reaches both
+  halves on both lanes.
+- The keyword arrived in a footman later than the floor toolroom names,
+  so the bridge reads `run()`'s signature once per process and passes it
+  when it is there. Neither package waits on the other's release, and an
+  older footman still gets the switch half, with a `--verbose` note
+  saying what a decided colour could not reach.
+- A decided colour merges over an explicit `env=` rather than deferring
+  to it, matching what `run(color=)` does hosted: an instruction aimed at
+  one child outranks the environment it was handed. `auto` still leaves
+  an explicit environment alone — ambient is what that environment
+  already carries.
+
 ## [0.3.0] — 2026-08-09
 
 ### Added
