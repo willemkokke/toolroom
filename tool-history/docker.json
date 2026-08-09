@@ -3,8 +3,8 @@
  "tool": "docker",
  "observed_from": "29.4.1",
  "base": {
-  "version": "29.7.1",
-  "date": "2026-07-31",
+  "version": "29.7.2",
+  "date": "2026-08-06",
   "platforms": [
    "Linux",
    "Windows",
@@ -3299,6 +3299,15 @@
   }
  },
  "deltas": {
+  "29.7.1": {
+   "date": "2026-07-31",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
   "29.7.0": {
    "date": "2026-07-30",
    "platforms": [

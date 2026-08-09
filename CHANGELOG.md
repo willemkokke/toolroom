@@ -7,6 +7,8 @@ breaking changes.
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-08-09
+
 ### Added
 
 - **claude** joins the curated tools — Claude Code, read from the
@@ -27,6 +29,8 @@ breaking changes.
 
 ### Changed
 
+- **coverage 7.15.4** rewords 1 description. It also restates its own description.
+- **python 3.14.7** rewords 1 description.
 - `fm tools.color` reads only what was provisioned. A verdict is a claim
   about a release, so it has to come from a release someone fetched: with
   a `--prefix` a tool the prefix does not carry is skipped rather than
@@ -103,7 +107,8 @@ breaking changes.
 - Name reservation on PyPI: an empty typed module and the
   trusted-publishing release workflow. Nothing importable of substance.
 
-[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/willemkokke/toolroom/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/willemkokke/toolroom/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/willemkokke/toolroom/compare/v0.0.1...v0.1.0
 [0.0.1]: https://github.com/willemkokke/toolroom/releases/tag/v0.0.1

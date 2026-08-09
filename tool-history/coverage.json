@@ -3,8 +3,8 @@
  "tool": "coverage",
  "observed_from": "7.13.3",
  "base": {
-  "version": "7.15.3",
-  "date": "2026-08-02",
+  "version": "7.15.4",
+  "date": "2026-08-06",
   "platforms": [
    "Linux",
    "Windows",
@@ -12,10 +12,10 @@
   ],
   "extractor": 2,
   "surface": {
-   "help": "Coverage.py, version 7.15.3 with C extension",
+   "help": "Coverage.py, version 7.15.4 with C extension",
    "verbs": {
     "": {
-     "help": "Coverage.py, version 7.15.3 with C extension",
+     "help": "Coverage.py, version 7.15.4 with C extension",
      "wraps": false,
      "positional": "any",
      "lead": "",
@@ -976,6 +976,21 @@
   }
  },
  "deltas": {
+  "7.15.3": {
+   "date": "2026-08-02",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2,
+   "verbs": {
+    "": {
+     "help": "Coverage.py, version 7.15.3 with C extension"
+    }
+   },
+   "help": "Coverage.py, version 7.15.3 with C extension"
+  },
   "7.15.2": {
    "date": "2026-07-29",
    "platforms": [

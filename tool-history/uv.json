@@ -3,8 +3,8 @@
  "tool": "uv",
  "observed_from": "0.11.25",
  "base": {
-  "version": "0.12.1",
-  "date": "2026-07-31",
+  "version": "0.12.3",
+  "date": "2026-08-07",
   "platforms": [
    "Linux",
    "Windows",
@@ -12323,6 +12323,24 @@
   }
  },
  "deltas": {
+  "0.12.2": {
+   "date": "2026-08-05",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "0.12.1": {
+   "date": "2026-07-31",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
   "0.12.0": {
    "date": "2026-07-29",
    "platforms": [
