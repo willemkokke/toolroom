@@ -210,11 +210,11 @@ def _is_wrapper(argv0: str, base: list[str]) -> bool:
 
 # --- colour: force a tool's own switch when the environment isn't enough ------
 #
-# footman already pushes FORCE_COLOR / NO_COLOR into every child (see
-# `context.color_env`), which covers the modern set. This table is only for the
-# tools that ignore those and take a flag instead (git). It is *probed*, not
-# hand-written: `fm tools.color` runs each tool with colour forced on
-# and off and records the verdict in `_colordata.py`, which is loaded below.
+# `_host.child_env` already writes the force set into every child, which covers
+# the modern tools. This table is only for the ones that ignore the environment
+# and take a flag instead (git). It is *probed*, not hand-written: `fm
+# tools.color` runs each tool with colour forced on and off and records the
+# verdict in `_colordata.py`, which is loaded below.
 
 
 class _ColorFlag(NamedTuple):
@@ -270,11 +270,13 @@ def _color_flag(argv0: str, base: list[str]) -> _ColorFlag | None:
 def _color_tokens(argv0: str, base: list[str], kwargs: dict[str, Any]) -> _ColorFlag:
     """The colour tokens to inject for this call — `_ColorFlag((), ())` for none.
 
-    Injected into the *executed* argv only, never the shown/recorded command
-    line: `.command` (what `recording()` asserts) stays the tool's own call,
-    while `.raw` / `--verbose` show the literal `git -c color.ui=always …` that
-    ran. Skipped when the caller spells colour themselves — `color=`/`colour=`/
-    `colors=`/`colours=` — so a deliberate choice always wins.
+    Injected into the *executed* argv only. Hosted, that keeps it out of the
+    shown line — `.command` (what `recording()` asserts) stays the tool's own
+    call, while `.raw` / `--verbose` show the literal `git -c color.ui=always …`
+    that ran. Standalone there is no second spelling to keep, so a `Result`
+    renders the argv it spawned. Skipped when the caller spells colour
+    themselves — `color=`/`colour=`/`colors=`/`colours=` — so a deliberate
+    choice always wins.
     """
     if any(k.rstrip("_") in ("color", "colour", "colors", "colours") for k in kwargs):
         return _ColorFlag((), ())

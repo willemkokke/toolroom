@@ -7,6 +7,30 @@ breaking changes.
 
 ## [Unreleased]
 
+### Changed
+
+- **Colour is toolroom's to arrange, from one bit.** The seam is now two
+  environment variable names and nothing else: whoever decides — a
+  footman run publishing its answer, a user exporting one, or toolroom
+  reading the terminal — spells it `FORCE_COLOR` or `NO_COLOR`, and
+  toolroom translates that into what each tool actually needs. Tools that
+  read the environment get the whole force set written into the child;
+  the few that ignore it get their own switch, as the colour probe found
+  (git's `-c color.ui=always`). Forcing off clears any inherited force
+  variable rather than setting `"0"`, which a tool reading mere presence
+  would honour straight past `NO_COLOR`.
+- Standalone, that closes a gap: a spawned tool's stdout is a pipe
+  whenever toolroom captures it, and nothing was writing the force set,
+  so everything but git and cspell came back monochrome even with colour
+  asked for. Forcing over a pipe is what those variables are for.
+- Standalone, `color_on()` reads every spelling the tools do —
+  `FORCE_COLOR`, `CLICOLOR_FORCE`, `CLICOLOR`, `NO_COLOR` — takes
+  `FORCE_COLOR` by truthiness, so an explicit `FORCE_COLOR=0` no longer
+  forces, and counts a dumb terminal as no terminal. Hosted, the run's
+  own answer still decides, unchanged.
+- An explicit `env=` still replaces rather than merges, colour included —
+  the same word it is hosted.
+
 ### Fixed
 
 - A refresh now says *which* platforms skipped a tool, where they did not

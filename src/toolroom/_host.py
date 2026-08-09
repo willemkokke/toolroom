@@ -200,23 +200,85 @@ def container_error(value: Any, where: str, *, example: str = "") -> str:
     )
 
 
+# --- colour: one bit in, per-tool forcing out ---------------------------------
+#
+# The colour seam is two environment variable names and nothing else. Whoever
+# decides — a footman run publishing its run-wide answer at the run boundary, a
+# user exporting one, or this module reading the terminal — spells the decision
+# `FORCE_COLOR` or `NO_COLOR`, and toolroom translates it into what each tool
+# actually needs: the whole force set for the children that read the
+# environment, the tool's own switch for the few that ignore it (see
+# `_colordata`). Nothing here imports footman: the answer is already in the
+# environment by the time a call reaches the seam.
+
+# Every colour variable toolroom speaks. Emitted by presence/absence — never
+# `FORCE_COLOR=0`, which some tools (ruff) read as "force on" — and consumed the
+# same way, save that `FORCE_COLOR` is read by truthiness so an explicit `"0"`
+# does not force.
+_COLOR_VARS = ("FORCE_COLOR", "CLICOLOR_FORCE", "CLICOLOR", "NO_COLOR")
+_FORCE_VARS = ("FORCE_COLOR", "CLICOLOR_FORCE", "CLICOLOR")
+
+
 def color_on() -> bool:
     """Whether colour is on for this process.
 
-    Hosted, footman's run-wide answer; standalone, the conventional
-    environment reading — `NO_COLOR` wins, `FORCE_COLOR` forces, a
-    terminal on stdout decides otherwise.
+    Standalone, the conventional reading: `NO_COLOR` wins, any of the
+    force variables forces, and otherwise a terminal on stdout decides (a
+    dumb one is no terminal).
+
+    Hosted, footman is asked instead. A *run* publishes its answer into
+    the environment at the run boundary, so reading it would do — but a
+    bare context does not: `recording(force_color=True)` sets the field
+    and nothing else, and reading the environment there would quietly
+    ignore it. Until every footman context publishes the bit, the host is
+    the one that knows. This branch is the last thing toolroom asks
+    footman for; when it goes, the seam is two variable names.
     """
     if hosted():
         from footman.context import color_on as fm_color_on
 
         return fm_color_on()
-    if os.environ.get("NO_COLOR"):
+    if "NO_COLOR" in os.environ:
         return False
-    if os.environ.get("FORCE_COLOR"):
+    if any(os.environ.get(var) not in (None, "", "0") for var in _FORCE_VARS):
         return True
     out = sys.stdout
-    return bool(out is not None and out.isatty())
+    if out is None or not out.isatty():
+        return False
+    return os.environ.get("TERM") != "dumb"
+
+
+def color_env(on: bool) -> dict[str, str]:
+    """The colour variables to set on a child to force colour on (or off).
+
+    A spawned tool's stdout is a pipe whenever toolroom captures it, so
+    `isatty()` is false and a well-behaved tool goes monochrome — exactly
+    when the bytes are headed for a terminal anyway. This is what those
+    variables are for, so forcing on sets the whole force set and forcing
+    off sets `NO_COLOR`; the direction is completed by *removing* the
+    other side's variables (see `child_env`), never by setting `"0"`.
+    """
+    if on:
+        return dict.fromkeys(_FORCE_VARS, "1")
+    return {"NO_COLOR": "1"}
+
+
+def child_env(env: dict[str, str] | None) -> dict[str, str] | None:
+    """The child's environment with this process's colour answer written in.
+
+    *env* follows `run(env=…)`: None inherits, a mapping replaces. Only
+    the inheriting case is normalised — an explicit environment is the
+    caller's whole word, colour included, exactly as it is hosted (where
+    an explicit `env=` likewise replaces the run's published variables).
+    Every colour variable is cleared before this direction's are set, so
+    off leaves no inherited `FORCE_COLOR` for a presence-checking tool to
+    honour and on leaves no stray `NO_COLOR`.
+    """
+    if env is not None:
+        return env
+    composed = {k: v for k, v in os.environ.items() if k not in _COLOR_VARS}
+    composed.update(color_env(color_on()))
+    return composed
 
 
 def note(text: str) -> None:
@@ -311,6 +373,11 @@ def _standalone(
     gets, never a merge over the parent's — `cwd`/`rel` root the call,
     `timeout` bounds it, and a non-zero exit raises `ToolError` unless
     `nofail`.
+
+    An inherited environment is normalised for colour on the way out
+    (`child_env`): hosted, footman publishes that once at the run
+    boundary and every child inherits it; standalone there is no run
+    boundary, so the seam writes the same answer per spawn.
     """
     base = None if cwd in (None, "unmanaged") else Path(cwd)
     directory = (base or Path(os.getcwd())) / rel if rel is not None else base
@@ -321,7 +388,7 @@ def _standalone(
         encoding="utf-8",
         errors="replace",
         input=input,
-        env=env,
+        env=child_env(env),
         cwd=directory,
         timeout=timeout,
     )
