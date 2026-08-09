@@ -188,7 +188,7 @@ def test_child_env_writes_the_force_set_and_clears_the_other_side(
     monkeypatch, uncoloured
 ):
     monkeypatch.setenv("FORCE_COLOR", "1")
-    composed = _host.child_env(None)
+    composed = _host.child_env(None, _host.color_on())
     assert composed is not None
     assert all(composed[var] == "1" for var in _host._FORCE_VARS)
     assert "NO_COLOR" not in composed
@@ -201,7 +201,7 @@ def test_child_env_forcing_off_leaves_no_inherited_force_variable(
     # honour a stray inherited FORCE_COLOR straight past NO_COLOR.
     monkeypatch.setenv("CLICOLOR_FORCE", "1")
     monkeypatch.setenv("NO_COLOR", "1")
-    composed = _host.child_env(None)
+    composed = _host.child_env(None, _host.color_on())
     assert composed is not None
     assert composed["NO_COLOR"] == "1"
     assert not any(var in composed for var in _host._FORCE_VARS)
@@ -211,7 +211,7 @@ def test_child_env_leaves_an_explicit_environment_alone(monkeypatch, uncoloured)
     # `env=` replaces rather than merges, colour included — the same word it
     # is hosted, where an explicit env likewise drops the run's variables.
     monkeypatch.setenv("FORCE_COLOR", "1")
-    assert _host.child_env({"PATH": "/nowhere"}) == {"PATH": "/nowhere"}
+    assert _host.child_env({"PATH": "/nowhere"}, True) == {"PATH": "/nowhere"}
 
 
 def test_a_spawned_tool_inherits_the_forced_colour(monkeypatch, uncoloured):

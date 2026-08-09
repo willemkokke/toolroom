@@ -38,7 +38,7 @@ Repository = "https://github.com/willemkokke/toolroom"
 dev = [
     # uv itself, pinned by the lock so every laptop and CI runs the same one.
     "uv",
-    "footman>=0.31",
+    "footman>=0.36",
     "pytest>=8.0",
     "pytest-xdist>=3.6",
     # An in-process-preferring tool the suite drives without spawning

@@ -29,7 +29,7 @@ import threading as _threading
 import types as _types  # noqa: F401
 from collections.abc import Callable, Iterator, Sequence
 from pathlib import Path as _Path
-from typing import Any, Generic, NamedTuple, Self
+from typing import Any, Generic, Literal, NamedTuple, Self
 from typing import cast as _cast  # noqa: F401
 
 from typing_extensions import TypeVar
@@ -170,12 +170,14 @@ class _ColorFlag(NamedTuple):
 def _load_color() -> dict[str, dict[str, _ColorFlag]]: ...
 
 _COLOR: dict[str, dict[str, _ColorFlag]]
+_COLOUR_MODES: tuple[str, ...]
 
 def _negation(tool: str, key: str) -> str: ...
 def _is_wrapper(argv0: str, base: list[str]) -> bool: ...
 def _color_flag(argv0: str, base: list[str]) -> _ColorFlag | None: ...
+def _colour_wanted(mode: str | None) -> bool: ...
 def _color_tokens(
-    argv0: str, base: list[str], kwargs: dict[str, Any]
+    argv0: str, base: list[str], kwargs: dict[str, Any], on: bool
 ) -> _ColorFlag: ...
 def _emit(
     kwargs: dict[str, Any], tool: str = ...
@@ -250,6 +252,7 @@ class Tool(Generic[_R]):
         recorded: bool = ...,
         timeout: float | None = ...,
         pre_record: Callable[[_ResultView], None] | None = ...,
+        color: Literal["auto", "always", "never"] = ...,
     ) -> Self: ...
     # A tool's own global options, bound before the next subcommand
     # (`docker.flags(host="x").ps()`). Generated stubs override it with the

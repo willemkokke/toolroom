@@ -220,24 +220,20 @@ _FORCE_VARS = ("FORCE_COLOR", "CLICOLOR_FORCE", "CLICOLOR")
 
 
 def color_on() -> bool:
-    """Whether colour is on for this process.
+    """The ambient colour answer for this process — the ladder's bottom rung.
 
-    Standalone, the conventional reading: `NO_COLOR` wins, any of the
+    Read from the environment, hosted or not: `NO_COLOR` wins, any of the
     force variables forces, and otherwise a terminal on stdout decides (a
-    dumb one is no terminal).
+    dumb one is no terminal). Inside a footman run that reads the answer
+    the run published at its boundary; outside one, whatever the user
+    exported. One rule, no import, and nothing that varies with whether
+    footman happens to be in the process.
 
-    Hosted, footman is asked instead. A *run* publishes its answer into
-    the environment at the run boundary, so reading it would do — but a
-    bare context does not: `recording(force_color=True)` sets the field
-    and nothing else, and reading the environment there would quietly
-    ignore it. Until every footman context publishes the bit, the host is
-    the one that knows. This branch is the last thing toolroom asks
-    footman for; when it goes, the seam is two variable names.
+    Ambient is the only tier the environment carries. A decision meant for
+    one call travels *on* the call — `.opts(color=…)` — because
+    `os.environ` is one per process while calls are not, and two threads
+    wanting different answers cannot both have one here.
     """
-    if hosted():
-        from footman.context import color_on as fm_color_on
-
-        return fm_color_on()
     if "NO_COLOR" in os.environ:
         return False
     if any(os.environ.get(var) not in (None, "", "0") for var in _FORCE_VARS):
@@ -263,8 +259,8 @@ def color_env(on: bool) -> dict[str, str]:
     return {"NO_COLOR": "1"}
 
 
-def child_env(env: dict[str, str] | None) -> dict[str, str] | None:
-    """The child's environment with this process's colour answer written in.
+def child_env(env: dict[str, str] | None, on: bool) -> dict[str, str] | None:
+    """The child's environment with this call's colour answer written in.
 
     *env* follows `run(env=…)`: None inherits, a mapping replaces. Only
     the inheriting case is normalised — an explicit environment is the
@@ -277,7 +273,7 @@ def child_env(env: dict[str, str] | None) -> dict[str, str] | None:
     if env is not None:
         return env
     composed = {k: v for k, v in os.environ.items() if k not in _COLOR_VARS}
-    composed.update(color_env(color_on()))
+    composed.update(color_env(on))
     return composed
 
 
@@ -310,6 +306,7 @@ def run(
     timeout: float | None = None,
     cwd: str | Path | None = None,
     rel: str | Path | None = None,
+    color: bool = True,
 ) -> Any:
     """The one door every bridge call leaves through.
 
@@ -317,6 +314,14 @@ def run(
     callable the bridge prepared. *parts*/*exact* are the two spellings
     of the same call (role-tagged for painting, literal for `--verbose`);
     standalone execution has no receipt to paint, so it reads neither.
+
+    *color* is the call's resolved colour decision, already carried into
+    the argv as a switch where the tool needs one. Spawning here, it is
+    also written into the child's environment. Hosted, footman owns the
+    child's environment and publishes the run's answer into it once at the
+    boundary, so an env-reading tool follows the *run* — a per-call
+    `.opts(color=…)` reaches such a tool only once footman takes a colour
+    argument of its own.
     """
     if hosted():
         from footman.context import Invocation
@@ -346,6 +351,7 @@ def run(
         capture=capture,
         input=input,
         env=env,
+        color=color,
         timeout=timeout,
         cwd=cwd,
         rel=rel,
@@ -359,6 +365,7 @@ def _standalone(
     capture: bool,
     input: str | None,
     env: dict[str, str] | None,
+    color: bool,
     timeout: float | None,
     cwd: str | Path | None,
     rel: str | Path | None,
@@ -374,10 +381,10 @@ def _standalone(
     `timeout` bounds it, and a non-zero exit raises `ToolError` unless
     `nofail`.
 
-    An inherited environment is normalised for colour on the way out
-    (`child_env`): hosted, footman publishes that once at the run
-    boundary and every child inherits it; standalone there is no run
-    boundary, so the seam writes the same answer per spawn.
+    An inherited environment is normalised for this call's colour answer
+    on the way out (`child_env`): hosted, footman publishes the run's once
+    at the run boundary and every child inherits it; standalone there is
+    no run boundary, so the seam writes the answer per spawn.
     """
     base = None if cwd in (None, "unmanaged") else Path(cwd)
     directory = (base or Path(os.getcwd())) / rel if rel is not None else base
@@ -388,7 +395,7 @@ def _standalone(
         encoding="utf-8",
         errors="replace",
         input=input,
-        env=child_env(env),
+        env=child_env(env, color),
         cwd=directory,
         timeout=timeout,
     )

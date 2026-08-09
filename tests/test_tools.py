@@ -51,28 +51,29 @@ def test_single_dash_rides_chaining_flags_and_negation():
 
 
 def test_git_forces_colour_with_its_own_switch():
-    # git ignores FORCE_COLOR and auto-disables over footman's pipe, so a
-    # colourful run injects its pre-verb switch — into the executed argv only.
-    # `.command` (what recording() asserts) stays git's own call; `.raw` shows
-    # what actually ran.
-    with recording(force_color=True) as steps:
-        tools.git.diff("--stat")
+    # git ignores FORCE_COLOR and auto-disables over footman's pipe, so a call
+    # that wants colour injects its pre-verb switch — into the executed argv
+    # only. `.command` (what recording() asserts) stays git's own call; `.raw`
+    # shows what actually ran. The decision rides the call, not the context:
+    # the assertion is about this argv, so it says so.
+    with recording() as steps:
+        tools.git.opts(color="always").diff("--stat")
     assert steps[0].command == "git diff --stat"
     assert steps[0].raw == "git -c color.ui=always diff --stat"
 
 
 def test_git_no_colour_injection_when_monochrome():
-    # A non-colour run (piped/--no-color) injects nothing: git has no `off`
-    # form because its `auto` default is already quiet when piped.
+    # Monochrome injects nothing: git has no `off` form because its `auto`
+    # default is already quiet when piped.
     with recording() as steps:
-        tools.git.diff("--stat")
+        tools.git.opts(color="never").diff("--stat")
     assert steps[0].raw == "git diff --stat"
 
 
 def test_explicit_colour_kwarg_suppresses_injection():
     # A caller who spells colour wins: no switch is forced on top of it.
-    with recording(force_color=True) as steps:
-        tools.git.diff("--stat", color="never")
+    with recording() as steps:
+        tools.git.opts(color="always").diff("--stat", color="never")
     assert steps[0].raw == "git diff --stat --color=never"
 
 
@@ -80,10 +81,51 @@ def test_explicit_colour_kwarg_suppresses_injection():
 def test_colour_override_guard_accepts_every_spelling(spelling):
     # The override guard recognises all four colour spellings — so a caller's
     # explicit choice suppresses the forced switch (`.on` stays empty).
-    from footman.context import Context, use_context
+    assert tools._color_tokens("git", ["diff"], {spelling: "never"}, True).on == ()
 
-    with use_context(Context(force_color=True)):
-        assert tools._color_tokens("git", ["diff"], {spelling: "never"}).on == ()
+
+def test_colour_mode_is_a_taught_error():
+    from typing import Literal, cast
+
+    with pytest.raises(ValueError, match=r"not a colour mode"):
+        # The cast is the point: the stub already refuses this statically;
+        # the test asserts the runtime teaches it too.
+        tools.git.opts(color=cast("Literal['auto']", "yes"))
+
+
+def _ambient(monkeypatch, **vars: str) -> None:
+    """Set the process's ambient colour answer, clearing what is already there.
+
+    These tests run *inside* a footman run, which publishes its own answer at
+    the run boundary — so a test that only adds a variable is arguing with the
+    enclosing run rather than setting the ambient.
+    """
+    for var in tools._host._COLOR_VARS:
+        monkeypatch.delenv(var, raising=False)
+    for name, value in vars.items():
+        monkeypatch.setenv(name, value)
+
+
+def test_explicit_colour_beats_an_ambient_no_color(monkeypatch):
+    # An instruction aimed at one call outranks an environment-wide
+    # preference — the rule that keeps a colour assertion honest on CI.
+    _ambient(monkeypatch, NO_COLOR="1")
+    with recording() as steps:
+        tools.git.opts(color="always").diff("--stat")
+    assert steps[0].raw == "git -c color.ui=always diff --stat"
+
+
+def test_auto_reads_the_ambient_answer(monkeypatch):
+    # The default rung: no decision on the call, so the environment answers —
+    # which inside a run is the answer that run published at its boundary.
+    _ambient(monkeypatch, FORCE_COLOR="1")
+    with recording() as steps:
+        tools.git.diff("--stat")
+    assert steps[0].raw == "git -c color.ui=always diff --stat"
+    _ambient(monkeypatch, NO_COLOR="1")
+    with recording() as steps:
+        tools.git.diff("--stat")
+    assert steps[0].raw == "git diff --stat"
 
 
 def test_verb_scoped_colour_flag_rides_with_the_flags(monkeypatch):
@@ -91,12 +133,12 @@ def test_verb_scoped_colour_flag_rides_with_the_flags(monkeypatch):
     # appended with the call's flags — both directions, keyed by verb.
     entry = {"check": tools._ColorFlag(on=("--color=always",), off=("--color=never",))}
     monkeypatch.setitem(tools._COLOR, "ruff", entry)
-    with recording(force_color=True) as steps:
-        tools.ruff.check("src")
+    with recording() as steps:
+        tools.ruff.opts(color="always").check("src")
     assert steps[0].raw == "ruff check src --color=always"
     assert steps[0].command == "ruff check src"  # shown line stays clean
     with recording() as steps:  # monochrome -> the off direction
-        tools.ruff.check("src")
+        tools.ruff.opts(color="never").check("src")
     assert steps[0].raw == "ruff check src --color=never"
 
 
@@ -147,7 +189,7 @@ def test_shell_tools_run_a_command_string_through_the_shell(monkeypatch):
 
 
 def test_manual_source_driver_is_never_extracted():
-    from footman import _drivers
+    from machinery import _drivers
 
     bash = _drivers.find("bash")
     assert bash is not None and bash.source == "manual"
@@ -240,8 +282,12 @@ def test_tool_opts_stub_mirrors_run_signature():
     assert set(declared) == set(tools._TOOL_OPTS)
     run_params = inspect.signature(context.run).parameters
     for name, annotation in declared.items():
-        if name == "in_process":
-            continue  # the bridge's own — no run() counterpart
+        if name in ("in_process", "color"):
+            # The bridge's own, with no run() counterpart. `color` is a per-tool
+            # question — which half of the forcing this tool needs — so footman
+            # has no reason to carry it; the run-wide answer it *does* own
+            # reaches the call through the environment instead.
+            continue
         assert annotation == str(run_params[name].annotation), (
             f".opts({name}=) is typed {annotation}, run() takes "
             f"{run_params[name].annotation}"
@@ -309,7 +355,7 @@ def test_one_parser_serves_the_extractor_and_the_bridge():
     """A stub's recorded version and a task's `installed_version()` may
     disagree about *which binary* they asked — `_resolve` prefers a Homebrew
     keg for host-read tools — but never about how a version string reads."""
-    from footman import _drivers
+    from machinery import _drivers
 
     assert _drivers.version.__globals__  # imported lazily inside the function
     for text in ("git version 2.55.0", "gh version 2.96.0 (2026-01-01)"):
@@ -713,7 +759,8 @@ def test_click_extraction_reads_the_real_negations():
     # type-check job installs the shots group, not every tool footman
     # can drive.
     import mkdocs.__main__ as entry
-    from footman._toolspec import from_click
+
+    from machinery._toolspec import from_click
 
     spec = from_click(entry.cli, name="mkdocs")
     assert spec.name == "mkdocs" and spec.in_process is True
@@ -737,8 +784,8 @@ def test_negation_table_matches_what_the_tools_say():
     # type-check job installs the shots group, not every tool footman
     # can drive.
     import mkdocs.__main__ as entry
-    from footman._toolspec import from_click
 
+    from machinery._toolspec import from_click
     from toolroom import _NEGATIONS
 
     assert from_click(entry.cli, name="mkdocs").negations() == _NEGATIONS["mkdocs"]
@@ -944,8 +991,7 @@ def test_wrappers_table_matches_what_the_tools_declare():
     # The runtime table is hand-written; this mirrors `fm toolroom.audit`,
     # so drift fails fast in the local `fm check` gate. Skipped in CI (marker
     # above): CI's tool versions differ from the curated table.
-    from footman import _drivers
-
+    from machinery import _drivers
     from toolroom import _WRAPPERS
 
     for driver in _drivers.DRIVERS:

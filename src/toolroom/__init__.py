@@ -267,7 +267,23 @@ def _color_flag(argv0: str, base: list[str]) -> _ColorFlag | None:
     return table.get(verb) or table.get("")
 
 
-def _color_tokens(argv0: str, base: list[str], kwargs: dict[str, Any]) -> _ColorFlag:
+def _colour_wanted(mode: str | None) -> bool:
+    """This call's colour decision — the ladder, resolved.
+
+    An explicit `always`/`never` is the answer; `auto` (the default) reads
+    the ambient tier, which is the run's published answer inside a footman
+    run and the user's environment outside one.
+    """
+    if mode == "always":
+        return True
+    if mode == "never":
+        return False
+    return _host.color_on()
+
+
+def _color_tokens(
+    argv0: str, base: list[str], kwargs: dict[str, Any], on: bool
+) -> _ColorFlag:
     """The colour tokens to inject for this call — `_ColorFlag((), ())` for none.
 
     Injected into the *executed* argv only. Hosted, that keeps it out of the
@@ -283,7 +299,7 @@ def _color_tokens(argv0: str, base: list[str], kwargs: dict[str, Any]) -> _Color
     flag = _color_flag(argv0, base)
     if flag is None:
         return _ColorFlag((), ())
-    tokens = flag.on if _host.color_on() else flag.off
+    tokens = flag.on if on else flag.off
     return _ColorFlag(tokens, (), flag.pre_verb) if tokens else _ColorFlag((), ())
 
 
@@ -512,7 +528,15 @@ _TOOL_OPTS = (
     "pre_record",
     "input",
     "env",
+    "color",
 )
+
+# The colour ladder: an explicit `always`/`never` decides the call outright,
+# `auto` reads the ambient tier (see `_host.color_on`). Explicit *beats*
+# `NO_COLOR`, matching how a `--color=always` outranks it: an instruction aimed
+# at this call is not the same kind of thing as an environment-wide preference,
+# and a test that asserts on colour must not go grey on CI that exports it.
+_COLOUR_MODES = ("auto", "always", "never")
 
 
 class _Consumed:
@@ -560,6 +584,14 @@ def _opts_overrides(kwargs: dict[str, Any]) -> dict[str, Any]:
             f".opts() got unknown option(s) {unknown}; valid options are {valid}. A "
             f"tool's own flags go in the call — tools.ruff(fix=True) — or before a "
             f"verb via .flags()."
+        )
+    mode = kwargs.get("color")
+    if mode is not None and mode not in _COLOUR_MODES:
+        modes = ", ".join(repr(m) for m in _COLOUR_MODES)
+        raise ValueError(
+            f".opts(color={mode!r}) is not a colour mode; say one of {modes}. "
+            f"A tool's own colour flag goes in the call — "
+            f"tools.ruff.check(color='always')."
         )
     out = dict(kwargs)
     if out.get("input") is not None:
@@ -683,6 +715,22 @@ class Tool:
         options ride the chain and win at call time. For a tool's *own* global
         options that must precede a verb, use `.flags()`.
 
+        `color="always"|"never"` decides this call's colour outright, and
+        `"auto"` (the default) takes the ambient answer — the run's inside a
+        footman run, the user's environment outside one. An explicit choice
+        beats `NO_COLOR`, which is what makes a colour assertion hold on CI
+        that exports it:
+
+            git.opts(color="always").diff()       # colour, whatever the ambient
+
+        The decision travels on the call rather than through the environment
+        because `os.environ` is one per process and calls are not — two
+        threads wanting different answers can both have one this way. It
+        drives whichever half of the forcing each tool needs: the variables
+        for those that read them, their own switch for those that don't. For
+        a tool's own colour flag, spell it in the call
+        (`ruff.check(color="always")`) and toolroom keeps out of the way.
+
         `env=` is the child's environment exactly as `run(env=…)` means it —
         what you pass is what the child gets — and like the rest of the set it
         rides the chain and replays. `input=` feeds the child's standard input,
@@ -802,6 +850,7 @@ class Tool:
         timeout = self._opts.get("timeout", None)
         pre_record = self._opts.get("pre_record", None)
         env_opt = self._opts.get("env", None)
+        colour_on = _colour_wanted(self._opts.get("color", None))
         # `input=` is consumed *at entry*: one `.opts(input=…)` is one
         # delivery, wherever in the chain the call lands. Entry rather than
         # after execution, so a dry-run or `recording()` rehearsal consumes
@@ -846,7 +895,7 @@ class Tool:
             # The forced colour switch, subprocess-only, into the executed argv:
             # a pre-verb global (`git -c color.ui=always`) leads; a verb-scoped
             # flag rides with the others. `.raw`/`--verbose` show what ran.
-            colour = _color_tokens(self._argv0, self._base, kwargs)
+            colour = _color_tokens(self._argv0, self._base, kwargs, colour_on)
             if not colour.on:
                 spawned = argv
             elif colour.pre_verb:
@@ -867,6 +916,7 @@ class Tool:
                 timeout=timeout,
                 cwd=cwd_opt,
                 rel=rel_opt,
+                color=colour_on,
             )
 
         wanted = self._prefer_in_process if in_process is None else in_process
