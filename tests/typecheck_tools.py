@@ -28,8 +28,10 @@ So: to assert that a flag exists, pass it something wrong.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import toolroom as tools
-from toolroom import Tool, off
+from toolroom import Flag, Tool, Value, off
 
 
 def _ruff() -> None:
@@ -40,6 +42,23 @@ def _ruff() -> None:
     tools.ruff_format("src", "tests", check=True)
     tools.ruff.opts(nofail=True).check("src")  # run-control rides .opts()
     tools.ruff.check("src", a_flag_ruff_grew_last_week=True)  # never a type error
+
+
+def _paths() -> None:
+    """Positionals and values take a `Path` directly — the bridge `str()`-s
+    whatever it is handed — so a wrapper never needs a cast to call through."""
+    tools.ruff.check(Path("src"), fix=True)
+    tools.ruff.check("src", Path("tests"))  # str and Path mix freely
+    tools.ruff.check("src", cache_dir=Path(".cache"))
+    tools.ruff.check("src", exclude=[Path("build"), "dist"])
+    tools.git.add(Path("src"), Path("tests"))
+    tools.mkdocs.build(site_dir=Path("site"))
+
+
+def _reader_facing_aliases(fix: Flag = None, select: Value = None) -> None:
+    """The stubs' own vocabulary is importable, so a typed wrapper's
+    parameters can be annotated with exactly what the call accepts."""
+    tools.ruff.check("src", fix=fix, select=select)
 
 
 def _uv() -> None:

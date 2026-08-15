@@ -6,43 +6,42 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, Self, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 _R3 = TypeVar("_R3")
 
-class Docker(_Tool[_R]):
-    class Compose(_Tool[_R2]):
-        class Build(_Tool[_R3]):
+class Docker(ToolBase[_R]):
+    class Compose(ToolBase[_R2]):
+        class Build(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                build_arg: _Value = ...,
-                builder: _Value = ...,
-                check: _Flag = ...,
-                dry_run: _Flag = ...,
-                memory: _Value = ...,
-                no_cache: _Flag = ...,
-                print: _Flag = ...,
-                provenance: _Value = ...,
-                pull: _Flag = ...,
-                push: _Flag = ...,
-                quiet: _Flag = ...,
-                sbom: _Value = ...,
-                ssh: _Value = ...,
-                with_dependencies: _Flag = ...,
+                *args: str | PathLike[str],
+                build_arg: Value = ...,
+                builder: Value = ...,
+                check: Flag = ...,
+                dry_run: Flag = ...,
+                memory: Value = ...,
+                no_cache: Flag = ...,
+                print: Flag = ...,
+                provenance: Value = ...,
+                pull: Flag = ...,
+                push: Flag = ...,
+                quiet: Flag = ...,
+                sbom: Value = ...,
+                ssh: Value = ...,
+                with_dependencies: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Build or rebuild services
 
                 Args:
-                    build_arg: Set build-time variables for services. May be
-                        repeated: a list emits the flag once per item.
+                    build_arg: Set build-time variables for services. May be repeated: a list emits the flag once per item.
                     builder: Set builder to use.
                     check: Check build configuration.
                     dry_run: Execute command in dry run mode.
@@ -59,51 +58,48 @@ class Docker(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Docker.Compose.Build[_Argv]: ...
+            def argv(self) -> Docker.Compose.Build[Argv]: ...
 
         build: Build[_R2]
-        class Down(_Tool[_R3]):
+        class Down(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                dry_run: _Flag = ...,
-                remove_orphans: _Flag = ...,
-                rmi: _Value = ...,
-                timeout: _Value = ...,
-                volumes: _Flag = ...,
+                *args: str | PathLike[str],
+                dry_run: Flag = ...,
+                remove_orphans: Flag = ...,
+                rmi: Value = ...,
+                timeout: Value = ...,
+                volumes: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Stop and remove containers, networks
 
                 Args:
                     dry_run: Execute command in dry run mode.
-                    remove_orphans: Remove containers for services not defined in
-                        the Compose file.
+                    remove_orphans: Remove containers for services not defined in the Compose file.
                     rmi: Remove images used by services.
                     timeout: Specify a shutdown timeout in seconds.
-                    volumes: Remove named volumes declared in the "volumes" section
-                        of the Compose file and anonymous volumes attached to
-                        containers.
+                    volumes: Remove named volumes declared in the "volumes" section of the Compose file and anonymous volumes attached to containers.
                 """
                 ...
             @property
-            def argv(self) -> Docker.Compose.Down[_Argv]: ...
+            def argv(self) -> Docker.Compose.Down[Argv]: ...
 
         down: Down[_R2]
-        class Exec(_Tool[_R3]):
+        class Exec(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                service: str,
+                service: str | PathLike[str],
                 /,
-                *args: str,
-                detach: _Flag = ...,
-                dry_run: _Flag = ...,
-                env: _Value = ...,
-                index: _Value = ...,
-                no_tty: _Flag = ...,
-                privileged: _Flag = ...,
-                user: _Value = ...,
-                workdir: _Value = ...,
+                *args: str | PathLike[str],
+                detach: Flag = ...,
+                dry_run: Flag = ...,
+                env: Value = ...,
+                index: Value = ...,
+                no_tty: Flag = ...,
+                privileged: Flag = ...,
+                user: Value = ...,
+                workdir: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Execute a command in a running container
@@ -111,8 +107,7 @@ class Docker(_Tool[_R]):
                 Args:
                     detach: Detached mode: Run command in the background.
                     dry_run: Execute command in dry run mode.
-                    env: Set environment variables. May be repeated: a list emits
-                        the flag once per item.
+                    env: Set environment variables. May be repeated: a list emits the flag once per item.
                     index: Index of the container if service has multiple replicas.
                     no_tty: Disable pseudo-TTY allocation. Defaults to `True`.
                     privileged: Give extended privileges to the process.
@@ -121,22 +116,22 @@ class Docker(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Docker.Compose.Exec[_Argv]: ...
+            def argv(self) -> Docker.Compose.Exec[Argv]: ...
 
         exec: Exec[_R2]
-        class Logs(_Tool[_R3]):
+        class Logs(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                dry_run: _Flag = ...,
-                follow: _Flag = ...,
-                index: _Value = ...,
-                no_color: _Flag = ...,
-                no_log_prefix: _Flag = ...,
-                since: _Value = ...,
-                tail: _Value = ...,
-                timestamps: _Flag = ...,
-                until: _Value = ...,
+                *args: str | PathLike[str],
+                dry_run: Flag = ...,
+                follow: Flag = ...,
+                index: Value = ...,
+                no_color: Flag = ...,
+                no_log_prefix: Flag = ...,
+                since: Value = ...,
+                tail: Value = ...,
+                timestamps: Flag = ...,
+                until: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """View output from containers
@@ -148,89 +143,80 @@ class Docker(_Tool[_R]):
                     no_color: Produce monochrome output.
                     no_log_prefix: Don't print prefix in logs.
                     since: Show logs since timestamp (e.g.
-                    tail: Number of lines to show from the end of the logs for each
-                        container. Defaults to `all`.
+                    tail: Number of lines to show from the end of the logs for each container. Defaults to `all`.
                     timestamps: Show timestamps.
                     until: Show logs before a timestamp (e.g.
                 """
                 ...
             @property
-            def argv(self) -> Docker.Compose.Logs[_Argv]: ...
+            def argv(self) -> Docker.Compose.Logs[Argv]: ...
 
         logs: Logs[_R2]
-        class Ps(_Tool[_R3]):
+        class Ps(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                all: _Flag = ...,
-                dry_run: _Flag = ...,
-                filter: _Value = ...,
-                format: _Value = ...,
-                no_trunc: _Flag = ...,
-                orphans: _Flag = ...,
-                quiet: _Flag = ...,
-                services: _Flag = ...,
-                status: _Value = ...,
+                *args: str | PathLike[str],
+                all: Flag = ...,
+                dry_run: Flag = ...,
+                filter: Value = ...,
+                format: Value = ...,
+                no_trunc: Flag = ...,
+                orphans: Flag = ...,
+                quiet: Flag = ...,
+                services: Flag = ...,
+                status: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """List containers
 
                 Args:
-                    all: Show all stopped containers (including those created by the
-                        run command).
+                    all: Show all stopped containers (including those created by the run command).
                     dry_run: Execute command in dry run mode.
-                    filter: Filter services by a property (supported filters:
-                        status).
-                    format: Format output using a custom template: 'table': Print
-                        output in table format with column headers (default) 'table
-                        TEMPLATE': Print output in table format using the given Go
-                        template 'json': Print in JSON format 'TEMPLATE': Print
-                        output using the given Go template. Defaults to `table`.
+                    filter: Filter services by a property (supported filters: status).
+                    format: Format output using a custom template: 'table': Print output in table format with column headers (default) 'table TEMPLATE': Print output in table format using the given Go template 'json': Print in JSON format 'TEMPLATE': Print output using the given Go template. Defaults to `table`.
                     no_trunc: Don't truncate output.
-                    orphans: Include orphaned services (not declared by project).
-                        Defaults to `True`.
+                    orphans: Include orphaned services (not declared by project). Defaults to `True`.
                     quiet: Only display IDs.
                     services: Display services.
-                    status: Filter services by status. May be repeated: a list emits
-                        the flag once per item.
+                    status: Filter services by status. May be repeated: a list emits the flag once per item.
                 """
                 ...
             @property
-            def argv(self) -> Docker.Compose.Ps[_Argv]: ...
+            def argv(self) -> Docker.Compose.Ps[Argv]: ...
 
         ps: Ps[_R2]
-        class Run(_Tool[_R3]):
+        class Run(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                service: str,
+                service: str | PathLike[str],
                 /,
-                *args: str,
-                build: _Flag = ...,
-                cap_add: _Value = ...,
-                cap_drop: _Value = ...,
-                detach: _Flag = ...,
-                dry_run: _Flag = ...,
-                entrypoint: _Value = ...,
-                env: _Value = ...,
-                env_from_file: _Value = ...,
-                interactive: _Flag = ...,
-                label: _Value = ...,
-                name: _Value = ...,
-                no_TTY: _Flag = ...,
-                no_deps: _Flag = ...,
-                no_tty: _Flag = ...,
-                publish: _Value = ...,
-                pull: _Value = ...,
-                quiet: _Flag = ...,
-                quiet_build: _Flag = ...,
-                quiet_pull: _Flag = ...,
-                remove_orphans: _Flag = ...,
-                rm: _Flag = ...,
-                service_ports: _Flag = ...,
-                use_aliases: _Flag = ...,
-                user: _Value = ...,
-                volume: _Value = ...,
-                workdir: _Value = ...,
+                *args: str | PathLike[str],
+                build: Flag = ...,
+                cap_add: Value = ...,
+                cap_drop: Value = ...,
+                detach: Flag = ...,
+                dry_run: Flag = ...,
+                entrypoint: Value = ...,
+                env: Value = ...,
+                env_from_file: Value = ...,
+                interactive: Flag = ...,
+                label: Value = ...,
+                name: Value = ...,
+                no_TTY: Flag = ...,
+                no_deps: Flag = ...,
+                no_tty: Flag = ...,
+                publish: Value = ...,
+                pull: Value = ...,
+                quiet: Flag = ...,
+                quiet_build: Flag = ...,
+                quiet_pull: Flag = ...,
+                remove_orphans: Flag = ...,
+                rm: Flag = ...,
+                service_ports: Flag = ...,
+                use_aliases: Flag = ...,
+                user: Value = ...,
+                volume: Value = ...,
+                workdir: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run a one-off command on a service
@@ -242,129 +228,103 @@ class Docker(_Tool[_R]):
                     detach: Run container in background and print container ID.
                     dry_run: Execute command in dry run mode.
                     entrypoint: Override the entrypoint of the image.
-                    env: Set environment variables. May be repeated: a list emits
-                        the flag once per item.
-                    env_from_file: Set environment variables from file. May be
-                        repeated: a list emits the flag once per item.
-                    interactive: Keep STDIN open even if not attached. Defaults to
-                        `True`.
-                    label: Add or override a label. May be repeated: a list emits
-                        the flag once per item.
+                    env: Set environment variables. May be repeated: a list emits the flag once per item.
+                    env_from_file: Set environment variables from file. May be repeated: a list emits the flag once per item.
+                    interactive: Keep STDIN open even if not attached. Defaults to `True`.
+                    label: Add or override a label. May be repeated: a list emits the flag once per item.
                     name: Assign a name to the container.
                     no_TTY: Disable pseudo-TTY allocation. Gone since 29.6.2.
                     no_deps: Don't start linked services.
                     no_tty: Disable pseudo-TTY allocation. Added in 29.6.2.
-                    publish: Publish a container's port(s) to the host. May be
-                        repeated: a list emits the flag once per item.
-                    pull: Pull image before running ("always"|"missing"|"never").
-                        Defaults to `policy`.
+                    publish: Publish a container's port(s) to the host. May be repeated: a list emits the flag once per item.
+                    pull: Pull image before running ("always"|"missing"|"never"). Defaults to `policy`.
                     quiet: Don't print anything to STDOUT.
                     quiet_build: Suppress progress output from the build process.
                     quiet_pull: Pull without printing progress information.
-                    remove_orphans: Remove containers for services not defined in
-                        the Compose file.
+                    remove_orphans: Remove containers for services not defined in the Compose file.
                     rm: Automatically remove the container when it exits.
-                    service_ports: Run command with all service's ports enabled and
-                        mapped to the host.
-                    use_aliases: Use the service's network useAliases in the
-                        network(s) the container connects to.
+                    service_ports: Run command with all service's ports enabled and mapped to the host.
+                    use_aliases: Use the service's network useAliases in the network(s) the container connects to.
                     user: Run as specified username or uid.
-                    volume: Bind mount a volume. May be repeated: a list emits the
-                        flag once per item.
+                    volume: Bind mount a volume. May be repeated: a list emits the flag once per item.
                     workdir: Working directory inside the container.
                 """
                 ...
             @property
-            def argv(self) -> Docker.Compose.Run[_Argv]: ...
+            def argv(self) -> Docker.Compose.Run[Argv]: ...
 
         run: Run[_R2]
-        class Up(_Tool[_R3]):
+        class Up(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                abort_on_container_exit: _Flag = ...,
-                abort_on_container_failure: _Flag = ...,
-                always_recreate_deps: _Flag = ...,
-                attach: _Value = ...,
-                attach_dependencies: _Flag = ...,
-                build: _Flag = ...,
-                detach: _Flag = ...,
-                dry_run: _Flag = ...,
-                exit_code_from: _Value = ...,
-                force_recreate: _Flag = ...,
-                menu: _Flag = ...,
-                no_attach: _Value = ...,
-                no_color: _Flag = ...,
-                no_deps: _Flag = ...,
-                no_log_prefix: _Flag = ...,
-                no_recreate: _Flag = ...,
-                no_start: _Flag = ...,
-                pull: _Value = ...,
-                quiet_build: _Flag = ...,
-                quiet_pull: _Flag = ...,
-                remove_orphans: _Flag = ...,
-                renew_anon_volumes: _Flag = ...,
-                scale: _Value = ...,
-                timeout: _Value = ...,
-                timestamps: _Flag = ...,
-                wait: _Flag = ...,
-                wait_timeout: _Value = ...,
-                watch: _Flag = ...,
-                yes: _Flag = ...,
+                *args: str | PathLike[str],
+                abort_on_container_exit: Flag = ...,
+                abort_on_container_failure: Flag = ...,
+                always_recreate_deps: Flag = ...,
+                attach: Value = ...,
+                attach_dependencies: Flag = ...,
+                build: Flag = ...,
+                detach: Flag = ...,
+                dry_run: Flag = ...,
+                exit_code_from: Value = ...,
+                force_recreate: Flag = ...,
+                menu: Flag = ...,
+                no_attach: Value = ...,
+                no_color: Flag = ...,
+                no_deps: Flag = ...,
+                no_log_prefix: Flag = ...,
+                no_recreate: Flag = ...,
+                no_start: Flag = ...,
+                pull: Value = ...,
+                quiet_build: Flag = ...,
+                quiet_pull: Flag = ...,
+                remove_orphans: Flag = ...,
+                renew_anon_volumes: Flag = ...,
+                scale: Value = ...,
+                timeout: Value = ...,
+                timestamps: Flag = ...,
+                wait: Flag = ...,
+                wait_timeout: Value = ...,
+                watch: Flag = ...,
+                yes: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Create and start containers
 
                 Args:
-                    abort_on_container_exit: Stops all containers if any container
-                        was stopped.
-                    abort_on_container_failure: Stops all containers if any
-                        container exited with failure.
+                    abort_on_container_exit: Stops all containers if any container was stopped.
+                    abort_on_container_failure: Stops all containers if any container exited with failure.
                     always_recreate_deps: Recreate dependent containers.
-                    attach: Restrict attaching to the specified services. May be
-                        repeated: a list emits the flag once per item.
-                    attach_dependencies: Automatically attach to log output of
-                        dependent services.
-                    build: Build images before starting containers. `build=off`
-                        emits `--no-build`.
+                    attach: Restrict attaching to the specified services. May be repeated: a list emits the flag once per item.
+                    attach_dependencies: Automatically attach to log output of dependent services.
+                    build: Build images before starting containers. `build=off` emits `--no-build`.
                     detach: Detached mode: Run containers in the background.
                     dry_run: Execute command in dry run mode.
-                    exit_code_from: Return the exit code of the selected service
-                        container.
-                    force_recreate: Recreate containers even if their configuration
-                        and image haven't changed.
+                    exit_code_from: Return the exit code of the selected service container.
+                    force_recreate: Recreate containers even if their configuration and image haven't changed.
                     menu: Enable interactive shortcuts when running attached.
-                    no_attach: Do not attach (stream logs) to the specified
-                        services. May be repeated: a list emits the flag once per
-                        item.
+                    no_attach: Do not attach (stream logs) to the specified services. May be repeated: a list emits the flag once per item.
                     no_color: Produce monochrome output.
                     no_deps: Don't start linked services.
                     no_log_prefix: Don't print prefix in logs.
                     no_recreate: If containers already exist, don't recreate them.
                     no_start: Don't start the services after creating them.
-                    pull: Pull image before running ("always"|"missing"|"never").
-                        Defaults to `policy`.
+                    pull: Pull image before running ("always"|"missing"|"never"). Defaults to `policy`.
                     quiet_build: Suppress the build output.
                     quiet_pull: Pull without printing progress information.
-                    remove_orphans: Remove containers for services not defined in
-                        the Compose file.
-                    renew_anon_volumes: Recreate anonymous volumes instead of
-                        retrieving data from the previous containers.
+                    remove_orphans: Remove containers for services not defined in the Compose file.
+                    renew_anon_volumes: Recreate anonymous volumes instead of retrieving data from the previous containers.
                     scale: Scale SERVICE to NUM instances.
-                    timeout: Use this timeout in seconds for container shutdown when
-                        attached or when containers are already running.
+                    timeout: Use this timeout in seconds for container shutdown when attached or when containers are already running.
                     timestamps: Show timestamps.
                     wait: Wait for services to be running|healthy.
-                    wait_timeout: Maximum duration in seconds to wait for the
-                        project to be running|healthy.
-                    watch: Watch source code and rebuild/refresh containers when
-                        files are updated.
-                    yes: Assume "yes" as answer to all prompts and run
-                        non-interactively.
+                    wait_timeout: Maximum duration in seconds to wait for the project to be running|healthy.
+                    watch: Watch source code and rebuild/refresh containers when files are updated.
+                    yes: Assume "yes" as answer to all prompts and run non-interactively.
                 """
                 ...
             @property
-            def argv(self) -> Docker.Compose.Up[_Argv]: ...
+            def argv(self) -> Docker.Compose.Up[Argv]: ...
 
         up: Up[_R2]
         def __call__(  # type: ignore[override]
@@ -373,7 +333,7 @@ class Docker(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Docker.Compose[_Argv]: ...
+        def argv(self) -> Docker.Compose[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -385,182 +345,136 @@ class Docker(_Tool[_R]):
             ...
 
     compose: Compose[_R]
-    class Build(_Tool[_R2]):
+    class Build(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            path: str,
+            path: str | PathLike[str],
             /,
-            *args: str,
-            add_host: _Value = ...,
-            allow: _Value = ...,
-            annotation: _Value = ...,
-            attest: _Value = ...,
-            build_arg: _Value = ...,
-            build_context: _Value = ...,
-            builder: _Value = ...,
-            cache_from: _Value = ...,
-            cache_to: _Value = ...,
-            call: _Value = ...,
-            cgroup_parent: _Value = ...,
-            check: _Flag = ...,
-            compress: _Flag = ...,
-            cpu_period: _Value = ...,
-            cpu_quota: _Value = ...,
-            cpu_shares: _Value = ...,
-            cpuset_cpus: _Value = ...,
-            cpuset_mems: _Value = ...,
-            debug: _Flag = ...,
-            file: _Value = ...,
-            force_rm: _Flag = ...,
-            iidfile: _Value = ...,
-            isolation: _Value = ...,
-            label: _Value = ...,
-            load: _Flag = ...,
-            memory: _Value = ...,
-            memory_swap: _Value = ...,
-            metadata_file: _Value = ...,
-            network: _Value = ...,
-            no_cache: _Flag = ...,
-            no_cache_filter: _Value = ...,
-            output: _Value = ...,
-            platform: _Value = ...,
-            policy: _Value = ...,
-            progress: _Value = ...,
-            provenance: _Value = ...,
-            pull: _Flag = ...,
-            push: _Flag = ...,
-            quiet: _Flag = ...,
-            resource: _Value = ...,
-            rm: _Flag = ...,
-            sbom: _Value = ...,
-            secret: _Value = ...,
-            security_opt: _Value = ...,
-            shm_size: _Value = ...,
-            ssh: _Value = ...,
-            tag: _Value = ...,
-            target: _Value = ...,
-            ulimit: _Value = ...,
+            *args: str | PathLike[str],
+            add_host: Value = ...,
+            allow: Value = ...,
+            annotation: Value = ...,
+            attest: Value = ...,
+            build_arg: Value = ...,
+            build_context: Value = ...,
+            builder: Value = ...,
+            cache_from: Value = ...,
+            cache_to: Value = ...,
+            call: Value = ...,
+            cgroup_parent: Value = ...,
+            check: Flag = ...,
+            compress: Flag = ...,
+            cpu_period: Value = ...,
+            cpu_quota: Value = ...,
+            cpu_shares: Value = ...,
+            cpuset_cpus: Value = ...,
+            cpuset_mems: Value = ...,
+            debug: Flag = ...,
+            file: Value = ...,
+            force_rm: Flag = ...,
+            iidfile: Value = ...,
+            isolation: Value = ...,
+            label: Value = ...,
+            load: Flag = ...,
+            memory: Value = ...,
+            memory_swap: Value = ...,
+            metadata_file: Value = ...,
+            network: Value = ...,
+            no_cache: Flag = ...,
+            no_cache_filter: Value = ...,
+            output: Value = ...,
+            platform: Value = ...,
+            policy: Value = ...,
+            progress: Value = ...,
+            provenance: Value = ...,
+            pull: Flag = ...,
+            push: Flag = ...,
+            quiet: Flag = ...,
+            resource: Value = ...,
+            rm: Flag = ...,
+            sbom: Value = ...,
+            secret: Value = ...,
+            security_opt: Value = ...,
+            shm_size: Value = ...,
+            ssh: Value = ...,
+            tag: Value = ...,
+            target: Value = ...,
+            ulimit: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Build an image from a Dockerfile
 
             Args:
                 add_host: Add a custom host-to-IP mapping ("host:ip").
-                allow: Allow extra privileged entitlement (e.g., "network.host",
-                    "security.insecure", "device", "buildx.local.delete"). May be
-                    repeated: a list emits the flag once per item. Not available on
-                    Windows.
-                annotation: Add annotation to the image. May be repeated: a list
-                    emits the flag once per item. Not available on Windows.
-                attest: Attestation parameters (format:
-                    "type=sbom,generator=image"). May be repeated: a list emits the
-                    flag once per item. Not available on Windows.
+                allow: Allow extra privileged entitlement (e.g., "network.host", "security.insecure", "device", "buildx.local.delete"). May be repeated: a list emits the flag once per item. Not available on Windows.
+                annotation: Add annotation to the image. May be repeated: a list emits the flag once per item. Not available on Windows.
+                attest: Attestation parameters (format: "type=sbom,generator=image"). May be repeated: a list emits the flag once per item. Not available on Windows.
                 build_arg: Set build-time variables.
-                build_context: Additional build contexts (e.g., name=path). May be
-                    repeated: a list emits the flag once per item. Not available on
-                    Windows.
-                builder: Override the configured builder instance. Defaults to
-                    `default`. Not available on Windows.
+                build_context: Additional build contexts (e.g., name=path). May be repeated: a list emits the flag once per item. Not available on Windows.
+                builder: Override the configured builder instance. Defaults to `default`. Not available on Windows.
                 cache_from: Images to consider as cache sources.
-                cache_to: Cache export destinations (e.g., "user/app:cache",
-                    "type=local,dest=path/to/dir"). May be repeated: a list emits
-                    the flag once per item. Not available on Windows.
-                call: Set method for evaluating build ("check", "outline",
-                    "targets"). Defaults to `build`. Not available on Windows.
-                cgroup_parent: Set the parent cgroup for the "RUN" instructions
-                    during build.
+                cache_to: Cache export destinations (e.g., "user/app:cache", "type=local,dest=path/to/dir"). May be repeated: a list emits the flag once per item. Not available on Windows.
+                call: Set method for evaluating build ("check", "outline", "targets"). Defaults to `build`. Not available on Windows.
+                cgroup_parent: Set the parent cgroup for the "RUN" instructions during build.
                 check: Shorthand for "--call=check". Not available on Windows.
-                compress: Compress the build context using gzip. Added in 29.7.0.
-                    Not available on Linux and macOS.
-                cpu_period: Limit the CPU CFS (Completely Fair Scheduler) period.
-                    Added in 29.7.0. Not available on Linux and macOS.
-                cpu_quota: Limit the CPU CFS (Completely Fair Scheduler) quota.
-                    Added in 29.7.0. Not available on Linux and macOS.
-                cpu_shares: CPU shares (relative weight). Added in 29.7.0. Not
-                    available on Linux and macOS.
-                cpuset_cpus: CPUs in which to allow execution (0-3, 0,1). Added in
-                    29.7.0. Not available on Linux and macOS.
-                cpuset_mems: MEMs in which to allow execution (0-3, 0,1). Added in
-                    29.7.0. Not available on Linux and macOS.
+                compress: Compress the build context using gzip. Added in 29.7.0. Not available on Linux and macOS.
+                cpu_period: Limit the CPU CFS (Completely Fair Scheduler) period. Added in 29.7.0. Not available on Linux and macOS.
+                cpu_quota: Limit the CPU CFS (Completely Fair Scheduler) quota. Added in 29.7.0. Not available on Linux and macOS.
+                cpu_shares: CPU shares (relative weight). Added in 29.7.0. Not available on Linux and macOS.
+                cpuset_cpus: CPUs in which to allow execution (0-3, 0,1). Added in 29.7.0. Not available on Linux and macOS.
+                cpuset_mems: MEMs in which to allow execution (0-3, 0,1). Added in 29.7.0. Not available on Linux and macOS.
                 debug: Enable debug logging. Not available on Windows.
                 file: Name of the Dockerfile. Defaults to `is "PATH/Dockerfile`.
-                force_rm: Always remove intermediate containers. Added in 29.7.0.
-                    Not available on Linux and macOS.
+                force_rm: Always remove intermediate containers. Added in 29.7.0. Not available on Linux and macOS.
                 iidfile: Write the image ID to the file.
-                isolation: Container isolation technology. Added in 29.7.0. Not
-                    available on Linux and macOS.
+                isolation: Container isolation technology. Added in 29.7.0. Not available on Linux and macOS.
                 label: Set metadata for an image.
-                load: Shorthand for "--output=type=docker". Not available on
-                    Windows.
-                memory: Memory limit. Added in 29.7.0. Not available on Linux and
-                    macOS.
-                memory_swap: Swap limit equal to memory plus swap: -1 to enable
-                    unlimited swap. Added in 29.7.0. Not available on Linux and
-                    macOS.
-                metadata_file: Write build result metadata to a file. Not available
-                    on Windows.
-                network: Set the networking mode for the RUN instructions during
-                    build. Defaults to `default`.
+                load: Shorthand for "--output=type=docker". Not available on Windows.
+                memory: Memory limit. Added in 29.7.0. Not available on Linux and macOS.
+                memory_swap: Swap limit equal to memory plus swap: -1 to enable unlimited swap. Added in 29.7.0. Not available on Linux and macOS.
+                metadata_file: Write build result metadata to a file. Not available on Windows.
+                network: Set the networking mode for the RUN instructions during build. Defaults to `default`.
                 no_cache: Do not use cache when building the image.
-                no_cache_filter: Do not cache specified stages. May be repeated: a
-                    list emits the flag once per item. Not available on Windows.
-                output: Output destination (format: "type=local,dest=path"). May be
-                    repeated: a list emits the flag once per item. Not available on
-                    Windows.
+                no_cache_filter: Do not cache specified stages. May be repeated: a list emits the flag once per item. Not available on Windows.
+                output: Output destination (format: "type=local,dest=path"). May be repeated: a list emits the flag once per item. Not available on Windows.
                 platform: Set platform if server is multi-platform capable.
-                policy: Policy configuration (format:
-                    "filename=path[,filename=path][,reset=true|false][,disabled=true|false][,strict=true|false][,log-level=level]").
-                    May be repeated: a list emits the flag once per item. Not
-                    available on Windows.
-                progress: Set type of progress output ("auto", "none", "plain",
-                    "quiet", "rawjson", "tty"). Defaults to `auto`. Not available on
-                    Windows.
-                provenance: Shorthand for "--attest=type=provenance". Not available
-                    on Windows.
+                policy: Policy configuration (format: "filename=path[,filename=path][,reset=true|false][,disabled=true|false][,strict=true|false][,log-level=level]"). May be repeated: a list emits the flag once per item. Not available on Windows.
+                progress: Set type of progress output ("auto", "none", "plain", "quiet", "rawjson", "tty"). Defaults to `auto`. Not available on Windows.
+                provenance: Shorthand for "--attest=type=provenance". Not available on Windows.
                 pull: Always attempt to pull a newer version of the image.
-                push: Shorthand for "--output=type=registry,unpack=false". Not
-                    available on Windows.
+                push: Shorthand for "--output=type=registry,unpack=false". Not available on Windows.
                 quiet: Suppress the build output and print image ID on success.
-                resource: Resource limits for build containers (format: "memory=2g",
-                    "cpu-quota=50000"). May be repeated: a list emits the flag once
-                    per item. Added in 29.6.0. Not available on Windows.
-                rm: Remove intermediate containers after a successful build.
-                    Defaults to `True`. Added in 29.7.0. Not available on Linux and
-                    macOS.
+                resource: Resource limits for build containers (format: "memory=2g", "cpu-quota=50000"). May be repeated: a list emits the flag once per item. Added in 29.6.0. Not available on Windows.
+                rm: Remove intermediate containers after a successful build. Defaults to `True`. Added in 29.7.0. Not available on Linux and macOS.
                 sbom: Shorthand for "--attest=type=sbom". Not available on Windows.
-                secret: Secret to expose to the build (format:
-                    "id=mysecret[,src=/local/secret]"). May be repeated: a list
-                    emits the flag once per item. Not available on Windows.
-                security_opt: Security options. Added in 29.7.0. Not available on
-                    Linux and macOS.
+                secret: Secret to expose to the build (format: "id=mysecret[,src=/local/secret]"). May be repeated: a list emits the flag once per item. Not available on Windows.
+                security_opt: Security options. Added in 29.7.0. Not available on Linux and macOS.
                 shm_size: Size of "/dev/shm".
-                ssh: SSH agent socket or keys to expose to the build (format:
-                    "default|<id>[=<socket>|<key>[,<key>]]"). May be repeated: a
-                    list emits the flag once per item. Not available on Windows.
+                ssh: SSH agent socket or keys to expose to the build (format: "default|<id>[=<socket>|<key>[,<key>]]"). May be repeated: a list emits the flag once per item. Not available on Windows.
                 tag: Name and optionally a tag in the "name:tag" format.
                 target: Set the target build stage to build.
                 ulimit: Ulimit options. Defaults to `[]`.
             """
             ...
         @property
-        def argv(self) -> Docker.Build[_Argv]: ...
+        def argv(self) -> Docker.Build[Argv]: ...
 
     build: Build[_R]
-    class Exec(_Tool[_R2]):
+    class Exec(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            container: str,
+            container: str | PathLike[str],
             /,
-            *args: str,
-            detach: _Flag = ...,
-            detach_keys: _Value = ...,
-            env: _Value = ...,
-            env_file: _Value = ...,
-            interactive: _Flag = ...,
-            privileged: _Flag = ...,
-            tty: _Flag = ...,
-            user: _Value = ...,
-            workdir: _Value = ...,
+            *args: str | PathLike[str],
+            detach: Flag = ...,
+            detach_keys: Value = ...,
+            env: Value = ...,
+            env_file: Value = ...,
+            interactive: Flag = ...,
+            privileged: Flag = ...,
+            tty: Flag = ...,
+            user: Value = ...,
+            workdir: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Execute a command in a running container
@@ -578,20 +492,20 @@ class Docker(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Docker.Exec[_Argv]: ...
+        def argv(self) -> Docker.Exec[Argv]: ...
 
     exec: Exec[_R]
-    class Images(_Tool[_R2]):
+    class Images(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            all: _Flag = ...,
-            digests: _Flag = ...,
-            filter: _Value = ...,
-            format: _Value = ...,
-            no_trunc: _Flag = ...,
-            quiet: _Flag = ...,
-            tree: _Flag = ...,
+            *args: str | PathLike[str],
+            all: Flag = ...,
+            digests: Flag = ...,
+            filter: Value = ...,
+            format: Value = ...,
+            no_trunc: Flag = ...,
+            quiet: Flag = ...,
+            tree: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """List images
@@ -600,32 +514,28 @@ class Docker(_Tool[_R]):
                 all: Show all images.
                 digests: Show digests.
                 filter: Filter output based on conditions provided.
-                format: Format output using a custom template: 'table': Print output
-                    in table format with column headers (default) 'table TEMPLATE':
-                    Print output in table format using the given Go template 'json':
-                    Print in JSON format 'TEMPLATE': Print output using the given Go
-                    template.
+                format: Format output using a custom template: 'table': Print output in table format with column headers (default) 'table TEMPLATE': Print output in table format using the given Go template 'json': Print in JSON format 'TEMPLATE': Print output using the given Go template.
                 no_trunc: Don't truncate output.
                 quiet: Only show image IDs.
                 tree: List multi-platform images as a tree (EXPERIMENTAL).
             """
             ...
         @property
-        def argv(self) -> Docker.Images[_Argv]: ...
+        def argv(self) -> Docker.Images[Argv]: ...
 
     images: Images[_R]
-    class Logs(_Tool[_R2]):
+    class Logs(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            container: str,
+            container: str | PathLike[str],
             /,
-            *args: str,
-            details: _Flag = ...,
-            follow: _Flag = ...,
-            since: _Value = ...,
-            tail: _Value = ...,
-            timestamps: _Flag = ...,
-            until: _Value = ...,
+            *args: str | PathLike[str],
+            details: Flag = ...,
+            follow: Flag = ...,
+            since: Value = ...,
+            tail: Value = ...,
+            timestamps: Flag = ...,
+            until: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Fetch the logs of a container
@@ -634,28 +544,27 @@ class Docker(_Tool[_R]):
                 details: Show extra details provided to logs.
                 follow: Follow log output.
                 since: Show logs since timestamp (e.g.
-                tail: Number of lines to show from the end of the logs. Defaults to
-                    `all`.
+                tail: Number of lines to show from the end of the logs. Defaults to `all`.
                 timestamps: Show timestamps.
                 until: Show logs before a timestamp (e.g.
             """
             ...
         @property
-        def argv(self) -> Docker.Logs[_Argv]: ...
+        def argv(self) -> Docker.Logs[Argv]: ...
 
     logs: Logs[_R]
-    class Ps(_Tool[_R2]):
+    class Ps(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            all: _Flag = ...,
-            filter: _Value = ...,
-            format: _Value = ...,
-            last: _Value = ...,
-            latest: _Flag = ...,
-            no_trunc: _Flag = ...,
-            quiet: _Flag = ...,
-            size: _Flag = ...,
+            all: Flag = ...,
+            filter: Value = ...,
+            format: Value = ...,
+            last: Value = ...,
+            latest: Flag = ...,
+            no_trunc: Flag = ...,
+            quiet: Flag = ...,
+            size: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """List containers
@@ -663,13 +572,8 @@ class Docker(_Tool[_R]):
             Args:
                 all: Show all containers.
                 filter: Filter output based on conditions provided.
-                format: Format output using a custom template: 'table': Print output
-                    in table format with column headers (default) 'table TEMPLATE':
-                    Print output in table format using the given Go template 'json':
-                    Print in JSON format 'TEMPLATE': Print output using the given Go
-                    template.
-                last: Show n last created containers (includes all states). Defaults
-                    to `-1`.
+                format: Format output using a custom template: 'table': Print output in table format with column headers (default) 'table TEMPLATE': Print output in table format using the given Go template 'json': Print in JSON format 'TEMPLATE': Print output using the given Go template.
+                last: Show n last created containers (includes all states). Defaults to `-1`.
                 latest: Show the latest created container (includes all states).
                 no_trunc: Don't truncate output.
                 quiet: Only display container IDs.
@@ -677,18 +581,18 @@ class Docker(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Docker.Ps[_Argv]: ...
+        def argv(self) -> Docker.Ps[Argv]: ...
 
     ps: Ps[_R]
-    class Pull(_Tool[_R2]):
+    class Pull(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            name: str,
+            name: str | PathLike[str],
             /,
-            *args: str,
-            all_tags: _Flag = ...,
-            platform: _Value = ...,
-            quiet: _Flag = ...,
+            *args: str | PathLike[str],
+            all_tags: Flag = ...,
+            platform: Value = ...,
+            quiet: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Download an image from a registry
@@ -700,161 +604,153 @@ class Docker(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Docker.Pull[_Argv]: ...
+        def argv(self) -> Docker.Pull[Argv]: ...
 
     pull: Pull[_R]
-    class Push(_Tool[_R2]):
+    class Push(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            name: str,
+            name: str | PathLike[str],
             /,
-            *args: str,
-            all_tags: _Flag = ...,
-            platform: _Value = ...,
-            quiet: _Flag = ...,
+            *args: str | PathLike[str],
+            all_tags: Flag = ...,
+            platform: Value = ...,
+            quiet: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Upload an image to a registry
 
             Args:
                 all_tags: Push all tags of an image to the repository.
-                platform: Push a platform-specific manifest as a single-platform
-                    image to the registry.
+                platform: Push a platform-specific manifest as a single-platform image to the registry.
                 quiet: Suppress verbose output.
             """
             ...
         @property
-        def argv(self) -> Docker.Push[_Argv]: ...
+        def argv(self) -> Docker.Push[Argv]: ...
 
     push: Push[_R]
-    class Run(_Tool[_R2]):
+    class Run(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            image: str,
+            image: str | PathLike[str],
             /,
-            *args: str,
-            add_host: _Value = ...,
-            annotation: _Value = ...,
-            attach: _Value = ...,
-            blkio_weight: _Value = ...,
-            blkio_weight_device: _Value = ...,
-            cap_add: _Value = ...,
-            cap_drop: _Value = ...,
-            cgroup_parent: _Value = ...,
-            cgroupns: _Value = ...,
-            cidfile: _Value = ...,
-            cpu_count: _Value = ...,
-            cpu_percent: _Value = ...,
-            cpu_period: _Value = ...,
-            cpu_quota: _Value = ...,
-            cpu_rt_period: _Value = ...,
-            cpu_rt_runtime: _Value = ...,
-            cpu_shares: _Value = ...,
-            cpus: _Value = ...,
-            cpuset_cpus: _Value = ...,
-            cpuset_mems: _Value = ...,
-            detach: _Flag = ...,
-            detach_keys: _Value = ...,
-            device: _Value = ...,
-            device_cgroup_rule: _Value = ...,
-            device_read_bps: _Value = ...,
-            device_read_iops: _Value = ...,
-            device_write_bps: _Value = ...,
-            device_write_iops: _Value = ...,
-            dns: _Value = ...,
-            dns_option: _Value = ...,
-            dns_search: _Value = ...,
-            domainname: _Value = ...,
-            entrypoint: _Value = ...,
-            env: _Value = ...,
-            env_file: _Value = ...,
-            expose: _Value = ...,
-            gpus: _Value = ...,
-            group_add: _Value = ...,
-            health_cmd: _Value = ...,
-            health_interval: _Value = ...,
-            health_retries: _Value = ...,
-            health_start_interval: _Value = ...,
-            health_start_period: _Value = ...,
-            health_timeout: _Value = ...,
-            hostname: _Value = ...,
-            init: _Flag = ...,
-            interactive: _Flag = ...,
-            io_maxbandwidth: _Value = ...,
-            io_maxiops: _Value = ...,
-            ip: _Value = ...,
-            ip6: _Value = ...,
-            ipc: _Value = ...,
-            isolation: _Value = ...,
-            label: _Value = ...,
-            label_file: _Value = ...,
-            link: _Value = ...,
-            link_local_ip: _Value = ...,
-            log_driver: _Value = ...,
-            log_opt: _Value = ...,
-            mac_address: _Value = ...,
-            memory: _Value = ...,
-            memory_reservation: _Value = ...,
-            memory_swap: _Value = ...,
-            memory_swappiness: _Value = ...,
-            mount: _Value = ...,
-            name: _Value = ...,
-            network: _Value = ...,
-            network_alias: _Value = ...,
-            no_healthcheck: _Flag = ...,
-            oom_kill_disable: _Flag = ...,
-            oom_score_adj: _Value = ...,
-            pid: _Value = ...,
-            pids_limit: _Value = ...,
-            platform: _Value = ...,
-            privileged: _Flag = ...,
-            publish: _Value = ...,
-            publish_all: _Flag = ...,
-            pull: _Value = ...,
-            quiet: _Flag = ...,
-            read_only: _Flag = ...,
-            restart: _Value = ...,
-            rm: _Flag = ...,
-            runtime: _Value = ...,
-            security_opt: _Value = ...,
-            shm_size: _Value = ...,
-            sig_proxy: _Flag = ...,
-            stop_signal: _Value = ...,
-            stop_timeout: _Value = ...,
-            storage_opt: _Value = ...,
-            sysctl: _Value = ...,
-            tmpfs: _Value = ...,
-            tty: _Flag = ...,
-            ulimit: _Value = ...,
-            use_api_socket: _Flag = ...,
-            user: _Value = ...,
-            userns: _Value = ...,
-            uts: _Value = ...,
-            volume: _Value = ...,
-            volume_driver: _Value = ...,
-            volumes_from: _Value = ...,
-            workdir: _Value = ...,
+            *args: str | PathLike[str],
+            add_host: Value = ...,
+            annotation: Value = ...,
+            attach: Value = ...,
+            blkio_weight: Value = ...,
+            blkio_weight_device: Value = ...,
+            cap_add: Value = ...,
+            cap_drop: Value = ...,
+            cgroup_parent: Value = ...,
+            cgroupns: Value = ...,
+            cidfile: Value = ...,
+            cpu_count: Value = ...,
+            cpu_percent: Value = ...,
+            cpu_period: Value = ...,
+            cpu_quota: Value = ...,
+            cpu_rt_period: Value = ...,
+            cpu_rt_runtime: Value = ...,
+            cpu_shares: Value = ...,
+            cpus: Value = ...,
+            cpuset_cpus: Value = ...,
+            cpuset_mems: Value = ...,
+            detach: Flag = ...,
+            detach_keys: Value = ...,
+            device: Value = ...,
+            device_cgroup_rule: Value = ...,
+            device_read_bps: Value = ...,
+            device_read_iops: Value = ...,
+            device_write_bps: Value = ...,
+            device_write_iops: Value = ...,
+            dns: Value = ...,
+            dns_option: Value = ...,
+            dns_search: Value = ...,
+            domainname: Value = ...,
+            entrypoint: Value = ...,
+            env: Value = ...,
+            env_file: Value = ...,
+            expose: Value = ...,
+            gpus: Value = ...,
+            group_add: Value = ...,
+            health_cmd: Value = ...,
+            health_interval: Value = ...,
+            health_retries: Value = ...,
+            health_start_interval: Value = ...,
+            health_start_period: Value = ...,
+            health_timeout: Value = ...,
+            hostname: Value = ...,
+            init: Flag = ...,
+            interactive: Flag = ...,
+            io_maxbandwidth: Value = ...,
+            io_maxiops: Value = ...,
+            ip: Value = ...,
+            ip6: Value = ...,
+            ipc: Value = ...,
+            isolation: Value = ...,
+            label: Value = ...,
+            label_file: Value = ...,
+            link: Value = ...,
+            link_local_ip: Value = ...,
+            log_driver: Value = ...,
+            log_opt: Value = ...,
+            mac_address: Value = ...,
+            memory: Value = ...,
+            memory_reservation: Value = ...,
+            memory_swap: Value = ...,
+            memory_swappiness: Value = ...,
+            mount: Value = ...,
+            name: Value = ...,
+            network: Value = ...,
+            network_alias: Value = ...,
+            no_healthcheck: Flag = ...,
+            oom_kill_disable: Flag = ...,
+            oom_score_adj: Value = ...,
+            pid: Value = ...,
+            pids_limit: Value = ...,
+            platform: Value = ...,
+            privileged: Flag = ...,
+            publish: Value = ...,
+            publish_all: Flag = ...,
+            pull: Value = ...,
+            quiet: Flag = ...,
+            read_only: Flag = ...,
+            restart: Value = ...,
+            rm: Flag = ...,
+            runtime: Value = ...,
+            security_opt: Value = ...,
+            shm_size: Value = ...,
+            sig_proxy: Flag = ...,
+            stop_signal: Value = ...,
+            stop_timeout: Value = ...,
+            storage_opt: Value = ...,
+            sysctl: Value = ...,
+            tmpfs: Value = ...,
+            tty: Flag = ...,
+            ulimit: Value = ...,
+            use_api_socket: Flag = ...,
+            user: Value = ...,
+            userns: Value = ...,
+            uts: Value = ...,
+            volume: Value = ...,
+            volume_driver: Value = ...,
+            volumes_from: Value = ...,
+            workdir: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Create and run a new container from an image
 
             Args:
                 add_host: Add a custom host-to-IP mapping (host:ip).
-                annotation: Add an annotation to the container (passed through to
-                    the OCI runtime). Defaults to `map[]`.
+                annotation: Add an annotation to the container (passed through to the OCI runtime). Defaults to `map[]`.
                 attach: Attach to STDIN, STDOUT or STDERR.
-                blkio_weight: Block IO (relative weight), between 10 and 1000, or 0
-                    to disable. Defaults to `0`.
-                blkio_weight_device: Block IO weight (relative device weight).
-                    Defaults to `[]`.
+                blkio_weight: Block IO (relative weight), between 10 and 1000, or 0 to disable. Defaults to `0`.
+                blkio_weight_device: Block IO weight (relative device weight). Defaults to `[]`.
                 cap_add: Add Linux capabilities.
                 cap_drop: Drop Linux capabilities.
                 cgroup_parent: Optional parent cgroup for the container.
-                cgroupns: Cgroup namespace to use (host|private) 'host': Run the
-                    container in the Docker host's cgroup namespace 'private': Run
-                    the container in its own private cgroup namespace '': Use the
-                    cgroup namespace as configured by the default-cgroupns-mode
-                    option on the daemon (default).
+                cgroupns: Cgroup namespace to use (host|private) 'host': Run the container in the Docker host's cgroup namespace 'private': Run the container in its own private cgroup namespace '': Use the cgroup namespace as configured by the default-cgroupns-mode option on the daemon (default).
                 cidfile: Write the container ID to the file.
                 cpu_count: CPU count (Windows only). Not available on Linux.
                 cpu_percent: CPU percent (Windows only). Not available on Linux.
@@ -870,14 +766,10 @@ class Docker(_Tool[_R]):
                 detach_keys: Override the key sequence for detaching a container.
                 device: Add a host device to the container.
                 device_cgroup_rule: Add a rule to the cgroup allowed devices list.
-                device_read_bps: Limit read rate (bytes per second) from a device.
-                    Defaults to `[]`.
-                device_read_iops: Limit read rate (IO per second) from a device.
-                    Defaults to `[]`.
-                device_write_bps: Limit write rate (bytes per second) to a device.
-                    Defaults to `[]`.
-                device_write_iops: Limit write rate (IO per second) to a device.
-                    Defaults to `[]`.
+                device_read_bps: Limit read rate (bytes per second) from a device. Defaults to `[]`.
+                device_read_iops: Limit read rate (IO per second) from a device. Defaults to `[]`.
+                device_write_bps: Limit write rate (bytes per second) to a device. Defaults to `[]`.
+                device_write_iops: Limit write rate (IO per second) to a device. Defaults to `[]`.
                 dns: Set custom DNS servers.
                 dns_option: Set DNS options.
                 dns_search: Set custom DNS search domains.
@@ -889,24 +781,16 @@ class Docker(_Tool[_R]):
                 gpus: GPU devices to add to the container ('all' to pass all GPUs).
                 group_add: Add additional groups to join.
                 health_cmd: Command to run to check health.
-                health_interval: Time between running the check (ms|s|m|h). Defaults
-                    to `0s`.
+                health_interval: Time between running the check (ms|s|m|h). Defaults to `0s`.
                 health_retries: Consecutive failures needed to report unhealthy.
-                health_start_interval: Time between running the check during the
-                    start period (ms|s|m|h). Defaults to `0s`.
-                health_start_period: Start period for the container to initialize
-                    before starting health-retries countdown (ms|s|m|h). Defaults to
-                    `0s`.
-                health_timeout: Maximum time to allow one check to run (ms|s|m|h).
-                    Defaults to `0s`.
+                health_start_interval: Time between running the check during the start period (ms|s|m|h). Defaults to `0s`.
+                health_start_period: Start period for the container to initialize before starting health-retries countdown (ms|s|m|h). Defaults to `0s`.
+                health_timeout: Maximum time to allow one check to run (ms|s|m|h). Defaults to `0s`.
                 hostname: Container host name.
-                init: Run an init inside the container that forwards signals and
-                    reaps processes.
+                init: Run an init inside the container that forwards signals and reaps processes.
                 interactive: Keep STDIN open even if not attached.
-                io_maxbandwidth: Maximum IO bandwidth limit for the system drive
-                    (Windows only). Not available on Linux.
-                io_maxiops: Maximum IOps limit for the system drive (Windows only).
-                    Not available on Linux.
+                io_maxbandwidth: Maximum IO bandwidth limit for the system drive (Windows only). Not available on Linux.
+                io_maxiops: Maximum IOps limit for the system drive (Windows only). Not available on Linux.
                 ip: IPv4 address (e.g., 172.30.100.104).
                 ip6: IPv6 address (e.g., 2001:db8::33).
                 ipc: IPC mode to use.
@@ -920,10 +804,8 @@ class Docker(_Tool[_R]):
                 mac_address: Container MAC address (e.g., 92:d0:c6:0a:29:33).
                 memory: Memory limit.
                 memory_reservation: Memory soft limit.
-                memory_swap: Swap limit equal to memory plus swap: '-1' to enable
-                    unlimited swap.
-                memory_swappiness: Tune container memory swappiness (0 to 100).
-                    Defaults to `-1`.
+                memory_swap: Swap limit equal to memory plus swap: '-1' to enable unlimited swap.
+                memory_swappiness: Tune container memory swappiness (0 to 100). Defaults to `-1`.
                 mount: Attach a filesystem mount to the container.
                 name: Assign a name to the container.
                 network: Connect a container to a network.
@@ -937,19 +819,15 @@ class Docker(_Tool[_R]):
                 privileged: Give extended privileges to this container.
                 publish: Publish a container's port(s) to the host.
                 publish_all: Publish all exposed ports to random ports.
-                pull: Pull image before running ("always", "missing", "never").
-                    Defaults to `missing`.
+                pull: Pull image before running ("always", "missing", "never"). Defaults to `missing`.
                 quiet: Suppress the pull output.
                 read_only: Mount the container's root filesystem as read only.
-                restart: Restart policy to apply when a container exits. Defaults to
-                    `no`.
-                rm: Automatically remove the container and its associated anonymous
-                    volumes when it exits.
+                restart: Restart policy to apply when a container exits. Defaults to `no`.
+                rm: Automatically remove the container and its associated anonymous volumes when it exits.
                 runtime: Runtime to use for this container.
                 security_opt: Security Options.
                 shm_size: Size of /dev/shm.
-                sig_proxy: Proxy received signals to the process. Defaults to
-                    `True`.
+                sig_proxy: Proxy received signals to the process. Defaults to `True`.
                 stop_signal: Signal to stop the container.
                 stop_timeout: Timeout (in seconds) to stop a container.
                 storage_opt: Storage driver options for the container.
@@ -968,59 +846,54 @@ class Docker(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Docker.Run[_Argv]: ...
+        def argv(self) -> Docker.Run[Argv]: ...
 
     run: Run[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        config: _Value = ...,
-        context: _Value = ...,
-        debug: _Flag = ...,
-        host: _Value = ...,
-        log_level: _Value = ...,
-        tls: _Flag = ...,
-        tlscacert: _Value = ...,
-        tlscert: _Value = ...,
-        tlskey: _Value = ...,
-        tlsverify: _Flag = ...,
+        *args: str | PathLike[str],
+        config: Value = ...,
+        context: Value = ...,
+        debug: Flag = ...,
+        host: Value = ...,
+        log_level: Value = ...,
+        tls: Flag = ...,
+        tlscacert: Value = ...,
+        tlscert: Value = ...,
+        tlskey: Value = ...,
+        tlsverify: Flag = ...,
         **flags: Any,
     ) -> _R:
         """A self-sufficient runtime for containers
 
         Args:
             config: Location of client config files. Defaults to `~\\.docker`.
-            context: Name of the context to use to connect to the daemon (overrides
-                DOCKER_HOST env var and default context set with "docker context
-                use").
+            context: Name of the context to use to connect to the daemon (overrides DOCKER_HOST env var and default context set with "docker context use").
             debug: Enable debug mode.
             host: Daemon socket to connect to.
-            log_level: Set the logging level ("debug", "info", "warn", "error",
-                "fatal"). Defaults to `info`.
+            log_level: Set the logging level ("debug", "info", "warn", "error", "fatal"). Defaults to `info`.
             tls: Use TLS; implied by --tlsverify.
-            tlscacert: Trust certs signed only by this CA. Defaults to
-                `~\\.docker\\ca.pem`.
-            tlscert: Path to TLS certificate file. Defaults to
-                `~\\.docker\\cert.pem`.
+            tlscacert: Trust certs signed only by this CA. Defaults to `~\\.docker\\ca.pem`.
+            tlscert: Path to TLS certificate file. Defaults to `~\\.docker\\cert.pem`.
             tlskey: Path to TLS key file. Defaults to `~\\.docker\\key.pem`.
             tlsverify: Use TLS and verify the remote.
         """
         ...
     @property
-    def argv(self) -> Docker[_Argv]: ...
+    def argv(self) -> Docker[Argv]: ...
     def flags(
         self,
         *,
-        config: _Value = ...,
-        context: _Value = ...,
-        debug: _Flag = ...,
-        host: _Value = ...,
-        log_level: _Value = ...,
-        tls: _Flag = ...,
-        tlscacert: _Value = ...,
-        tlscert: _Value = ...,
-        tlskey: _Value = ...,
-        tlsverify: _Flag = ...,
+        config: Value = ...,
+        context: Value = ...,
+        debug: Flag = ...,
+        host: Value = ...,
+        log_level: Value = ...,
+        tls: Flag = ...,
+        tlscacert: Value = ...,
+        tlscert: Value = ...,
+        tlskey: Value = ...,
+        tlsverify: Flag = ...,
         **flags: Any,
     ) -> Self:
         """Bind tool-level global options before the subcommand.

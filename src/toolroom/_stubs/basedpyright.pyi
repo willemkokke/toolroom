@@ -6,39 +6,39 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 
-class Basedpyright(_Tool[_R]):
+class Basedpyright(ToolBase[_R]):
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        baselinefile: _Value = ...,
-        createstub: _Value = ...,
-        dependencies: _Flag = ...,
-        gitlabcodequality: _Value = ...,
-        ignoreexternal: _Flag = ...,
-        level: _Value = ...,
-        outputjson: _Flag = ...,
-        project: _Value = ...,
-        pythonpath: _Value = ...,
-        pythonplatform: _Value = ...,
-        pythonversion: _Value = ...,
-        skipunannotated: _Flag = ...,
-        stats: _Flag = ...,
-        threads: _Value = ...,
-        typeshedpath: _Value = ...,
-        venvpath: _Value = ...,
-        verbose: _Flag = ...,
-        verifytypes: _Value = ...,
-        warnings: _Flag = ...,
-        watch: _Flag = ...,
-        writebaseline: _Flag = ...,
+        *args: str | PathLike[str],
+        baselinefile: Value = ...,
+        createstub: Value = ...,
+        dependencies: Flag = ...,
+        gitlabcodequality: Value = ...,
+        ignoreexternal: Flag = ...,
+        level: Value = ...,
+        outputjson: Flag = ...,
+        project: Value = ...,
+        pythonpath: Value = ...,
+        pythonplatform: Value = ...,
+        pythonversion: Value = ...,
+        skipunannotated: Flag = ...,
+        stats: Flag = ...,
+        threads: Value = ...,
+        typeshedpath: Value = ...,
+        venvpath: Value = ...,
+        verbose: Flag = ...,
+        verifytypes: Value = ...,
+        warnings: Flag = ...,
+        watch: Flag = ...,
+        writebaseline: Flag = ...,
         **flags: Any,
     ) -> _R:
         """Run this verb.
@@ -53,8 +53,7 @@ class Basedpyright(_Tool[_R]):
             outputjson: Output results in JSON format.
             project: Use the configuration file at this location.
             pythonpath: Path to the Python interpreter.
-            pythonplatform: Analyze for a specific platform (Darwin, Linux, Windows,
-                iOS, Android).
+            pythonplatform: Analyze for a specific platform (Darwin, Linux, Windows, iOS, Android).
             pythonversion: Analyze for a specific version (3.3, 3.4, etc.).
             skipunannotated: Skip analysis of functions with no type annotations.
             stats: Print detailed performance stats.
@@ -69,4 +68,4 @@ class Basedpyright(_Tool[_R]):
         """
         ...
     @property
-    def argv(self) -> Basedpyright[_Argv]: ...
+    def argv(self) -> Basedpyright[Argv]: ...

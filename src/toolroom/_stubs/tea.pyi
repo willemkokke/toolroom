@@ -6,49 +6,47 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, Self, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 _R3 = TypeVar("_R3")
 
-class Tea(_Tool[_R]):
-    class Branches(_Tool[_R2]):
-        class List(_Tool[_R3]):
+class Tea(ToolBase[_R]):
+    class Branches(ToolBase[_R2]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                fields: _Value = ...,
-                limit: _Value = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                page: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                debug: Flag = ...,
+                fields: Value = ...,
+                limit: Value = ...,
+                login: Value = ...,
+                output: Value = ...,
+                page: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
 
                 Args:
                     debug: Enable debug mode.
-                    fields: Comma-separated list of fields to print. Defaults to
-                        `name,protected,user-can-merge,user-can-push`.
+                    fields: Comma-separated list of fields to print. Defaults to `name,protected,user-can-merge,user-can-push`.
                     limit: specify limit of items per page. Defaults to `30`.
                     login: Use a different Gitea Login.
                     output: Output format.
                     page: specify page. Defaults to `1`.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Branches.List[_Argv]: ...
+            def argv(self) -> Tea.Branches.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -57,7 +55,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Branches[_Argv]: ...
+        def argv(self) -> Tea.Branches[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -69,51 +67,49 @@ class Tea(_Tool[_R]):
             ...
 
     branches: Branches[_R]
-    class Comments(_Tool[_R2]):
-        class Add(_Tool[_R3]):
+    class Comments(ToolBase[_R2]):
+        class Add(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                issue: str,
+                issue: str | PathLike[str],
                 /,
-                *args: str,
-                debug: _Flag = ...,
-                description: _Value = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                debug: Flag = ...,
+                description: Value = ...,
+                login: Value = ...,
+                output: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
 
                 Args:
                     debug: Enable debug mode.
-                    description: comment body (alternative to the positional
-                        argument).
+                    description: comment body (alternative to the positional argument).
                     login: Use a different Gitea Login.
                     output: Output format.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Comments.Add[_Argv]: ...
+            def argv(self) -> Tea.Comments.Add[Argv]: ...
 
         add: Add[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                issue: str,
+                issue: str | PathLike[str],
                 /,
-                *args: str,
-                debug: _Flag = ...,
-                limit: _Value = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                page: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                debug: Flag = ...,
+                limit: Value = ...,
+                login: Value = ...,
+                output: Value = ...,
+                page: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -125,12 +121,11 @@ class Tea(_Tool[_R]):
                     output: Output format.
                     page: specify page. Defaults to `1`.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Comments.List[_Argv]: ...
+            def argv(self) -> Tea.Comments.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -139,7 +134,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Comments[_Argv]: ...
+        def argv(self) -> Tea.Comments[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -151,18 +146,18 @@ class Tea(_Tool[_R]):
             ...
 
     comments: Comments[_R]
-    class Issues(_Tool[_R2]):
-        class Close(_Tool[_R3]):
+    class Issues(ToolBase[_R2]):
+        class Close(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                issue: str,
+                issue: str | PathLike[str],
                 /,
-                *args: str,
-                debug: _Flag = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                debug: Flag = ...,
+                login: Value = ...,
+                output: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -172,29 +167,28 @@ class Tea(_Tool[_R]):
                     login: Use a different Gitea Login.
                     output: Output format.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Issues.Close[_Argv]: ...
+            def argv(self) -> Tea.Issues.Close[Argv]: ...
 
         close: Close[_R2]
-        class Create(_Tool[_R3]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                assignees: _Value = ...,
-                deadline: _Value = ...,
-                debug: _Flag = ...,
-                description: _Value = ...,
-                labels: _Value = ...,
-                login: _Value = ...,
-                milestone: _Value = ...,
-                referenced_version: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                title: _Value = ...,
+                assignees: Value = ...,
+                deadline: Value = ...,
+                debug: Flag = ...,
+                description: Value = ...,
+                labels: Value = ...,
+                login: Value = ...,
+                milestone: Value = ...,
+                referenced_version: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                title: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -208,66 +202,60 @@ class Tea(_Tool[_R]):
                     milestone: Milestone to assign.
                     referenced_version: commit-hash or tag name to assign.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Issues.Create[_Argv]: ...
+            def argv(self) -> Tea.Issues.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                assignee: _Value = ...,
-                author: _Value = ...,
-                debug: _Flag = ...,
-                fields: _Value = ...,
-                from_: _Value = ...,
-                keyword: _Value = ...,
-                kind: _Value = ...,
-                labels: _Value = ...,
-                limit: _Value = ...,
-                login: _Value = ...,
-                mentions: _Value = ...,
-                milestones: _Value = ...,
-                output: _Value = ...,
-                owner: _Value = ...,
-                page: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                state: _Value = ...,
-                until: _Value = ...,
+                assignee: Value = ...,
+                author: Value = ...,
+                debug: Flag = ...,
+                fields: Value = ...,
+                from_: Value = ...,
+                keyword: Value = ...,
+                kind: Value = ...,
+                labels: Value = ...,
+                limit: Value = ...,
+                login: Value = ...,
+                mentions: Value = ...,
+                milestones: Value = ...,
+                output: Value = ...,
+                owner: Value = ...,
+                page: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                state: Value = ...,
+                until: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
 
                 Args:
                     debug: Enable debug mode.
-                    fields: Comma-separated list of fields to print. Defaults to
-                        `index,title,state,author,milestone,labels,owner,repo`.
+                    fields: Comma-separated list of fields to print. Defaults to `index,title,state,author,milestone,labels,owner,repo`.
                     from_: Filter by activity after this date.
                     keyword: Filter by search string.
-                    kind: Whether to return issues, `pulls`, or `all` (you can use
-                        this to apply advanced search filters to PRs). Defaults to
-                        `issues`.
+                    kind: Whether to return issues, `pulls`, or `all` (you can use this to apply advanced search filters to PRs). Defaults to `issues`.
                     labels: Comma-separated list of labels to match issues against.
                     limit: specify limit of items per page. Defaults to `30`.
                     login: Use a different Gitea Login.
-                    milestones: Comma-separated list of milestones to match issues
-                        against.
+                    milestones: Comma-separated list of milestones to match issues against.
                     output: Output format.
                     page: specify page. Defaults to `1`.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                     state: Filter by state (all|open|closed). Defaults to `open`.
                     until: Filter by activity before this date.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Issues.List[_Argv]: ...
+            def argv(self) -> Tea.Issues.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -276,7 +264,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Issues[_Argv]: ...
+        def argv(self) -> Tea.Issues[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -288,20 +276,20 @@ class Tea(_Tool[_R]):
             ...
 
     issues: Issues[_R]
-    class Labels(_Tool[_R2]):
-        class Create(_Tool[_R3]):
+    class Labels(ToolBase[_R2]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                color: _Value = ...,
-                debug: _Flag = ...,
-                description: _Value = ...,
-                file: _Value = ...,
-                login: _Value = ...,
-                name: _Value = ...,
-                output: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                color: Value = ...,
+                debug: Flag = ...,
+                description: Value = ...,
+                file: Value = ...,
+                login: Value = ...,
+                name: Value = ...,
+                output: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -315,28 +303,27 @@ class Tea(_Tool[_R]):
                     name: label name.
                     output: Output format.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Labels.Create[_Argv]: ...
+            def argv(self) -> Tea.Labels.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                exclude_org: _Flag = ...,
-                limit: _Value = ...,
-                login: _Value = ...,
-                org: _Value = ...,
-                output: _Value = ...,
-                page: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                save: _Flag = ...,
+                debug: Flag = ...,
+                exclude_org: Flag = ...,
+                limit: Value = ...,
+                login: Value = ...,
+                org: Value = ...,
+                output: Value = ...,
+                page: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                save: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -350,13 +337,12 @@ class Tea(_Tool[_R]):
                     output: Output format.
                     page: specify page. Defaults to `1`.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                     save: Save all the labels as a file.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Labels.List[_Argv]: ...
+            def argv(self) -> Tea.Labels.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -365,7 +351,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Labels[_Argv]: ...
+        def argv(self) -> Tea.Labels[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -377,28 +363,28 @@ class Tea(_Tool[_R]):
             ...
 
     labels: Labels[_R]
-    class Logins(_Tool[_R2]):
-        class Add(_Tool[_R3]):
+    class Logins(ToolBase[_R2]):
+        class Add(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                client_id: _Value = ...,
-                debug: _Flag = ...,
-                git_credentials: _Flag = ...,
-                insecure: _Flag = ...,
-                name: _Value = ...,
-                no_version_check: _Flag = ...,
-                oauth: _Flag = ...,
-                otp: _Value = ...,
-                password: _Value = ...,
-                redirect_url: _Value = ...,
-                scopes: _Value = ...,
-                ssh_agent_key: _Value = ...,
-                ssh_agent_principal: _Value = ...,
-                ssh_key: _Value = ...,
-                token: _Value = ...,
-                url: _Value = ...,
-                user: _Value = ...,
+                client_id: Value = ...,
+                debug: Flag = ...,
+                git_credentials: Flag = ...,
+                insecure: Flag = ...,
+                name: Value = ...,
+                no_version_check: Flag = ...,
+                oauth: Flag = ...,
+                otp: Value = ...,
+                password: Value = ...,
+                redirect_url: Value = ...,
+                scopes: Value = ...,
+                ssh_agent_key: Value = ...,
+                ssh_agent_principal: Value = ...,
+                ssh_key: Value = ...,
+                token: Value = ...,
+                url: Value = ...,
+                user: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -406,43 +392,33 @@ class Tea(_Tool[_R]):
                 Args:
                     client_id: OAuth client ID (for use with --oauth).
                     debug: Enable debug mode.
-                    git_credentials: Register tea as a git credential helper for
-                        this login's URL, so 'git push' and 'git clone' over HTTPS
-                        authenticate silently using the stored token.
+                    git_credentials: Register tea as a git credential helper for this login's URL, so 'git push' and 'git clone' over HTTPS authenticate silently using the stored token.
                     insecure: Disable TLS verification.
                     name: Login name.
                     no_version_check: Do not check version of Gitea instance.
                     oauth: Use interactive OAuth2 flow for authentication.
                     otp: OTP token for auth, if necessary [%GITEA_SERVER_OTP%].
-                    password: Password for basic auth (will create token)
-                        [%GITEA_SERVER_PASSWORD%].
+                    password: Password for basic auth (will create token) [%GITEA_SERVER_PASSWORD%].
                     redirect_url: OAuth redirect URL (for use with --oauth).
-                    scopes: Token scopes to add when creating a new token, separated
-                        by a comma [%GITEA_SCOPES%].
-                    ssh_agent_key: Use SSH public key or SSH fingerprint to login
-                        (needs a running ssh-agent with ssh key loaded).
-                    ssh_agent_principal: Use SSH certificate with specified
-                        principal to login (needs a running ssh-agent with
-                        certificate loaded).
-                    ssh_key: Path to a SSH key/certificate to use, overrides
-                        auto-discovery.
+                    scopes: Token scopes to add when creating a new token, separated by a comma [%GITEA_SCOPES%].
+                    ssh_agent_key: Use SSH public key or SSH fingerprint to login (needs a running ssh-agent with ssh key loaded).
+                    ssh_agent_principal: Use SSH certificate with specified principal to login (needs a running ssh-agent with certificate loaded).
+                    ssh_key: Path to a SSH key/certificate to use, overrides auto-discovery.
                     token: Access token.
-                    url: Server URL [%GITEA_SERVER_URL%]. Defaults to
-                        `https://gitea.com`.
-                    user: User for basic auth (will create token)
-                        [%GITEA_SERVER_USER%].
+                    url: Server URL [%GITEA_SERVER_URL%]. Defaults to `https://gitea.com`.
+                    user: User for basic auth (will create token) [%GITEA_SERVER_USER%].
                 """
                 ...
             @property
-            def argv(self) -> Tea.Logins.Add[_Argv]: ...
+            def argv(self) -> Tea.Logins.Add[Argv]: ...
 
         add: Add[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                output: _Value = ...,
+                debug: Flag = ...,
+                output: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -453,7 +429,7 @@ class Tea(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Tea.Logins.List[_Argv]: ...
+            def argv(self) -> Tea.Logins.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -462,7 +438,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Logins[_Argv]: ...
+        def argv(self) -> Tea.Logins[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -474,20 +450,20 @@ class Tea(_Tool[_R]):
             ...
 
     logins: Logins[_R]
-    class Milestones(_Tool[_R2]):
-        class Create(_Tool[_R3]):
+    class Milestones(ToolBase[_R2]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                deadline: _Value = ...,
-                debug: _Flag = ...,
-                description: _Value = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                state: _Value = ...,
-                title: _Value = ...,
+                deadline: Value = ...,
+                debug: Flag = ...,
+                description: Value = ...,
+                login: Value = ...,
+                output: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                state: Value = ...,
+                title: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -499,50 +475,46 @@ class Tea(_Tool[_R]):
                     login: Use a different Gitea Login.
                     output: Output format.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                     state: set milestone state. Defaults to `is open`.
                     title: milestone title to create.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Milestones.Create[_Argv]: ...
+            def argv(self) -> Tea.Milestones.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                fields: _Value = ...,
-                limit: _Value = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                page: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                state: _Value = ...,
+                debug: Flag = ...,
+                fields: Value = ...,
+                limit: Value = ...,
+                login: Value = ...,
+                output: Value = ...,
+                page: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                state: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
 
                 Args:
                     debug: Enable debug mode.
-                    fields: Comma-separated list of fields to print. Defaults to
-                        `title,items,duedate`.
+                    fields: Comma-separated list of fields to print. Defaults to `title,items,duedate`.
                     limit: specify limit of items per page. Defaults to `30`.
                     login: Use a different Gitea Login.
                     output: Output format.
                     page: specify page. Defaults to `1`.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
-                    state: Filter by milestone state (all|open|closed). Defaults to
-                        `open`.
+                    repo: Override local repository path or gitea repository slug to interact with.
+                    state: Filter by milestone state (all|open|closed). Defaults to `open`.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Milestones.List[_Argv]: ...
+            def argv(self) -> Tea.Milestones.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -551,7 +523,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Milestones[_Argv]: ...
+        def argv(self) -> Tea.Milestones[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -563,19 +535,19 @@ class Tea(_Tool[_R]):
             ...
 
     milestones: Milestones[_R]
-    class Pulls(_Tool[_R2]):
-        class Checkout(_Tool[_R3]):
+    class Pulls(ToolBase[_R2]):
+        class Checkout(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                pull: str,
+                pull: str | PathLike[str],
                 /,
-                *args: str,
-                branch: _Flag = ...,
-                debug: _Flag = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                branch: Flag = ...,
+                debug: Flag = ...,
+                login: Value = ...,
+                output: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -586,115 +558,107 @@ class Tea(_Tool[_R]):
                     login: Use a different Gitea Login.
                     output: Output format.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Pulls.Checkout[_Argv]: ...
+            def argv(self) -> Tea.Pulls.Checkout[Argv]: ...
 
         checkout: Checkout[_R2]
-        class Create(_Tool[_R3]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                agit: _Flag = ...,
-                allow_maintainer_edits: _Flag = ...,
-                assignees: _Value = ...,
-                base: _Value = ...,
-                deadline: _Value = ...,
-                debug: _Flag = ...,
-                description: _Value = ...,
-                draft: _Flag = ...,
-                head: _Value = ...,
-                labels: _Value = ...,
-                login: _Value = ...,
-                milestone: _Value = ...,
-                referenced_version: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                title: _Value = ...,
-                topic: _Value = ...,
+                agit: Flag = ...,
+                allow_maintainer_edits: Flag = ...,
+                assignees: Value = ...,
+                base: Value = ...,
+                deadline: Value = ...,
+                debug: Flag = ...,
+                description: Value = ...,
+                draft: Flag = ...,
+                head: Value = ...,
+                labels: Value = ...,
+                login: Value = ...,
+                milestone: Value = ...,
+                referenced_version: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                title: Value = ...,
+                topic: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
 
                 Args:
                     agit: Create an agit flow pull request.
-                    allow_maintainer_edits: Enable maintainers to push to the base
-                        branch of created pull.
+                    allow_maintainer_edits: Enable maintainers to push to the base branch of created pull.
                     assignees: Comma-separated list of usernames to assign.
-                    base: Branch name of the PR target. Defaults to `is repos
-                        default branch`.
+                    base: Branch name of the PR target. Defaults to `is repos default branch`.
                     deadline: Deadline timestamp to assign.
                     debug: Enable debug mode.
-                    draft: Create as a draft (prepends "WIP: " to the title; Gitea
-                        treats WIP-prefixed PRs as drafts).
-                    head: Branch name of the PR source . Defaults to `is current
-                        one`.
+                    draft: Create as a draft (prepends "WIP: " to the title; Gitea treats WIP-prefixed PRs as drafts).
+                    head: Branch name of the PR source . Defaults to `is current one`.
                     labels: Comma-separated list of labels to assign.
                     login: Use a different Gitea Login.
                     milestone: Milestone to assign.
                     referenced_version: commit-hash or tag name to assign.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                     topic: Topic name for agit flow pull request.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Pulls.Create[_Argv]: ...
+            def argv(self) -> Tea.Pulls.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                fields: _Value = ...,
-                limit: _Value = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                page: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                state: _Value = ...,
+                debug: Flag = ...,
+                fields: Value = ...,
+                limit: Value = ...,
+                login: Value = ...,
+                output: Value = ...,
+                page: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                state: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
 
                 Args:
                     debug: Enable debug mode.
-                    fields: Comma-separated list of fields to print. Defaults to
-                        `index,title,state,author,milestone,updated,labels`.
+                    fields: Comma-separated list of fields to print. Defaults to `index,title,state,author,milestone,updated,labels`.
                     limit: specify limit of items per page. Defaults to `30`.
                     login: Use a different Gitea Login.
                     output: Output format.
                     page: specify page. Defaults to `1`.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                     state: Filter by state (all|open|closed). Defaults to `open`.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Pulls.List[_Argv]: ...
+            def argv(self) -> Tea.Pulls.List[Argv]: ...
 
         list: List[_R2]
-        class Merge(_Tool[_R3]):
+        class Merge(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                pull: str,
+                pull: str | PathLike[str],
                 /,
-                *args: str,
-                debug: _Flag = ...,
-                login: _Value = ...,
-                message: _Value = ...,
-                output: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                style: _Value = ...,
-                title: _Value = ...,
+                *args: str | PathLike[str],
+                debug: Flag = ...,
+                login: Value = ...,
+                message: Value = ...,
+                output: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                style: Value = ...,
+                title: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -705,15 +669,13 @@ class Tea(_Tool[_R]):
                     message: Merge commit message.
                     output: Output format.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
-                    style: Kind of merge to perform: merge, rebase, squash,
-                        rebase-merge. Defaults to `merge`.
+                    repo: Override local repository path or gitea repository slug to interact with.
+                    style: Kind of merge to perform: merge, rebase, squash, rebase-merge. Defaults to `merge`.
                     title: Merge commit title.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Pulls.Merge[_Argv]: ...
+            def argv(self) -> Tea.Pulls.Merge[Argv]: ...
 
         merge: Merge[_R2]
         def __call__(  # type: ignore[override]
@@ -722,7 +684,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Pulls[_Argv]: ...
+        def argv(self) -> Tea.Pulls[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -734,16 +696,16 @@ class Tea(_Tool[_R]):
             ...
 
     pulls: Pulls[_R]
-    class Releases(_Tool[_R2]):
-        class Assets(_Tool[_R3]):
+    class Releases(ToolBase[_R2]):
+        class Assets(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                debug: _Flag = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                debug: Flag = ...,
+                login: Value = ...,
+                output: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -753,38 +715,36 @@ class Tea(_Tool[_R]):
                     login: Use a different Gitea Login.
                     output: Output format.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Releases.Assets[_Argv]: ...
+            def argv(self) -> Tea.Releases.Assets[Argv]: ...
 
         assets: Assets[_R2]
-        class Create(_Tool[_R3]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                asset: _Value = ...,
-                debug: _Flag = ...,
-                draft: _Flag = ...,
-                login: _Value = ...,
-                note: _Value = ...,
-                note_file: _Value = ...,
-                output: _Value = ...,
-                prerelease: _Flag = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
-                tag: _Value = ...,
-                target: _Value = ...,
-                title: _Value = ...,
+                *args: str | PathLike[str],
+                asset: Value = ...,
+                debug: Flag = ...,
+                draft: Flag = ...,
+                login: Value = ...,
+                note: Value = ...,
+                note_file: Value = ...,
+                output: Value = ...,
+                prerelease: Flag = ...,
+                remote: Value = ...,
+                repo: Value = ...,
+                tag: Value = ...,
+                target: Value = ...,
+                title: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
 
                 Args:
-                    asset: Path to file attachment. May be repeated: a list emits
-                        the flag once per item.
+                    asset: Path to file attachment. May be repeated: a list emits the flag once per item.
                     debug: Enable debug mode.
                     draft: Is a draft.
                     login: Use a different Gitea Login.
@@ -793,28 +753,27 @@ class Tea(_Tool[_R]):
                     output: Output format.
                     prerelease: Is a pre-release.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                     tag: Tag name.
                     target: Target branch name or commit hash.
                     title: Release title.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Releases.Create[_Argv]: ...
+            def argv(self) -> Tea.Releases.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                limit: _Value = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                page: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                debug: Flag = ...,
+                limit: Value = ...,
+                login: Value = ...,
+                output: Value = ...,
+                page: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -826,12 +785,11 @@ class Tea(_Tool[_R]):
                     output: Output format.
                     page: specify page. Defaults to `1`.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Releases.List[_Argv]: ...
+            def argv(self) -> Tea.Releases.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -840,7 +798,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Releases[_Argv]: ...
+        def argv(self) -> Tea.Releases[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -852,27 +810,27 @@ class Tea(_Tool[_R]):
             ...
 
     releases: Releases[_R]
-    class Repos(_Tool[_R2]):
-        class Create(_Tool[_R3]):
+    class Repos(ToolBase[_R2]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                branch: _Value = ...,
-                debug: _Flag = ...,
-                description: _Value = ...,
-                gitignores: _Value = ...,
-                init: _Flag = ...,
-                labels: _Value = ...,
-                license: _Value = ...,
-                login: _Value = ...,
-                name: _Value = ...,
-                object_format: _Value = ...,
-                output: _Value = ...,
-                owner: _Value = ...,
-                private: _Flag = ...,
-                readme: _Value = ...,
-                template: _Flag = ...,
-                trustmodel: _Value = ...,
+                branch: Value = ...,
+                debug: Flag = ...,
+                description: Value = ...,
+                gitignores: Value = ...,
+                init: Flag = ...,
+                labels: Value = ...,
+                license: Value = ...,
+                login: Value = ...,
+                name: Value = ...,
+                object_format: Value = ...,
+                output: Value = ...,
+                owner: Value = ...,
+                private: Flag = ...,
+                readme: Value = ...,
+                template: Flag = ...,
+                trustmodel: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -893,23 +851,22 @@ class Tea(_Tool[_R]):
                     private: make repo private.
                     readme: use readme template (need --init).
                     template: make repo a template repo.
-                    trustmodel: select trust model
-                        (committer,collaborator,collaborator+committer).
+                    trustmodel: select trust model (committer,collaborator,collaborator+committer).
                 """
                 ...
             @property
-            def argv(self) -> Tea.Repos.Create[_Argv]: ...
+            def argv(self) -> Tea.Repos.Create[Argv]: ...
 
         create: Create[_R2]
-        class Fork(_Tool[_R3]):
+        class Fork(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                login: _Value = ...,
-                owner: _Value = ...,
-                remote: _Value = ...,
-                repo: _Value = ...,
+                debug: Flag = ...,
+                login: Value = ...,
+                owner: Value = ...,
+                remote: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
@@ -919,36 +876,34 @@ class Tea(_Tool[_R]):
                     login: Use a different Gitea Login.
                     owner: name of fork's owner, defaults to current user.
                     remote: Discover Gitea login from remote.
-                    repo: Override local repository path or gitea repository slug to
-                        interact with.
+                    repo: Override local repository path or gitea repository slug to interact with.
                 """
                 ...
             @property
-            def argv(self) -> Tea.Repos.Fork[_Argv]: ...
+            def argv(self) -> Tea.Repos.Fork[Argv]: ...
 
         fork: Fork[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                fields: _Value = ...,
-                limit: _Value = ...,
-                login: _Value = ...,
-                output: _Value = ...,
-                owner: _Value = ...,
-                page: _Value = ...,
-                starred: _Flag = ...,
-                type: _Value = ...,
-                watched: _Flag = ...,
+                debug: Flag = ...,
+                fields: Value = ...,
+                limit: Value = ...,
+                login: Value = ...,
+                output: Value = ...,
+                owner: Value = ...,
+                page: Value = ...,
+                starred: Flag = ...,
+                type: Value = ...,
+                watched: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Run this verb.
 
                 Args:
                     debug: Enable debug mode.
-                    fields: Comma-separated list of fields to print. Defaults to
-                        `owner,name,type,ssh`.
+                    fields: Comma-separated list of fields to print. Defaults to `owner,name,type,ssh`.
                     limit: specify limit of items per page. Defaults to `30`.
                     login: Use a different Gitea Login.
                     output: Output format.
@@ -960,7 +915,7 @@ class Tea(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Tea.Repos.List[_Argv]: ...
+            def argv(self) -> Tea.Repos.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -969,7 +924,7 @@ class Tea(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Tea.Repos[_Argv]: ...
+        def argv(self) -> Tea.Repos[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -981,60 +936,54 @@ class Tea(_Tool[_R]):
             ...
 
     repos: Repos[_R]
-    class Api(_Tool[_R2]):
+    class Api(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            endpoint: str,
+            endpoint: str | PathLike[str],
             /,
-            *args: str,
-            Field: _Value = ...,
-            data: _Value = ...,
-            debug: _Flag = ...,
-            field: _Value = ...,
-            header: _Value = ...,
-            include: _Flag = ...,
-            login: _Value = ...,
-            method: _Value = ...,
-            output: _Value = ...,
-            remote: _Value = ...,
-            repo: _Value = ...,
+            *args: str | PathLike[str],
+            Field: Value = ...,
+            data: Value = ...,
+            debug: Flag = ...,
+            field: Value = ...,
+            header: Value = ...,
+            include: Flag = ...,
+            login: Value = ...,
+            method: Value = ...,
+            output: Value = ...,
+            remote: Value = ...,
+            repo: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Run this verb.
 
             Args:
-                Field: Add a typed field to the request body (key=value, @file, or
-                    @- for stdin).
-                data: Raw JSON request body (use @file to read from file, @- for
-                    stdin).
+                Field: Add a typed field to the request body (key=value, @file, or @- for stdin).
+                data: Raw JSON request body (use @file to read from file, @- for stdin).
                 debug: Enable debug mode.
                 field: Add a string field to the request body (key=value).
                 header: Add a custom header (key:value).
-                include: Include HTTP status and response headers in output (written
-                    to stderr).
+                include: Include HTTP status and response headers in output (written to stderr).
                 login: Use a different Gitea Login.
-                method: HTTP method (GET, POST, PUT, PATCH, DELETE). Defaults to
-                    `GET`.
-                output: Write response body to file instead of stdout (use '-' for
-                    stdout).
+                method: HTTP method (GET, POST, PUT, PATCH, DELETE). Defaults to `GET`.
+                output: Write response body to file instead of stdout (use '-' for stdout).
                 remote: Discover Gitea login from remote.
-                repo: Override local repository path or gitea repository slug to
-                    interact with.
+                repo: Override local repository path or gitea repository slug to interact with.
             """
             ...
         @property
-        def argv(self) -> Tea.Api[_Argv]: ...
+        def argv(self) -> Tea.Api[Argv]: ...
 
     api: Api[_R]
-    class Clone(_Tool[_R2]):
+    class Clone(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            repo_slug: str,
+            repo_slug: str | PathLike[str],
             /,
-            *args: str,
-            debug: _Flag = ...,
-            depth: _Value = ...,
-            login: _Value = ...,
+            *args: str | PathLike[str],
+            debug: Flag = ...,
+            depth: Value = ...,
+            login: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Run this verb.
@@ -1046,14 +995,14 @@ class Tea(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Tea.Clone[_Argv]: ...
+        def argv(self) -> Tea.Clone[Argv]: ...
 
     clone: Clone[_R]
-    class Whoami(_Tool[_R2]):
+    class Whoami(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            debug: _Flag = ...,
+            debug: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Run this verb.
@@ -1063,13 +1012,13 @@ class Tea(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Tea.Whoami[_Argv]: ...
+        def argv(self) -> Tea.Whoami[Argv]: ...
 
     whoami: Whoami[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        debug: _Flag = ...,
+        *args: str | PathLike[str],
+        debug: Flag = ...,
         **flags: Any,
     ) -> _R:
         """Run this verb.
@@ -1079,11 +1028,11 @@ class Tea(_Tool[_R]):
         """
         ...
     @property
-    def argv(self) -> Tea[_Argv]: ...
+    def argv(self) -> Tea[Argv]: ...
     def flags(
         self,
         *,
-        debug: _Flag = ...,
+        debug: Flag = ...,
         **flags: Any,
     ) -> Self:
         """Bind tool-level global options before the subcommand.

@@ -6,42 +6,39 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, Self, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 _R3 = TypeVar("_R3")
 
-class Gh(_Tool[_R]):
-    class Auth(_Tool[_R2]):
-        class Login(_Tool[_R3]):
+class Gh(ToolBase[_R]):
+    class Auth(ToolBase[_R2]):
+        class Login(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                clipboard: _Flag = ...,
-                git_protocol: _Value = ...,
-                hostname: _Value = ...,
-                insecure_storage: _Flag = ...,
-                scopes: _Value = ...,
-                skip_ssh_key: _Flag = ...,
-                web: _Flag = ...,
-                with_token: _Flag = ...,
+                clipboard: Flag = ...,
+                git_protocol: Value = ...,
+                hostname: Value = ...,
+                insecure_storage: Flag = ...,
+                scopes: Value = ...,
+                skip_ssh_key: Flag = ...,
+                web: Flag = ...,
+                with_token: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Authenticate with a GitHub host.
 
                 Args:
                     clipboard: Copy one-time OAuth device code to clipboard.
-                    git_protocol: The protocol to use for git operations on this
-                        host: {ssh|https}.
-                    hostname: The hostname of the GitHub instance to authenticate
-                        with.
-                    insecure_storage: Save authentication credentials in plain text
-                        instead of credential store.
+                    git_protocol: The protocol to use for git operations on this host: {ssh|https}.
+                    hostname: The hostname of the GitHub instance to authenticate with.
+                    insecure_storage: Save authentication credentials in plain text instead of credential store.
                     scopes: Additional authentication scopes to request.
                     skip_ssh_key: Skip generate/upload SSH key prompt.
                     web: Open a browser to authenticate.
@@ -49,19 +46,19 @@ class Gh(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Gh.Auth.Login[_Argv]: ...
+            def argv(self) -> Gh.Auth.Login[Argv]: ...
 
         login: Login[_R2]
-        class Status(_Tool[_R3]):
+        class Status(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                active: _Flag = ...,
-                hostname: _Value = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                show_token: _Flag = ...,
-                template: _Value = ...,
+                active: Flag = ...,
+                hostname: Value = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                show_token: Flag = ...,
+                template: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Display active account and authentication state on each known GitHub
@@ -73,12 +70,11 @@ class Gh(_Tool[_R]):
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
                     show_token: Display the auth token.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    template: Format JSON output using a Go template; see "gh help formatting".
                 """
                 ...
             @property
-            def argv(self) -> Gh.Auth.Status[_Argv]: ...
+            def argv(self) -> Gh.Auth.Status[Argv]: ...
 
         status: Status[_R2]
         def __call__(  # type: ignore[override]
@@ -87,7 +83,7 @@ class Gh(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Gh.Auth[_Argv]: ...
+        def argv(self) -> Gh.Auth[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -99,50 +95,44 @@ class Gh(_Tool[_R]):
             ...
 
     auth: Auth[_R]
-    class Issue(_Tool[_R2]):
-        class Create(_Tool[_R3]):
+    class Issue(ToolBase[_R2]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                assignee: _Value = ...,
-                blocked_by: _Value = ...,
-                blocking: _Value = ...,
-                body: _Value = ...,
-                body_file: _Value = ...,
-                editor: _Flag = ...,
-                label: _Value = ...,
-                milestone: _Value = ...,
-                parent: _Value = ...,
-                project: _Value = ...,
-                recover: _Value = ...,
-                repo: _Value = ...,
-                template: _Value = ...,
-                title: _Value = ...,
-                type: _Value = ...,
-                web: _Flag = ...,
+                assignee: Value = ...,
+                blocked_by: Value = ...,
+                blocking: Value = ...,
+                body: Value = ...,
+                body_file: Value = ...,
+                editor: Flag = ...,
+                label: Value = ...,
+                milestone: Value = ...,
+                parent: Value = ...,
+                project: Value = ...,
+                recover: Value = ...,
+                repo: Value = ...,
+                template: Value = ...,
+                title: Value = ...,
+                type: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Create an issue on GitHub.
 
                 Args:
                     assignee: Assign people by their login.
-                    blocked_by: Mark the new issue as blocked by these issue numbers
-                        or URLs. Added in 2.94.0.
-                    blocking: Mark the new issue as blocking these issue numbers or
-                        URLs. Added in 2.94.0.
+                    blocked_by: Mark the new issue as blocked by these issue numbers or URLs. Added in 2.94.0.
+                    blocking: Mark the new issue as blocking these issue numbers or URLs. Added in 2.94.0.
                     body: Supply a body.
-                    body_file: Read body text from file (use "-" to read from
-                        standard input).
-                    editor: Skip prompts and open the text editor to write the title
-                        and body in.
+                    body_file: Read body text from file (use "-" to read from standard input).
+                    editor: Skip prompts and open the text editor to write the title and body in.
                     label: Add labels by name.
                     milestone: Add the issue to a milestone by name.
-                    parent: Add the new issue as a sub-issue of the specified parent
-                        number or URL. Added in 2.94.0.
+                    parent: Add the new issue as a sub-issue of the specified parent number or URL. Added in 2.94.0.
                     project: Add the issue to projects by title.
                     recover: Recover input from a failed run of create.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                     template: Template name to use as starting body text.
                     title: Supply a title.
                     type: Set the issue type by name. Added in 2.94.0.
@@ -150,28 +140,28 @@ class Gh(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Gh.Issue.Create[_Argv]: ...
+            def argv(self) -> Gh.Issue.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                app: _Value = ...,
-                assignee: _Value = ...,
-                author: _Value = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                label: _Value = ...,
-                limit: _Value = ...,
-                mention: _Value = ...,
-                milestone: _Value = ...,
-                repo: _Value = ...,
-                search: _Value = ...,
-                state: _Value = ...,
-                template: _Value = ...,
-                type: _Value = ...,
-                web: _Flag = ...,
+                app: Value = ...,
+                assignee: Value = ...,
+                author: Value = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                label: Value = ...,
+                limit: Value = ...,
+                mention: Value = ...,
+                milestone: Value = ...,
+                repo: Value = ...,
+                search: Value = ...,
+                state: Value = ...,
+                template: Value = ...,
+                type: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """List issues in a GitHub repository. By default, this only lists open
@@ -187,30 +177,28 @@ class Gh(_Tool[_R]):
                     limit: Maximum number of issues to fetch. Defaults to `30`.
                     mention: Filter by mention.
                     milestone: Filter by milestone number or title.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                     search: Search issues with query.
                     state: Filter by state: {open|closed|all}. Defaults to `open`.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     type: Filter by issue type name. Added in 2.94.0.
                     web: List issues in the web browser.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Issue.List[_Argv]: ...
+            def argv(self) -> Gh.Issue.List[Argv]: ...
 
         list: List[_R2]
-        class View(_Tool[_R3]):
+        class View(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                comments: _Flag = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                repo: _Value = ...,
-                template: _Value = ...,
-                web: _Flag = ...,
+                *args: str | PathLike[str],
+                comments: Flag = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                repo: Value = ...,
+                template: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Display the title, body, and other information about an issue.
@@ -219,15 +207,13 @@ class Gh(_Tool[_R]):
                     comments: View issue comments.
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     web: Open an issue in the browser.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Issue.View[_Argv]: ...
+            def argv(self) -> Gh.Issue.View[Argv]: ...
 
         view: View[_R2]
         def __call__(  # type: ignore[override]
@@ -236,7 +222,7 @@ class Gh(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Gh.Issue[_Argv]: ...
+        def argv(self) -> Gh.Issue[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -248,17 +234,17 @@ class Gh(_Tool[_R]):
             ...
 
     issue: Issue[_R]
-    class Label(_Tool[_R2]):
-        class Create(_Tool[_R3]):
+    class Label(ToolBase[_R2]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                name: str,
+                name: str | PathLike[str],
                 /,
-                *args: str,
-                color: _Value = ...,
-                description: _Value = ...,
-                force: _Flag = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                color: Value = ...,
+                description: Value = ...,
+                force: Flag = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Create a new label on GitHub, or update an existing one with
@@ -267,29 +253,27 @@ class Gh(_Tool[_R]):
                 Args:
                     color: Color of the label.
                     description: Description of the label.
-                    force: Update the label color and description if label already
-                        exists.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    force: Update the label color and description if label already exists.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Label.Create[_Argv]: ...
+            def argv(self) -> Gh.Label.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                jq: _Value = ...,
-                json: _Value = ...,
-                limit: _Value = ...,
-                order: _Value = ...,
-                repo: _Value = ...,
-                search: _Value = ...,
-                sort: _Value = ...,
-                template: _Value = ...,
-                web: _Flag = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                limit: Value = ...,
+                order: Value = ...,
+                repo: Value = ...,
+                search: Value = ...,
+                sort: Value = ...,
+                template: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Display labels in a GitHub repository.
@@ -299,18 +283,15 @@ class Gh(_Tool[_R]):
                     json: Output JSON with the specified fields.
                     limit: Maximum number of labels to fetch. Defaults to `30`.
                     order: Order of labels returned: {asc|desc}. Defaults to `asc`.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                     search: Search label names and descriptions.
-                    sort: Sort fetched labels: {created|name}. Defaults to
-                        `created`.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    sort: Sort fetched labels: {created|name}. Defaults to `created`.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     web: List labels in the web browser.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Label.List[_Argv]: ...
+            def argv(self) -> Gh.Label.List[Argv]: ...
 
         list: List[_R2]
         def __call__(  # type: ignore[override]
@@ -319,7 +300,7 @@ class Gh(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Gh.Label[_Argv]: ...
+        def argv(self) -> Gh.Label[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -331,60 +312,57 @@ class Gh(_Tool[_R]):
             ...
 
     label: Label[_R]
-    class Pr(_Tool[_R2]):
-        class Checkout(_Tool[_R3]):
+    class Pr(ToolBase[_R2]):
+        class Checkout(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                branch: _Value = ...,
-                detach: _Flag = ...,
-                force: _Flag = ...,
-                recurse_submodules: _Flag = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                branch: Value = ...,
+                detach: Flag = ...,
+                force: Flag = ...,
+                recurse_submodules: Flag = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Check out a pull request in git
 
                 Args:
-                    branch: Local branch name to use. Defaults to `[the name of the
-                        head branch]`.
+                    branch: Local branch name to use. Defaults to `[the name of the head branch]`.
                     detach: Checkout PR with a detached HEAD.
-                    force: Reset the existing local branch to the latest state of
-                        the pull request.
+                    force: Reset the existing local branch to the latest state of the pull request.
                     recurse_submodules: Update all submodules after checkout.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Pr.Checkout[_Argv]: ...
+            def argv(self) -> Gh.Pr.Checkout[Argv]: ...
 
         checkout: Checkout[_R2]
-        class Create(_Tool[_R3]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                assignee: _Value = ...,
-                base: _Value = ...,
-                body: _Value = ...,
-                body_file: _Value = ...,
-                draft: _Flag = ...,
-                dry_run: _Flag = ...,
-                editor: _Flag = ...,
-                fill: _Flag = ...,
-                fill_first: _Flag = ...,
-                fill_verbose: _Flag = ...,
-                head: _Value = ...,
-                label: _Value = ...,
-                milestone: _Value = ...,
-                no_maintainer_edit: _Flag = ...,
-                project: _Value = ...,
-                recover: _Value = ...,
-                repo: _Value = ...,
-                reviewer: _Value = ...,
-                template: _Value = ...,
-                title: _Value = ...,
-                web: _Flag = ...,
+                assignee: Value = ...,
+                base: Value = ...,
+                body: Value = ...,
+                body_file: Value = ...,
+                draft: Flag = ...,
+                dry_run: Flag = ...,
+                editor: Flag = ...,
+                fill: Flag = ...,
+                fill_first: Flag = ...,
+                fill_verbose: Flag = ...,
+                head: Value = ...,
+                label: Value = ...,
+                milestone: Value = ...,
+                no_maintainer_edit: Flag = ...,
+                project: Value = ...,
+                recover: Value = ...,
+                repo: Value = ...,
+                reviewer: Value = ...,
+                template: Value = ...,
+                title: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Create a pull request on GitHub.
@@ -393,25 +371,20 @@ class Gh(_Tool[_R]):
                     assignee: Assign people by their login.
                     base: The branch into which you want your code merged.
                     body: Body for the pull request.
-                    body_file: Read body text from file (use "-" to read from
-                        standard input).
+                    body_file: Read body text from file (use "-" to read from standard input).
                     draft: Mark pull request as a draft.
                     dry_run: Print details instead of creating the PR.
-                    editor: Skip prompts and open the text editor to write the title
-                        and body in.
+                    editor: Skip prompts and open the text editor to write the title and body in.
                     fill: Use commit info for title and body.
                     fill_first: Use first commit info for title and body.
                     fill_verbose: Use commits msg+body for description.
-                    head: The branch that contains commits for your pull request.
-                        Defaults to `[current branch]`.
+                    head: The branch that contains commits for your pull request. Defaults to `[current branch]`.
                     label: Add labels by name.
                     milestone: Add the pull request to a milestone by name.
-                    no_maintainer_edit: Disable maintainer's ability to modify pull
-                        request.
+                    no_maintainer_edit: Disable maintainer's ability to modify pull request.
                     project: Add the pull request to projects by title.
                     recover: Recover input from a failed run of create.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                     reviewer: Request reviews from people or teams by their handle.
                     template: Template file to use as starting body text.
                     title: Title for the pull request.
@@ -419,28 +392,28 @@ class Gh(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Gh.Pr.Create[_Argv]: ...
+            def argv(self) -> Gh.Pr.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                app: _Value = ...,
-                assignee: _Value = ...,
-                author: _Value = ...,
-                base: _Value = ...,
-                draft: _Flag = ...,
-                head: _Value = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                label: _Value = ...,
-                limit: _Value = ...,
-                repo: _Value = ...,
-                search: _Value = ...,
-                state: _Value = ...,
-                template: _Value = ...,
-                web: _Flag = ...,
+                app: Value = ...,
+                assignee: Value = ...,
+                author: Value = ...,
+                base: Value = ...,
+                draft: Flag = ...,
+                head: Value = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                label: Value = ...,
+                limit: Value = ...,
+                repo: Value = ...,
+                search: Value = ...,
+                state: Value = ...,
+                template: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """List pull requests in a GitHub repository. By default, this only
@@ -452,83 +425,73 @@ class Gh(_Tool[_R]):
                     author: Filter by author (use --app to filter by a GitHub App).
                     base: Filter by base branch.
                     draft: Filter by draft state.
-                    head: Filter by head branch ("<owner>:<branch>" syntax not
-                        supported).
+                    head: Filter by head branch ("<owner>:<branch>" syntax not supported).
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
                     label: Filter by label.
                     limit: Maximum number of items to fetch. Defaults to `30`.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                     search: Search pull requests with query.
-                    state: Filter by state: {open|closed|merged|all}. Defaults to
-                        `open`.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    state: Filter by state: {open|closed|merged|all}. Defaults to `open`.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     web: List pull requests in the web browser.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Pr.List[_Argv]: ...
+            def argv(self) -> Gh.Pr.List[Argv]: ...
 
         list: List[_R2]
-        class Merge(_Tool[_R3]):
+        class Merge(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                admin: _Flag = ...,
-                author_email: _Value = ...,
-                auto: _Flag = ...,
-                body: _Value = ...,
-                body_file: _Value = ...,
-                delete_branch: _Flag = ...,
-                disable_auto: _Flag = ...,
-                match_head_commit: _Value = ...,
-                merge: _Flag = ...,
-                rebase: _Flag = ...,
-                repo: _Value = ...,
-                squash: _Flag = ...,
-                subject: _Value = ...,
+                *args: str | PathLike[str],
+                admin: Flag = ...,
+                author_email: Value = ...,
+                auto: Flag = ...,
+                body: Value = ...,
+                body_file: Value = ...,
+                delete_branch: Flag = ...,
+                disable_auto: Flag = ...,
+                match_head_commit: Value = ...,
+                merge: Flag = ...,
+                rebase: Flag = ...,
+                repo: Value = ...,
+                squash: Flag = ...,
+                subject: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Merge a pull request on GitHub.
 
                 Args:
-                    admin: Use administrator privileges to merge a pull request that
-                        does not meet requirements.
+                    admin: Use administrator privileges to merge a pull request that does not meet requirements.
                     author_email: Email text for merge commit author.
-                    auto: Automatically merge only after necessary requirements are
-                        met.
+                    auto: Automatically merge only after necessary requirements are met.
                     body: Body text for the merge commit.
-                    body_file: Read body text from file (use "-" to read from
-                        standard input).
+                    body_file: Read body text from file (use "-" to read from standard input).
                     delete_branch: Delete the local and remote branch after merge.
                     disable_auto: Disable auto-merge for this pull request.
-                    match_head_commit: Commit SHA that the pull request head must
-                        match to allow merge.
+                    match_head_commit: Commit SHA that the pull request head must match to allow merge.
                     merge: Merge the commits with the base branch.
                     rebase: Rebase the commits onto the base branch.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    squash: Squash the commits into one commit and merge it into the
-                        base branch.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    squash: Squash the commits into one commit and merge it into the base branch.
                     subject: Subject text for the merge commit.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Pr.Merge[_Argv]: ...
+            def argv(self) -> Gh.Pr.Merge[Argv]: ...
 
         merge: Merge[_R2]
-        class View(_Tool[_R3]):
+        class View(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                comments: _Flag = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                repo: _Value = ...,
-                template: _Value = ...,
-                web: _Flag = ...,
+                *args: str | PathLike[str],
+                comments: Flag = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                repo: Value = ...,
+                template: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Display the title, body, and other information about a pull request.
@@ -537,15 +500,13 @@ class Gh(_Tool[_R]):
                     comments: View pull request comments.
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     web: Open a pull request in the browser.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Pr.View[_Argv]: ...
+            def argv(self) -> Gh.Pr.View[Argv]: ...
 
         view: View[_R2]
         def __call__(  # type: ignore[override]
@@ -554,7 +515,7 @@ class Gh(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Gh.Pr[_Argv]: ...
+        def argv(self) -> Gh.Pr[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -566,71 +527,62 @@ class Gh(_Tool[_R]):
             ...
 
     pr: Pr[_R]
-    class Release(_Tool[_R2]):
-        class Create(_Tool[_R3]):
+    class Release(ToolBase[_R2]):
+        class Create(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                discussion_category: _Value = ...,
-                draft: _Flag = ...,
-                fail_on_no_commits: _Flag = ...,
-                generate_notes: _Flag = ...,
-                latest: _Flag = ...,
-                notes: _Value = ...,
-                notes_file: _Value = ...,
-                notes_from_tag: _Flag = ...,
-                notes_start_tag: _Value = ...,
-                prerelease: _Flag = ...,
-                repo: _Value = ...,
-                target: _Value = ...,
-                title: _Value = ...,
-                verify_tag: _Flag = ...,
+                *args: str | PathLike[str],
+                discussion_category: Value = ...,
+                draft: Flag = ...,
+                fail_on_no_commits: Flag = ...,
+                generate_notes: Flag = ...,
+                latest: Flag = ...,
+                notes: Value = ...,
+                notes_file: Value = ...,
+                notes_from_tag: Flag = ...,
+                notes_start_tag: Value = ...,
+                prerelease: Flag = ...,
+                repo: Value = ...,
+                target: Value = ...,
+                title: Value = ...,
+                verify_tag: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Create a new GitHub Release for a repository.
 
                 Args:
-                    discussion_category: Start a discussion in the specified
-                        category.
+                    discussion_category: Start a discussion in the specified category.
                     draft: Save the release as a draft instead of publishing it.
-                    fail_on_no_commits: Fail if there are no commits since the last
-                        release (no impact on the first release).
-                    generate_notes: Automatically generate title and notes for the
-                        release via GitHub Release Notes API.
+                    fail_on_no_commits: Fail if there are no commits since the last release (no impact on the first release).
+                    generate_notes: Automatically generate title and notes for the release via GitHub Release Notes API.
                     latest: Mark this release as "Latest" .
                     notes: Release notes.
-                    notes_file: Read release notes from file (use "-" to read from
-                        standard input).
-                    notes_from_tag: Fetch notes from the tag annotation or message
-                        of commit associated with tag.
-                    notes_start_tag: Tag to use as the starting point for generating
-                        release notes.
+                    notes_file: Read release notes from file (use "-" to read from standard input).
+                    notes_from_tag: Fetch notes from the tag annotation or message of commit associated with tag.
+                    notes_start_tag: Tag to use as the starting point for generating release notes.
                     prerelease: Mark the release as a prerelease.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    target: Target branch or full commit SHA. Defaults to `[main
-                        branch]`.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    target: Target branch or full commit SHA. Defaults to `[main branch]`.
                     title: Release title.
-                    verify_tag: Abort in case the git tag doesn't already exist in
-                        the remote repository.
+                    verify_tag: Abort in case the git tag doesn't already exist in the remote repository.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Release.Create[_Argv]: ...
+            def argv(self) -> Gh.Release.Create[Argv]: ...
 
         create: Create[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                exclude_drafts: _Flag = ...,
-                exclude_pre_releases: _Flag = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                limit: _Value = ...,
-                order: _Value = ...,
-                repo: _Value = ...,
-                template: _Value = ...,
+                exclude_drafts: Flag = ...,
+                exclude_pre_releases: Flag = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                limit: Value = ...,
+                order: Value = ...,
+                repo: Value = ...,
+                template: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """List releases in a repository
@@ -641,49 +593,45 @@ class Gh(_Tool[_R]):
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
                     limit: Maximum number of items to fetch. Defaults to `30`.
-                    order: Order of releases returned: {asc|desc}. Defaults to
-                        `desc`.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    order: Order of releases returned: {asc|desc}. Defaults to `desc`.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                 """
                 ...
             @property
-            def argv(self) -> Gh.Release.List[_Argv]: ...
+            def argv(self) -> Gh.Release.List[Argv]: ...
 
         list: List[_R2]
-        class Upload(_Tool[_R3]):
+        class Upload(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                tag: str,
+                tag: str | PathLike[str],
                 /,
-                *args: str,
-                clobber: _Flag = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                clobber: Flag = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Upload asset files to a GitHub Release.
 
                 Args:
                     clobber: Delete and re-upload existing assets of the same name.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Release.Upload[_Argv]: ...
+            def argv(self) -> Gh.Release.Upload[Argv]: ...
 
         upload: Upload[_R2]
-        class View(_Tool[_R3]):
+        class View(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                jq: _Value = ...,
-                json: _Value = ...,
-                repo: _Value = ...,
-                template: _Value = ...,
-                web: _Flag = ...,
+                *args: str | PathLike[str],
+                jq: Value = ...,
+                json: Value = ...,
+                repo: Value = ...,
+                template: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """View information about a GitHub Release.
@@ -691,15 +639,13 @@ class Gh(_Tool[_R]):
                 Args:
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     web: Open the release in the browser.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Release.View[_Argv]: ...
+            def argv(self) -> Gh.Release.View[Argv]: ...
 
         view: View[_R2]
         def __call__(  # type: ignore[override]
@@ -708,7 +654,7 @@ class Gh(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Gh.Release[_Argv]: ...
+        def argv(self) -> Gh.Release[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -720,15 +666,15 @@ class Gh(_Tool[_R]):
             ...
 
     release: Release[_R]
-    class Repo(_Tool[_R2]):
-        class Clone(_Tool[_R3]):
+    class Repo(ToolBase[_R2]):
+        class Clone(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                repository: str,
+                repository: str | PathLike[str],
                 /,
-                *args: str,
-                no_upstream: _Flag = ...,
-                upstream_remote_name: _Value = ...,
+                *args: str | PathLike[str],
+                no_upstream: Flag = ...,
+                upstream_remote_name: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Clone a GitHub repository locally. Pass additional `git clone` flags
@@ -736,23 +682,22 @@ class Gh(_Tool[_R]):
 
                 Args:
                     no_upstream: Do not add an upstream remote when cloning a fork.
-                    upstream_remote_name: Upstream remote name when cloning a fork.
-                        Defaults to `upstream`.
+                    upstream_remote_name: Upstream remote name when cloning a fork. Defaults to `upstream`.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Repo.Clone[_Argv]: ...
+            def argv(self) -> Gh.Repo.Clone[Argv]: ...
 
         clone: Clone[_R2]
-        class View(_Tool[_R3]):
+        class View(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                branch: _Value = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                template: _Value = ...,
-                web: _Flag = ...,
+                *args: str | PathLike[str],
+                branch: Value = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                template: Value = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Display the description and the README of a GitHub repository.
@@ -761,13 +706,12 @@ class Gh(_Tool[_R]):
                     branch: View a specific branch of the repository.
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     web: Open a repository in the browser.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Repo.View[_Argv]: ...
+            def argv(self) -> Gh.Repo.View[Argv]: ...
 
         view: View[_R2]
         def __call__(  # type: ignore[override]
@@ -776,7 +720,7 @@ class Gh(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Gh.Repo[_Argv]: ...
+        def argv(self) -> Gh.Repo[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -788,24 +732,24 @@ class Gh(_Tool[_R]):
             ...
 
     repo: Repo[_R]
-    class Run(_Tool[_R2]):
-        class List(_Tool[_R3]):
+    class Run(ToolBase[_R2]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                all: _Flag = ...,
-                branch: _Value = ...,
-                commit: _Value = ...,
-                created: _Value = ...,
-                event: _Value = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                limit: _Value = ...,
-                repo: _Value = ...,
-                status: _Value = ...,
-                template: _Value = ...,
-                user: _Value = ...,
-                workflow: _Value = ...,
+                all: Flag = ...,
+                branch: Value = ...,
+                commit: Value = ...,
+                created: Value = ...,
+                event: Value = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                limit: Value = ...,
+                repo: Value = ...,
+                status: Value = ...,
+                template: Value = ...,
+                user: Value = ...,
+                workflow: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """List recent workflow runs.
@@ -819,35 +763,32 @@ class Gh(_Tool[_R]):
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
                     limit: Maximum number of runs to fetch. Defaults to `20`.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    status: Filter runs by status:
-                        {queued|completed|in_progress|requested|waiting|pending|action_required|cancelled|failure|neutral|skipped|stale|startup_failure|success|timed_out}.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    status: Filter runs by status: {queued|completed|in_progress|requested|waiting|pending|action_required|cancelled|failure|neutral|skipped|stale|startup_failure|success|timed_out}.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     user: Filter runs by user who triggered the run.
                     workflow: Filter runs by workflow.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Run.List[_Argv]: ...
+            def argv(self) -> Gh.Run.List[Argv]: ...
 
         list: List[_R2]
-        class View(_Tool[_R3]):
+        class View(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                attempt: _Value = ...,
-                exit_status: _Flag = ...,
-                job: _Value = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                log: _Flag = ...,
-                log_failed: _Flag = ...,
-                repo: _Value = ...,
-                template: _Value = ...,
-                verbose: _Flag = ...,
-                web: _Flag = ...,
+                *args: str | PathLike[str],
+                attempt: Value = ...,
+                exit_status: Flag = ...,
+                job: Value = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                log: Flag = ...,
+                log_failed: Flag = ...,
+                repo: Value = ...,
+                template: Value = ...,
+                verbose: Flag = ...,
+                web: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """View a summary of a workflow run.
@@ -859,30 +800,27 @@ class Gh(_Tool[_R]):
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
                     log: View full log for either a run or specific job.
-                    log_failed: View the log for any failed steps in a run or
-                        specific job.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    log_failed: View the log for any failed steps in a run or specific job.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                     verbose: Show job steps.
                     web: Open run in the browser.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Run.View[_Argv]: ...
+            def argv(self) -> Gh.Run.View[Argv]: ...
 
         view: View[_R2]
-        class Watch(_Tool[_R3]):
+        class Watch(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                run_id: str,
+                run_id: str | PathLike[str],
                 /,
-                *args: str,
-                compact: _Flag = ...,
-                exit_status: _Flag = ...,
-                interval: _Value = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                compact: Flag = ...,
+                exit_status: Flag = ...,
+                interval: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Watch a run until it completes, showing its progress.
@@ -891,12 +829,11 @@ class Gh(_Tool[_R]):
                     compact: Show only relevant/failed steps.
                     exit_status: Exit with non-zero status if run fails.
                     interval: Refresh interval in seconds. Defaults to `3`.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Run.Watch[_Argv]: ...
+            def argv(self) -> Gh.Run.Watch[Argv]: ...
 
         watch: Watch[_R2]
         def __call__(  # type: ignore[override]
@@ -905,7 +842,7 @@ class Gh(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Gh.Run[_Argv]: ...
+        def argv(self) -> Gh.Run[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -917,17 +854,17 @@ class Gh(_Tool[_R]):
             ...
 
     run: Run[_R]
-    class Workflow(_Tool[_R2]):
-        class List(_Tool[_R3]):
+    class Workflow(ToolBase[_R2]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                all: _Flag = ...,
-                jq: _Value = ...,
-                json: _Value = ...,
-                limit: _Value = ...,
-                repo: _Value = ...,
-                template: _Value = ...,
+                all: Flag = ...,
+                jq: Value = ...,
+                json: Value = ...,
+                limit: Value = ...,
+                repo: Value = ...,
+                template: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """List workflow files, hiding disabled workflows by default.
@@ -937,42 +874,37 @@ class Gh(_Tool[_R]):
                     jq: Filter JSON output using a jq expression.
                     json: Output JSON with the specified fields.
                     limit: Maximum number of workflows to fetch. Defaults to `50`.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
-                    template: Format JSON output using a Go template; see "gh help
-                        formatting".
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
+                    template: Format JSON output using a Go template; see "gh help formatting".
                 """
                 ...
             @property
-            def argv(self) -> Gh.Workflow.List[_Argv]: ...
+            def argv(self) -> Gh.Workflow.List[Argv]: ...
 
         list: List[_R2]
-        class Run(_Tool[_R3]):
+        class Run(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                field: _Value = ...,
-                json: _Flag = ...,
-                raw_field: _Value = ...,
-                ref: _Value = ...,
-                repo: _Value = ...,
+                *args: str | PathLike[str],
+                field: Value = ...,
+                json: Flag = ...,
+                raw_field: Value = ...,
+                ref: Value = ...,
+                repo: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Create a `workflow_dispatch` event for a given workflow.
 
                 Args:
-                    field: Add a string parameter in key=value format, respecting @
-                        syntax (see "gh help api").
+                    field: Add a string parameter in key=value format, respecting @ syntax (see "gh help api").
                     json: Read workflow inputs as JSON via STDIN.
                     raw_field: Add a string parameter in key=value format.
-                    ref: Branch or tag name which contains the version of the
-                        workflow file you'd like to run.
-                    repo: Select another repository using the [HOST/]OWNER/REPO
-                        format.
+                    ref: Branch or tag name which contains the version of the workflow file you'd like to run.
+                    repo: Select another repository using the [HOST/]OWNER/REPO format.
                 """
                 ...
             @property
-            def argv(self) -> Gh.Workflow.Run[_Argv]: ...
+            def argv(self) -> Gh.Workflow.Run[Argv]: ...
 
         run: Run[_R2]
         def __call__(  # type: ignore[override]
@@ -981,7 +913,7 @@ class Gh(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Gh.Workflow[_Argv]: ...
+        def argv(self) -> Gh.Workflow[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -993,72 +925,63 @@ class Gh(_Tool[_R]):
             ...
 
     workflow: Workflow[_R]
-    class Api(_Tool[_R2]):
+    class Api(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            allow_escape_sequences: _Flag = ...,
-            cache: _Value = ...,
-            field: _Value = ...,
-            header: _Value = ...,
-            hostname: _Value = ...,
-            include: _Flag = ...,
-            input: _Value = ...,
-            jq: _Value = ...,
-            method: _Value = ...,
-            paginate: _Flag = ...,
-            preview: _Value = ...,
-            raw_field: _Value = ...,
-            silent: _Flag = ...,
-            slurp: _Flag = ...,
-            template: _Value = ...,
-            verbose: _Flag = ...,
+            *args: str | PathLike[str],
+            allow_escape_sequences: Flag = ...,
+            cache: Value = ...,
+            field: Value = ...,
+            header: Value = ...,
+            hostname: Value = ...,
+            include: Flag = ...,
+            input: Value = ...,
+            jq: Value = ...,
+            method: Value = ...,
+            paginate: Flag = ...,
+            preview: Value = ...,
+            raw_field: Value = ...,
+            silent: Flag = ...,
+            slurp: Flag = ...,
+            template: Value = ...,
+            verbose: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Makes an authenticated HTTP request to the GitHub API and prints the
             response.
 
             Args:
-                allow_escape_sequences: Allow printing terminal escape sequences.
-                    Added in 2.97.0.
+                allow_escape_sequences: Allow printing terminal escape sequences. Added in 2.97.0.
                 cache: Cache the response, e.g. "3600s", "60m", "1h".
-                field: Add a typed parameter in key=value format (use "@<path>" or
-                    "@-" to read value from file or stdin).
+                field: Add a typed parameter in key=value format (use "@<path>" or "@-" to read value from file or stdin).
                 header: Add a HTTP request header in key:value format.
-                hostname: The GitHub hostname for the request. Defaults to
-                    `github.com`.
-                include: Include HTTP response status line and headers in the
-                    output.
-                input: The file to use as body for the HTTP request (use "-" to read
-                    from standard input).
+                hostname: The GitHub hostname for the request. Defaults to `github.com`.
+                include: Include HTTP response status line and headers in the output.
+                input: The file to use as body for the HTTP request (use "-" to read from standard input).
                 jq: Query to select values from the response using jq syntax.
                 method: The HTTP method for the request. Defaults to `GET`.
-                paginate: Make additional HTTP requests to fetch all pages of
-                    results.
-                preview: Opt into GitHub API previews (names should omit
-                    '-preview').
+                paginate: Make additional HTTP requests to fetch all pages of results.
+                preview: Opt into GitHub API previews (names should omit '-preview').
                 raw_field: Add a string parameter in key=value format.
                 silent: Do not print the response body.
-                slurp: Use with "--paginate" to return an array of all pages of
-                    either JSON arrays or objects.
-                template: Format JSON output using a Go template; see "gh help
-                    formatting".
+                slurp: Use with "--paginate" to return an array of all pages of either JSON arrays or objects.
+                template: Format JSON output using a Go template; see "gh help formatting".
                 verbose: Include full HTTP request and response in the output.
             """
             ...
         @property
-        def argv(self) -> Gh.Api[_Argv]: ...
+        def argv(self) -> Gh.Api[Argv]: ...
 
     api: Api[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
+        *args: str | PathLike[str],
         **flags: Any,
     ) -> _R:
         """Work seamlessly with GitHub from the command line."""
         ...
     @property
-    def argv(self) -> Gh[_Argv]: ...
+    def argv(self) -> Gh[Argv]: ...
     def flags(
         self,
         **flags: Any,

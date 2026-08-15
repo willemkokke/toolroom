@@ -7,91 +7,71 @@
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
 from collections.abc import Sequence
-from typing import Any, Literal, Self, TypeVar
+from os import PathLike
+from typing import Any, Literal, Self, TypeAlias, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 
-class Ty(_Tool[_R]):
-    class Check(_Tool[_R2]):
+Color: TypeAlias = Literal["auto", "always", "never"]
+OutputFormat: TypeAlias = Literal["full", "concise", "gitlab", "github", "junit"]
+PythonVersion: TypeAlias = Literal[
+    "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"
+]
+
+class Ty(ToolBase[_R]):
+    class Check(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            add_ignore: _Flag = ...,
-            color: Literal["auto", "always", "never"]
-            | Sequence[Literal["auto", "always", "never"]]
-            | None = ...,
-            config: _Value = ...,
-            config_file: _Value = ...,
-            error: _Value = ...,
-            error_on_warning: _Flag = ...,
-            exclude: _Value = ...,
-            exclude_scripts: _Flag = ...,
-            exit_zero: _Flag = ...,
-            exit_zero_on_warning: _Flag = ...,
-            extra_search_path: _Value = ...,
-            fix: _Flag = ...,
-            force_exclude: _Flag = ...,
-            ignore: _Value = ...,
-            no_progress: _Flag = ...,
-            output_format: Literal["full", "concise", "gitlab", "github", "junit"]
-            | Sequence[Literal["full", "concise", "gitlab", "github", "junit"]]
-            | None = ...,
-            project: _Value = ...,
-            python: _Value = ...,
-            python_platform: _Value = ...,
-            python_version: Literal[
-                "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"
-            ]
-            | Sequence[
-                Literal[
-                    "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"
-                ]
-            ]
-            | None = ...,
-            quiet: _Flag = ...,
-            respect_ignore_files: _Flag = ...,
-            typeshed: _Value = ...,
-            verbose: _Flag = ...,
-            warn: _Value = ...,
-            watch: _Flag = ...,
+            *args: str | PathLike[str],
+            add_ignore: Flag = ...,
+            color: Color | Sequence[Color] | None = ...,
+            config: Value = ...,
+            config_file: Value = ...,
+            error: Value = ...,
+            error_on_warning: Flag = ...,
+            exclude: Value = ...,
+            exclude_scripts: Flag = ...,
+            exit_zero: Flag = ...,
+            exit_zero_on_warning: Flag = ...,
+            extra_search_path: Value = ...,
+            fix: Flag = ...,
+            force_exclude: Flag = ...,
+            ignore: Value = ...,
+            no_progress: Flag = ...,
+            output_format: OutputFormat | Sequence[OutputFormat] | None = ...,
+            project: Value = ...,
+            python: Value = ...,
+            python_platform: Value = ...,
+            python_version: PythonVersion | Sequence[PythonVersion] | None = ...,
+            quiet: Flag = ...,
+            respect_ignore_files: Flag = ...,
+            typeshed: Value = ...,
+            verbose: Flag = ...,
+            warn: Value = ...,
+            watch: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Check a project for type errors
 
             Args:
-                add_ignore: Adds `ty: ignore` comments to suppress all rule
-                    diagnostics.
+                add_ignore: Adds `ty: ignore` comments to suppress all rule diagnostics.
                 color: Control when colored output is used.
-                config: A TOML `<KEY> = <VALUE>` pair (such as you might find in a
-                    `ty.toml` configuration file) overriding a specific
-                    configuration option.
+                config: A TOML `<KEY> = <VALUE>` pair (such as you might find in a `ty.toml` configuration file) overriding a specific configuration option.
                 config_file: The path to a `ty.toml` file to use for configuration.
-                error: Treat the given rule as having severity 'error'. May be
-                    repeated: a list emits the flag once per item.
-                error_on_warning: Use exit code 1 if there are any warning-level
-                    diagnostics.
+                error: Treat the given rule as having severity 'error'. May be repeated: a list emits the flag once per item.
+                error_on_warning: Use exit code 1 if there are any warning-level diagnostics.
                 exclude: Glob patterns for files to exclude from type checking.
-                exclude_scripts: Exclude files containing PEP 723 inline script
-                    metadata unless passed explicitly. `exclude_scripts=off` emits
-                    `--include-scripts`. Added in 0.0.64.
-                exit_zero: Always use exit code 0, even when there are error-level
-                    diagnostics.
-                exit_zero_on_warning: Use exit code 0 if there are no error-level
-                    diagnostics.
-                extra_search_path: Additional path to use as a module-resolution
-                    source (can be passed multiple times). May be repeated: a list
-                    emits the flag once per item.
+                exclude_scripts: Exclude files containing PEP 723 inline script metadata unless passed explicitly. `exclude_scripts=off` emits `--include-scripts`. Added in 0.0.64.
+                exit_zero: Always use exit code 0, even when there are error-level diagnostics.
+                exit_zero_on_warning: Use exit code 0 if there are no error-level diagnostics.
+                extra_search_path: Additional path to use as a module-resolution source (can be passed multiple times). May be repeated: a list emits the flag once per item.
                 fix: Apply fixes to resolve errors.
-                force_exclude: Enforce exclusions, even for paths passed to ty
-                    directly on the command-line. `force_exclude=off` emits
-                    `--no-force-exclude`.
-                ignore: Disables the rule. May be repeated: a list emits the flag
-                    once per item.
+                force_exclude: Enforce exclusions, even for paths passed to ty directly on the command-line. `force_exclude=off` emits `--no-force-exclude`.
+                ignore: Disables the rule. May be repeated: a list emits the flag once per item.
                 no_progress: Hide all progress outputs.
                 output_format: The format to use for printing diagnostic messages.
                 project: Run the command within the given project directory.
@@ -99,31 +79,26 @@ class Ty(_Tool[_R]):
                 python_platform: Target platform to assume when resolving types.
                 python_version: Python version to assume when resolving types.
                 quiet: Use quiet output (or `-qq` for silent output).
-                respect_ignore_files: Respect file exclusions via `.gitignore` and
-                    other standard ignore files. `respect_ignore_files=off` emits
-                    `--no-respect-ignore-files`.
+                respect_ignore_files: Respect file exclusions via `.gitignore` and other standard ignore files. `respect_ignore_files=off` emits `--no-respect-ignore-files`.
                 typeshed: Custom directory to use for stdlib typeshed stubs.
-                verbose: Use verbose output (or `-vv` and `-vvv` for more verbose
-                    output).
-                warn: Treat the given rule as having severity 'warn'. May be
-                    repeated: a list emits the flag once per item.
-                watch: Watch files for changes and recheck files related to the
-                    changed files.
+                verbose: Use verbose output (or `-vv` and `-vvv` for more verbose output).
+                warn: Treat the given rule as having severity 'warn'. May be repeated: a list emits the flag once per item.
+                watch: Watch files for changes and recheck files related to the changed files.
             """
             ...
         @property
-        def argv(self) -> Ty.Check[_Argv]: ...
+        def argv(self) -> Ty.Check[Argv]: ...
 
     check: Check[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
+        *args: str | PathLike[str],
         **flags: Any,
     ) -> _R:
         """An extremely fast Python type checker."""
         ...
     @property
-    def argv(self) -> Ty[_Argv]: ...
+    def argv(self) -> Ty[Argv]: ...
     def flags(
         self,
         **flags: Any,

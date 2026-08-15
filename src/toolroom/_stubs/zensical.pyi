@@ -6,23 +6,23 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, Self, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 
-class Zensical(_Tool[_R]):
-    class Build(_Tool[_R2]):
+class Zensical(ToolBase[_R]):
+    class Build(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            clean: _Flag = ...,
-            config_file: _Value = ...,
-            strict: _Flag = ...,
+            clean: Flag = ...,
+            config_file: Value = ...,
+            strict: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Build a project.
@@ -34,29 +34,29 @@ class Zensical(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Zensical.Build[_Argv]: ...
+        def argv(self) -> Zensical.Build[Argv]: ...
 
     build: Build[_R]
-    class New(_Tool[_R2]):
+    class New(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
+            *args: str | PathLike[str],
             **flags: Any,
         ) -> _R2:
             """Create a new template project in the current or given directory."""
             ...
         @property
-        def argv(self) -> Zensical.New[_Argv]: ...
+        def argv(self) -> Zensical.New[Argv]: ...
 
     new: New[_R]
-    class Serve(_Tool[_R2]):
+    class Serve(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            config_file: _Value = ...,
-            dev_addr: _Value = ...,
-            open: _Flag = ...,
-            strict: _Flag = ...,
+            config_file: Value = ...,
+            dev_addr: Value = ...,
+            open: Flag = ...,
+            strict: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Build and serve a project.
@@ -69,18 +69,18 @@ class Zensical(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Zensical.Serve[_Argv]: ...
+        def argv(self) -> Zensical.Serve[Argv]: ...
 
     serve: Serve[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
+        *args: str | PathLike[str],
         **flags: Any,
     ) -> _R:
         """Zensical - A modern static site generator."""
         ...
     @property
-    def argv(self) -> Zensical[_Argv]: ...
+    def argv(self) -> Zensical[Argv]: ...
     def flags(
         self,
         **flags: Any,

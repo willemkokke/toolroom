@@ -21,7 +21,7 @@
 # __getattr__, and they satisfy the AST parity test (tools.py bindings ⊆ this
 # stub). Only `_re` and `_threading` are referenced here; the rest exist purely
 # for parity.
-import os as _os  # noqa: F401
+import os as _os
 import re as _re
 import subprocess as _subprocess  # noqa: F401
 import sys as _sys  # noqa: F401
@@ -29,7 +29,7 @@ import threading as _threading
 import types as _types  # noqa: F401
 from collections.abc import Callable, Iterator, Sequence
 from pathlib import Path as _Path
-from typing import Any, Generic, Literal, NamedTuple, Self
+from typing import Any, Generic, Literal, NamedTuple, Self, TypeAlias
 from typing import cast as _cast  # noqa: F401
 
 from typing_extensions import TypeVar
@@ -145,19 +145,31 @@ class _StdinPayload:
     def __init__(self, value: str) -> None: ...
     def take(self) -> str | _Consumed: ...
 
+# The three types every generated signature is written in — public and
+# reader-facing, because they are what a hover shows. Wide on purpose: the
+# bridge stringifies whatever it is handed (so `Path` and `int` work) and
+# repeats the flag for each item of a sequence, so a narrower type would
+# reject calls that demonstrably work.
+#
 # A boolean flag: True → --flag, off → the tool's own negation,
 # False/None → omitted (which is what lets a task parameter's default flow
 # straight through).
-_Flag = bool | _Off | None
-# An option that takes a value. Wide on purpose: the bridge stringifies
-# whatever it is handed and repeats the flag for each item of a sequence,
-# so a narrower type would reject calls that demonstrably work.
-_Value = str | int | float | Sequence[str] | _Off | None
+Flag: TypeAlias = bool | _Off | None
+# An option that takes a value; a sequence repeats the flag per item.
+Value: TypeAlias = (
+    str
+    | int
+    | float
+    | _os.PathLike[str]
+    | Sequence[str | int | float | _os.PathLike[str]]
+    | _Off
+    | None
+)
 # An option whose value is *optional* — usable bare (`gpg_sign=True`, sign
 # with the default key) or with a value (`gpg_sign="KEY"`). Both spell a
 # valid command; the tool prints its placeholder attached to the flag,
 # `--gpg-sign[=<key-id>]`, which is how footman tells the two apart.
-_ValuedFlag = bool | _Value
+ValuedFlag: TypeAlias = bool | Value
 
 _NEGATIONS: dict[str, dict[str, str]]
 _WRAPPERS: dict[str, frozenset[str]]

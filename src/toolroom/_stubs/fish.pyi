@@ -3,8 +3,7 @@
 # `source="manual"`).
 from typing import Any, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool
+from toolroom import Argv, Tool
 
 _R = TypeVar("_R")
 
@@ -26,4 +25,4 @@ class Fish(Tool[_R]):
         """
         ...
     @property
-    def argv(self) -> Fish[_Argv]: ...
+    def argv(self) -> Fish[Argv]: ...

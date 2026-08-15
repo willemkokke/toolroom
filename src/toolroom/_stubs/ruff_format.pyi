@@ -7,137 +7,87 @@
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
 from collections.abc import Sequence
-from typing import Any, Literal, TypeVar
+from os import PathLike
+from typing import Any, Literal, TypeAlias, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 
-class RuffFormat(_Tool[_R]):
+Color: TypeAlias = Literal["auto", "always", "never"]
+OutputFormat: TypeAlias = Literal[
+    "concise",
+    "full",
+    "json",
+    "json-lines",
+    "junit",
+    "grouped",
+    "github",
+    "gitlab",
+    "pylint",
+    "rdjson",
+    "azure",
+    "sarif",
+]
+TargetVersion: TypeAlias = Literal[
+    "py37", "py38", "py39", "py310", "py311", "py312", "py313", "py314", "py315"
+]
+
+class RuffFormat(ToolBase[_R]):
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        cache_dir: _Value = ...,
-        check: _Flag = ...,
-        color: Literal["auto", "always", "never"]
-        | Sequence[Literal["auto", "always", "never"]]
-        | None = ...,
-        config: _Value = ...,
-        diff: _Flag = ...,
-        exclude: _Value = ...,
-        exit_non_zero_on_format: _Flag = ...,
-        extend_exclude: _Value = ...,
-        extension: _Value = ...,
-        force_exclude: _Flag = ...,
-        isolated: _Flag = ...,
-        line_length: _Value = ...,
-        no_cache: _Flag = ...,
-        output_format: Literal[
-            "concise",
-            "full",
-            "json",
-            "json-lines",
-            "junit",
-            "grouped",
-            "github",
-            "gitlab",
-            "pylint",
-            "rdjson",
-            "azure",
-            "sarif",
-        ]
-        | Sequence[
-            Literal[
-                "concise",
-                "full",
-                "json",
-                "json-lines",
-                "junit",
-                "grouped",
-                "github",
-                "gitlab",
-                "pylint",
-                "rdjson",
-                "azure",
-                "sarif",
-            ]
-        ]
-        | None = ...,
-        preview: _Flag = ...,
-        quiet: _Flag = ...,
-        range: _Value = ...,
-        respect_gitignore: _Flag = ...,
-        silent: _Flag = ...,
-        stdin_filename: _Value = ...,
-        target_version: Literal[
-            "py37", "py38", "py39", "py310", "py311", "py312", "py313", "py314", "py315"
-        ]
-        | Sequence[
-            Literal[
-                "py37",
-                "py38",
-                "py39",
-                "py310",
-                "py311",
-                "py312",
-                "py313",
-                "py314",
-                "py315",
-            ]
-        ]
-        | None = ...,
-        verbose: _Flag = ...,
+        *args: str | PathLike[str],
+        cache_dir: Value = ...,
+        check: Flag = ...,
+        color: Color | Sequence[Color] | None = ...,
+        config: Value = ...,
+        diff: Flag = ...,
+        exclude: Value = ...,
+        exit_non_zero_on_format: Flag = ...,
+        extend_exclude: Value = ...,
+        extension: Value = ...,
+        force_exclude: Flag = ...,
+        isolated: Flag = ...,
+        line_length: Value = ...,
+        no_cache: Flag = ...,
+        output_format: OutputFormat | Sequence[OutputFormat] | None = ...,
+        preview: Flag = ...,
+        quiet: Flag = ...,
+        range: Value = ...,
+        respect_gitignore: Flag = ...,
+        silent: Flag = ...,
+        stdin_filename: Value = ...,
+        target_version: TargetVersion | Sequence[TargetVersion] | None = ...,
+        verbose: Flag = ...,
         **flags: Any,
     ) -> _R:
         """Run the Ruff formatter on the given files or directories
 
         Args:
             cache_dir: Path to the cache directory.
-            check: Avoid writing any formatted files back; instead, exit with a
-                non-zero status code if any files would have been modified, and zero
-                otherwise.
+            check: Avoid writing any formatted files back; instead, exit with a non-zero status code if any files would have been modified, and zero otherwise.
             color: Control when colored output is used.
-            config: Either a path to a TOML configuration file (`pyproject.toml` or
-                `ruff.toml`), or a TOML `<KEY> = <VALUE>` pair (such as you might
-                find in a `ruff.toml` configuration file) overriding a specific
-                configuration option (e.g., `--config "lint.line-length = 100"` or
-                `--config "format.quote-style = 'single'"`).
-            diff: Avoid writing any formatted files back; instead, exit with a
-                non-zero status code and the difference between the current file and
-                how the formatted file would look like.
-            exclude: List of paths, used to omit files and/or directories from
-                analysis.
-            exit_non_zero_on_format: Exit with a non-zero status code if any files
-                were modified via format, even if all files were formatted
-                successfully.
-            extend_exclude: Like --exclude, but adds additional files and
-                directories on top of those already excluded. Added in 0.15.21.
-            extension: List of mappings from file extension to language (one of
-                `python`, `ipynb`, `pyi`).
-            force_exclude: Enforce exclusions, even for paths passed to Ruff
-                directly on the command-line. `force_exclude=off` emits
-                `--no-force-exclude`.
+            config: Either a path to a TOML configuration file (`pyproject.toml` or `ruff.toml`), or a TOML `<KEY> = <VALUE>` pair (such as you might find in a `ruff.toml` configuration file) overriding a specific configuration option (e.g., `--config "lint.line-length = 100"` or `--config "format.quote-style = 'single'"`).
+            diff: Avoid writing any formatted files back; instead, exit with a non-zero status code and the difference between the current file and how the formatted file would look like.
+            exclude: List of paths, used to omit files and/or directories from analysis.
+            exit_non_zero_on_format: Exit with a non-zero status code if any files were modified via format, even if all files were formatted successfully.
+            extend_exclude: Like --exclude, but adds additional files and directories on top of those already excluded. Added in 0.15.21.
+            extension: List of mappings from file extension to language (one of `python`, `ipynb`, `pyi`).
+            force_exclude: Enforce exclusions, even for paths passed to Ruff directly on the command-line. `force_exclude=off` emits `--no-force-exclude`.
             isolated: Ignore all configuration files.
             line_length: Set the line-length.
             no_cache: Disable cache reads.
-            output_format: Output serialization format for violations, when used
-                with `--check`.
-            preview: Enable preview mode; enables unstable formatting. `preview=off`
-                emits `--no-preview`.
+            output_format: Output serialization format for violations, when used with `--check`.
+            preview: Enable preview mode; enables unstable formatting. `preview=off` emits `--no-preview`.
             quiet: Print diagnostics, but nothing else.
-            range: When specified, Ruff will try to only format the code in the
-                given range.
-            respect_gitignore: Respect file exclusions via `.gitignore` and other
-                standard ignore files. `respect_gitignore=off` emits
-                `--no-respect-gitignore`.
-            silent: Disable all logging (but still exit with status code "1" upon
-                detecting diagnostics).
+            range: When specified, Ruff will try to only format the code in the given range.
+            respect_gitignore: Respect file exclusions via `.gitignore` and other standard ignore files. `respect_gitignore=off` emits `--no-respect-gitignore`.
+            silent: Disable all logging (but still exit with status code "1" upon detecting diagnostics).
             stdin_filename: The name of the file when passing it through stdin.
             target_version: The minimum Python version that should be supported.
             verbose: Enable verbose logging.
         """
         ...
     @property
-    def argv(self) -> RuffFormat[_Argv]: ...
+    def argv(self) -> RuffFormat[Argv]: ...

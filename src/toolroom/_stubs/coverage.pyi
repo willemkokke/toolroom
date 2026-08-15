@@ -6,28 +6,28 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, Self, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 
-class Coverage(_Tool[_R]):
-    class Annotate(_Tool[_R2]):
+class Coverage(ToolBase[_R]):
+    class Annotate(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            data_file: _Value = ...,
-            debug: _Value = ...,
-            directory: _Value = ...,
-            ignore_errors: _Flag = ...,
-            include: _Value = ...,
-            keep_combined: _Flag = ...,
-            omit: _Value = ...,
-            rcfile: _Value = ...,
+            *args: str | PathLike[str],
+            data_file: Value = ...,
+            debug: Value = ...,
+            directory: Value = ...,
+            ignore_errors: Flag = ...,
+            include: Value = ...,
+            keep_combined: Flag = ...,
+            omit: Value = ...,
+            rcfile: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Make annotated copies of the given files, marking statements that are
@@ -38,29 +38,26 @@ class Coverage(_Tool[_R]):
                 debug: Debug options, separated by commas.
                 directory: Write the output files to DIR.
                 ignore_errors: Ignore errors while reading source files.
-                include: Include only files whose paths match one of these patterns.
-                    May be repeated: a list emits the flag once per item.
-                keep_combined: Keep original coverage files, otherwise they are
-                    deleted after combining. Added in 7.15.0.
-                omit: Omit files whose paths match one of these patterns. May be
-                    repeated: a list emits the flag once per item.
+                include: Include only files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                keep_combined: Keep original coverage files, otherwise they are deleted after combining. Added in 7.15.0.
+                omit: Omit files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
                 rcfile: Specify configuration file.
             """
             ...
         @property
-        def argv(self) -> Coverage.Annotate[_Argv]: ...
+        def argv(self) -> Coverage.Annotate[Argv]: ...
 
     annotate: Annotate[_R]
-    class Combine(_Tool[_R2]):
+    class Combine(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            append: _Flag = ...,
-            data_file: _Value = ...,
-            debug: _Value = ...,
-            keep: _Flag = ...,
-            quiet: _Flag = ...,
-            rcfile: _Value = ...,
+            *args: str | PathLike[str],
+            append: Flag = ...,
+            data_file: Value = ...,
+            debug: Value = ...,
+            keep: Flag = ...,
+            quiet: Flag = ...,
+            rcfile: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Combine data from multiple coverage files. The combined results are
@@ -77,16 +74,16 @@ class Coverage(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Coverage.Combine[_Argv]: ...
+        def argv(self) -> Coverage.Combine[Argv]: ...
 
     combine: Combine[_R]
-    class Erase(_Tool[_R2]):
+    class Erase(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            data_file: _Value = ...,
-            debug: _Value = ...,
-            rcfile: _Value = ...,
+            data_file: Value = ...,
+            debug: Value = ...,
+            rcfile: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Erase previously collected coverage data.
@@ -98,100 +95,88 @@ class Coverage(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Coverage.Erase[_Argv]: ...
+        def argv(self) -> Coverage.Erase[Argv]: ...
 
     erase: Erase[_R]
-    class Html(_Tool[_R2]):
+    class Html(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            contexts: _Value = ...,
-            data_file: _Value = ...,
-            debug: _Value = ...,
-            directory: _Value = ...,
-            fail_under: _Value = ...,
-            ignore_errors: _Flag = ...,
-            include: _Value = ...,
-            keep_combined: _Flag = ...,
-            omit: _Value = ...,
-            precision: _Value = ...,
-            quiet: _Flag = ...,
-            rcfile: _Value = ...,
-            show_contexts: _Flag = ...,
-            skip_covered: _Flag = ...,
-            skip_empty: _Flag = ...,
-            title: _Value = ...,
+            *args: str | PathLike[str],
+            contexts: Value = ...,
+            data_file: Value = ...,
+            debug: Value = ...,
+            directory: Value = ...,
+            fail_under: Value = ...,
+            ignore_errors: Flag = ...,
+            include: Value = ...,
+            keep_combined: Flag = ...,
+            omit: Value = ...,
+            precision: Value = ...,
+            quiet: Flag = ...,
+            rcfile: Value = ...,
+            show_contexts: Flag = ...,
+            skip_covered: Flag = ...,
+            skip_empty: Flag = ...,
+            title: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Create an HTML report of coverage results. Each file gets its own page,
             with the source decorated to show executed, excluded, and missed lines.
 
             Args:
-                contexts: Only display data from lines covered in the given
-                    contexts. May be repeated: a list emits the flag once per item.
+                contexts: Only display data from lines covered in the given contexts. May be repeated: a list emits the flag once per item.
                 data_file: Read coverage data for report generation from this file.
                 debug: Debug options, separated by commas.
                 directory: Write the output files to DIR.
-                fail_under: Exit with a status of 2 if the total coverage is less
-                    than MIN.
+                fail_under: Exit with a status of 2 if the total coverage is less than MIN.
                 ignore_errors: Ignore errors while reading source files.
-                include: Include only files whose paths match one of these patterns.
-                    May be repeated: a list emits the flag once per item.
-                keep_combined: Keep original coverage files, otherwise they are
-                    deleted after combining. Added in 7.15.0.
-                omit: Omit files whose paths match one of these patterns. May be
-                    repeated: a list emits the flag once per item.
-                precision: Number of digits after the decimal point to display for
-                    reported coverage percentages.
+                include: Include only files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                keep_combined: Keep original coverage files, otherwise they are deleted after combining. Added in 7.15.0.
+                omit: Omit files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                precision: Number of digits after the decimal point to display for reported coverage percentages.
                 quiet: Don't print messages about what is happening.
                 rcfile: Specify configuration file.
                 show_contexts: Show contexts for covered lines.
-                skip_covered: Skip files with 100% coverage. `skip_covered=off`
-                    emits `--no-skip-covered`.
+                skip_covered: Skip files with 100% coverage. `skip_covered=off` emits `--no-skip-covered`.
                 skip_empty: Skip files with no code.
                 title: A text string to use as the title on the HTML.
             """
             ...
         @property
-        def argv(self) -> Coverage.Html[_Argv]: ...
+        def argv(self) -> Coverage.Html[Argv]: ...
 
     html: Html[_R]
-    class Json(_Tool[_R2]):
+    class Json(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            contexts: _Value = ...,
-            data_file: _Value = ...,
-            debug: _Value = ...,
-            fail_under: _Value = ...,
-            ignore_errors: _Flag = ...,
-            include: _Value = ...,
-            keep_combined: _Flag = ...,
-            o: _Value = ...,
-            omit: _Value = ...,
-            pretty_print: _Flag = ...,
-            quiet: _Flag = ...,
-            rcfile: _Value = ...,
-            show_contexts: _Flag = ...,
+            *args: str | PathLike[str],
+            contexts: Value = ...,
+            data_file: Value = ...,
+            debug: Value = ...,
+            fail_under: Value = ...,
+            ignore_errors: Flag = ...,
+            include: Value = ...,
+            keep_combined: Flag = ...,
+            o: Value = ...,
+            omit: Value = ...,
+            pretty_print: Flag = ...,
+            quiet: Flag = ...,
+            rcfile: Value = ...,
+            show_contexts: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Generate a JSON report of coverage results.
 
             Args:
-                contexts: Only display data from lines covered in the given
-                    contexts. May be repeated: a list emits the flag once per item.
+                contexts: Only display data from lines covered in the given contexts. May be repeated: a list emits the flag once per item.
                 data_file: Read coverage data for report generation from this file.
                 debug: Debug options, separated by commas.
-                fail_under: Exit with a status of 2 if the total coverage is less
-                    than MIN.
+                fail_under: Exit with a status of 2 if the total coverage is less than MIN.
                 ignore_errors: Ignore errors while reading source files.
-                include: Include only files whose paths match one of these patterns.
-                    May be repeated: a list emits the flag once per item.
-                keep_combined: Keep original coverage files, otherwise they are
-                    deleted after combining. Added in 7.15.0.
+                include: Include only files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                keep_combined: Keep original coverage files, otherwise they are deleted after combining. Added in 7.15.0.
                 o: Write the JSON report to this file.
-                omit: Omit files whose paths match one of these patterns. May be
-                    repeated: a list emits the flag once per item.
+                omit: Omit files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
                 pretty_print: Format the JSON for human readers.
                 quiet: Don't print messages about what is happening.
                 rcfile: Specify configuration file.
@@ -199,84 +184,75 @@ class Coverage(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Coverage.Json[_Argv]: ...
+        def argv(self) -> Coverage.Json[Argv]: ...
 
     json: Json[_R]
-    class Report(_Tool[_R2]):
+    class Report(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            contexts: _Value = ...,
-            data_file: _Value = ...,
-            debug: _Value = ...,
-            fail_under: _Value = ...,
-            format: _Value = ...,
-            ignore_errors: _Flag = ...,
-            include: _Value = ...,
-            keep_combined: _Flag = ...,
-            omit: _Value = ...,
-            precision: _Value = ...,
-            rcfile: _Value = ...,
-            show_missing: _Flag = ...,
-            skip_covered: _Flag = ...,
-            skip_empty: _Flag = ...,
-            sort: _Value = ...,
+            *args: str | PathLike[str],
+            contexts: Value = ...,
+            data_file: Value = ...,
+            debug: Value = ...,
+            fail_under: Value = ...,
+            format: Value = ...,
+            ignore_errors: Flag = ...,
+            include: Value = ...,
+            keep_combined: Flag = ...,
+            omit: Value = ...,
+            precision: Value = ...,
+            rcfile: Value = ...,
+            show_missing: Flag = ...,
+            skip_covered: Flag = ...,
+            skip_empty: Flag = ...,
+            sort: Value = ...,
             **flags: Any,
         ) -> _R2:
             """Report coverage statistics on modules.
 
             Args:
-                contexts: Only display data from lines covered in the given
-                    contexts. May be repeated: a list emits the flag once per item.
+                contexts: Only display data from lines covered in the given contexts. May be repeated: a list emits the flag once per item.
                 data_file: Read coverage data for report generation from this file.
                 debug: Debug options, separated by commas.
-                fail_under: Exit with a status of 2 if the total coverage is less
-                    than MIN.
+                fail_under: Exit with a status of 2 if the total coverage is less than MIN.
                 format: Output format, either text (default), markdown, or total.
                 ignore_errors: Ignore errors while reading source files.
-                include: Include only files whose paths match one of these patterns.
-                    May be repeated: a list emits the flag once per item.
-                keep_combined: Keep original coverage files, otherwise they are
-                    deleted after combining. Added in 7.15.0.
-                omit: Omit files whose paths match one of these patterns. May be
-                    repeated: a list emits the flag once per item.
-                precision: Number of digits after the decimal point to display for
-                    reported coverage percentages.
+                include: Include only files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                keep_combined: Keep original coverage files, otherwise they are deleted after combining. Added in 7.15.0.
+                omit: Omit files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                precision: Number of digits after the decimal point to display for reported coverage percentages.
                 rcfile: Specify configuration file.
-                show_missing: Show line numbers of statements in each module that
-                    weren't executed.
-                skip_covered: Skip files with 100% coverage. `skip_covered=off`
-                    emits `--no-skip-covered`.
+                show_missing: Show line numbers of statements in each module that weren't executed.
+                skip_covered: Skip files with 100% coverage. `skip_covered=off` emits `--no-skip-covered`.
                 skip_empty: Skip files with no code.
-                sort: Sort the report by the named column: name, stmts, miss,
-                    branch, brpart, or cover.
+                sort: Sort the report by the named column: name, stmts, miss, branch, brpart, or cover.
             """
             ...
         @property
-        def argv(self) -> Coverage.Report[_Argv]: ...
+        def argv(self) -> Coverage.Report[Argv]: ...
 
     report: Report[_R]
-    class Run(_Tool[_R2]):
+    class Run(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            pyfile: str,
+            pyfile: str | PathLike[str],
             /,
-            *args: str,
-            append: _Flag = ...,
-            branch: _Flag = ...,
-            concurrency: _Value = ...,
-            context: _Value = ...,
-            data_file: _Value = ...,
-            debug: _Value = ...,
-            include: _Value = ...,
-            module: _Flag = ...,
-            omit: _Value = ...,
-            parallel_mode: _Flag = ...,
-            pylib: _Flag = ...,
-            rcfile: _Value = ...,
-            save_signal: _Value = ...,
-            source: _Value = ...,
-            timid: _Flag = ...,
+            *args: str | PathLike[str],
+            append: Flag = ...,
+            branch: Flag = ...,
+            concurrency: Value = ...,
+            context: Value = ...,
+            data_file: Value = ...,
+            debug: Value = ...,
+            include: Value = ...,
+            module: Flag = ...,
+            omit: Value = ...,
+            parallel_mode: Flag = ...,
+            pylib: Flag = ...,
+            rcfile: Value = ...,
+            save_signal: Value = ...,
+            source: Value = ...,
+            timid: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Run a Python program, measuring code execution.
@@ -288,43 +264,36 @@ class Coverage(_Tool[_R]):
                 context: The context label to record for this coverage run.
                 data_file: Write the recorded coverage data to this file.
                 debug: Debug options, separated by commas.
-                include: Include only files whose paths match one of these patterns.
-                    May be repeated: a list emits the flag once per item.
-                module: <pyfile> is an importable Python module, not a script path,
-                    to be run as 'python -m' would run it.
-                omit: Omit files whose paths match one of these patterns. May be
-                    repeated: a list emits the flag once per item.
-                parallel_mode: Append a unique suffix to the data file name to
-                    collect separate data from multiple processes.
-                pylib: Measure coverage even inside the Python installed library,
-                    which isn't done by default.
+                include: Include only files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                module: <pyfile> is an importable Python module, not a script path, to be run as 'python -m' would run it.
+                omit: Omit files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                parallel_mode: Append a unique suffix to the data file name to collect separate data from multiple processes.
+                pylib: Measure coverage even inside the Python installed library, which isn't done by default.
                 rcfile: Specify configuration file.
-                save_signal: Specify a signal that will trigger coverage to write
-                    its collected data.
-                source: A list of directories or importable names of code to
-                    measure. May be repeated: a list emits the flag once per item.
+                save_signal: Specify a signal that will trigger coverage to write its collected data.
+                source: A list of directories or importable names of code to measure. May be repeated: a list emits the flag once per item.
                 timid: Use the slower Python trace function core.
             """
             ...
         @property
-        def argv(self) -> Coverage.Run[_Argv]: ...
+        def argv(self) -> Coverage.Run[Argv]: ...
 
     run: Run[_R]
-    class Xml(_Tool[_R2]):
+    class Xml(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            data_file: _Value = ...,
-            debug: _Value = ...,
-            fail_under: _Value = ...,
-            ignore_errors: _Flag = ...,
-            include: _Value = ...,
-            keep_combined: _Flag = ...,
-            o: _Value = ...,
-            omit: _Value = ...,
-            quiet: _Flag = ...,
-            rcfile: _Value = ...,
-            skip_empty: _Flag = ...,
+            *args: str | PathLike[str],
+            data_file: Value = ...,
+            debug: Value = ...,
+            fail_under: Value = ...,
+            ignore_errors: Flag = ...,
+            include: Value = ...,
+            keep_combined: Flag = ...,
+            o: Value = ...,
+            omit: Value = ...,
+            quiet: Flag = ...,
+            rcfile: Value = ...,
+            skip_empty: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Generate an XML report of coverage results.
@@ -332,34 +301,30 @@ class Coverage(_Tool[_R]):
             Args:
                 data_file: Read coverage data for report generation from this file.
                 debug: Debug options, separated by commas.
-                fail_under: Exit with a status of 2 if the total coverage is less
-                    than MIN.
+                fail_under: Exit with a status of 2 if the total coverage is less than MIN.
                 ignore_errors: Ignore errors while reading source files.
-                include: Include only files whose paths match one of these patterns.
-                    May be repeated: a list emits the flag once per item.
-                keep_combined: Keep original coverage files, otherwise they are
-                    deleted after combining. Added in 7.15.0.
+                include: Include only files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
+                keep_combined: Keep original coverage files, otherwise they are deleted after combining. Added in 7.15.0.
                 o: Write the XML report to this file.
-                omit: Omit files whose paths match one of these patterns. May be
-                    repeated: a list emits the flag once per item.
+                omit: Omit files whose paths match one of these patterns. May be repeated: a list emits the flag once per item.
                 quiet: Don't print messages about what is happening.
                 rcfile: Specify configuration file.
                 skip_empty: Skip files with no code.
             """
             ...
         @property
-        def argv(self) -> Coverage.Xml[_Argv]: ...
+        def argv(self) -> Coverage.Xml[Argv]: ...
 
     xml: Xml[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
+        *args: str | PathLike[str],
         **flags: Any,
     ) -> _R:
         """Coverage.py, version 7.15.4 with C extension"""
         ...
     @property
-    def argv(self) -> Coverage[_Argv]: ...
+    def argv(self) -> Coverage[Argv]: ...
     def flags(
         self,
         **flags: Any,

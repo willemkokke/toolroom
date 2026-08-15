@@ -677,6 +677,12 @@ def _sync(only: str, root: Path | None = None) -> None:
         except _Ambiguous as ambiguous:
             skipped.append(f"{driver.key} ({ambiguous.reading} vs {ambiguous.base})")
             continue
+        except _stubgen.NameCollision as clash:
+            # A verb that would shadow a stub import: keep the checked-in
+            # stub and say why, rather than write one that means the wrong
+            # thing (see NameCollision).
+            skipped.append(f"{driver.key} ({clash})")
+            continue
         path = _stub_path(driver.key)
         if not path.exists() or path.read_text(encoding="utf-8") != text:
             path.write_text(text, encoding="utf-8")
@@ -723,7 +729,11 @@ def restub(
         path = _stub_path(driver.key)
         # Exactly `assemble`'s call, so a re-render is byte-identical to what
         # the refresh workflow would have written from the same history.
-        text = _stub_from(driver, doc_)
+        try:
+            text = _stub_from(driver, doc_)
+        except _stubgen.NameCollision as clash:
+            print(f"refused {driver.key}: {clash}")
+            continue
         if path.exists() and path.read_text(encoding="utf-8") == text:
             unchanged.append(driver.key)
             continue

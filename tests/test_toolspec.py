@@ -348,9 +348,9 @@ def test_optvalue_stub_type_accepts_bare_and_valued():
     from machinery._toolspec import Option
 
     assert (
-        _stubgen._annotation(Option("gpg_sign", type_name="optvalue")) == "_ValuedFlag"
+        _stubgen._annotation(Option("gpg_sign", type_name="optvalue")) == "ValuedFlag"
     )
-    assert _stubgen._annotation(Option("m", type_name="str")) == "_Value"
+    assert _stubgen._annotation(Option("m", type_name="str")) == "Value"
 
 
 def test_commander_and_summary_skips_usage():
@@ -575,10 +575,10 @@ def test_rendered_stub_is_valid_python():
     )
     text = _stubgen.render(spec, platform="Linux")
     ast.parse(text)  # a stub that doesn't parse is worse than no stub
-    assert "class Demo(_Tool[_R]):" in text
-    assert "class Build(_Tool[_R2]):" in text  # the verb, as a generic class
+    assert "class Demo(ToolBase[_R]):" in text
+    assert "class Build(ToolBase[_R2]):" in text  # the verb, as a generic class
     assert "build: Build[_R]" in text  # named under its tool
-    assert "def argv(self) -> Demo.Build[_Argv]: ..." in text
+    assert "def argv(self) -> Demo.Build[Argv]: ..." in text
     assert "**flags: Any" in text, "the stub must never be able to forbid"
 
 
@@ -609,11 +609,12 @@ def test_rendered_stub_teaches_the_off_spelling():
 def test_rendered_stub_imports_only_what_it_uses():
     plain = _stubgen.render(_spec(Option("quiet", ("--quiet",), type_name="bool")))
     assert "Literal" not in plain
-    assert "_Value" not in plain, "no value option, so no value alias"
+    assert ": Value" not in plain, "no value option, so no value alias"
     assert "_Result" not in plain, "nothing returns Result; the TypeVar does"
-    # Aliased private: a subcommand becomes a class named after the verb,
-    # and `uv tool` would otherwise write `class Tool(Tool)`.
-    assert "from toolroom import Argv as _Argv, Tool as _Tool, _Flag" in plain
+    # `Tool` alone is aliased — a subcommand becomes a class named after the
+    # verb, and `uv tool` would otherwise write `class Tool(Tool)`. The rest
+    # import bare: reader-facing names in every hover.
+    assert "from toolroom import Argv, Flag, Tool as ToolBase" in plain
 
     choosy = _stubgen.render(
         _spec(Option("color", ("--color",), type_name="choice", choices=("a", "b")))
@@ -631,7 +632,7 @@ def test_rendered_stub_never_repeats_a_keyword():
     )
     text = _stubgen.render(spec)
     ast.parse(text)
-    assert text.count("dirty: _Flag") == 1
+    assert text.count("dirty: Flag") == 1
 
 
 def test_a_lone_summary_leaves_room_for_the_quotes_ruff_will_join():
@@ -672,8 +673,8 @@ def test_value_options_accept_a_sequence():
     repetition is the tool's business, not the stub's.
     """
     option = Option("select", ("--select",), type_name="str")
-    assert _stubgen._annotation(option) == "_Value"
-    assert _stubgen._annotation(Option("f", ("--f",), type_name="bool")) == "_Flag"
+    assert _stubgen._annotation(option) == "Value"
+    assert _stubgen._annotation(Option("f", ("--f",), type_name="bool")) == "Flag"
 
 
 def test_a_tool_with_no_verbs_still_renders():
@@ -696,9 +697,9 @@ def test_nested_verbs_become_nested_classes():
     ast.parse(text)
     # Inside `Docker`, not beside it: the group belongs to the tool, the name
     # is not invented, and one docs directive covers the whole tool.
-    assert "    class Compose(_Tool[_R2]):" in text
+    assert "    class Compose(ToolBase[_R2]):" in text
     assert "    compose: Compose[_R]" in text
-    assert "        class Up(_Tool[_R3]):" in text  # the leaf, one deeper
+    assert "        class Up(ToolBase[_R3]):" in text  # the leaf, one deeper
     assert "        up: Up[_R2]" in text
     assert "DockerCompose" not in text
 
@@ -707,10 +708,14 @@ def test_keyword_named_flags_take_the_trailing_underscore():
     spec = _spec(Option("global", ("--global",), type_name="bool"))
     text = _stubgen.render(spec)
     ast.parse(text)
-    assert "global_: _Flag" in text
+    assert "global_: Flag" in text
 
 
-def test_long_help_wraps_inside_the_line_limit():
+def test_long_arg_help_stays_on_one_line():
+    """Hovers treat a docstring's line breaks as hard breaks, so a wrap
+    chosen for the .pyi's column limit used to land mid-sentence in every
+    tooltip. An `Args:` entry is one line now — each renderer reflows to
+    its own width, and E501 is waived for `_stubs/` in exchange."""
     spec = _spec(
         Option(
             "explain",
@@ -720,7 +725,110 @@ def test_long_help_wraps_inside_the_line_limit():
         )
     )
     text = _stubgen.render(spec)
-    assert max(len(line) for line in text.splitlines()) <= 88
+    entries = [
+        line
+        for line in text.splitlines()
+        if line.strip().startswith("explain: A very long line")
+    ]
+    assert len(entries) == 1, "the whole entry, on the one line hovers reflow"
+
+
+def test_choice_literals_hoist_into_named_aliases():
+    """One module-level alias per distinct choice set — a hover shows the
+    name once, not the union spelled twice over."""
+    spec = ToolSpec(
+        name="demo",
+        verbs=(
+            Verb(
+                name="build",
+                options=(
+                    Option(
+                        "color",
+                        ("--color",),
+                        type_name="choice",
+                        choices=("auto", "never"),
+                    ),
+                ),
+            ),
+            Verb(
+                name="serve",
+                options=(
+                    Option(
+                        "color",
+                        ("--color",),
+                        type_name="choice",
+                        choices=("auto", "never"),
+                    ),
+                ),
+            ),
+        ),
+    )
+    text = _stubgen.render(spec)
+    ast.parse(text)
+    # One alias, shared by both verbs; the annotation reads through it.
+    assert text.count("Color: TypeAlias = Literal['auto', 'never']") == 1
+    assert text.count("color: Color | Sequence[Color] | None = ...,") == 2
+
+
+def test_choice_sets_sharing_a_name_get_distinct_aliases():
+    spec = ToolSpec(
+        name="demo",
+        verbs=(
+            Verb(
+                name="build",
+                options=(
+                    Option("mode", ("--mode",), type_name="choice", choices=("a", "b")),
+                ),
+            ),
+            Verb(
+                name="serve",
+                options=(
+                    Option("mode", ("--mode",), type_name="choice", choices=("c",)),
+                ),
+            ),
+        ),
+    )
+    text = _stubgen.render(spec)
+    ast.parse(text)
+    assert "Mode: TypeAlias = Literal['a', 'b']" in text
+    assert "Mode2: TypeAlias = Literal['c']" in text
+
+
+def test_an_alias_never_collides_with_a_verb_class():
+    spec = ToolSpec(
+        name="demo",
+        verbs=(
+            Verb(name="color"),
+            Verb(
+                name="build",
+                options=(
+                    Option("color", ("--color",), type_name="choice", choices=("a",)),
+                ),
+            ),
+        ),
+    )
+    text = _stubgen.render(spec)
+    ast.parse(text)
+    assert "class Color(ToolBase" in text  # the verb keeps its name
+    assert "Color2: TypeAlias = Literal['a']" in text  # the alias counts up
+
+
+def test_a_verb_that_would_shadow_an_import_is_refused():
+    """A verb named `flag` would generate `class Flag`, shadowing the
+    imported alias inside its tool's class body — every annotation after it
+    would silently mean the wrong thing. No real tool spells such a verb;
+    the renderer refuses loudly and sync keeps the checked-in stub."""
+    spec = ToolSpec(name="demo", verbs=(Verb(name="flag"),))
+    with pytest.raises(_stubgen.NameCollision, match="Flag"):
+        _stubgen.render(spec)
+
+
+def test_positionals_accept_paths():
+    """`ruff.check(Path("src"))` already ran — the bridge `str()`-s every
+    positional — so the annotation must not call it a type error."""
+    text = _stubgen.render(_spec(Option("quiet", ("--quiet",), type_name="bool")))
+    assert "*args: str | PathLike[str]," in text
+    assert "from os import PathLike" in text
 
 
 # --- the driver table -----------------------------------------------------
@@ -963,7 +1071,7 @@ def test_sync_writes_a_stub_and_audit_then_agrees(stubs, capsys):
     written = stubs / "ruff.pyi"
     assert written.exists()
     ast.parse(written.read_text())
-    assert "class Ruff(_Tool[_R]):" in written.read_text()
+    assert "class Ruff(ToolBase[_R]):" in written.read_text()
     capsys.readouterr()
 
     tools_tasks.audit(only="ruff")
@@ -1010,7 +1118,7 @@ def test_audit_reports_a_behind_snapshot_without_failing(stubs, capsys):
     tools_tasks.audit(only="ruff", fix=True)
     assert "took a fresh snapshot of 1" in capsys.readouterr().out
     fresh = (stubs / "ruff.pyi").read_text()
-    assert "class Ruff(_Tool[_R]):" in fresh
+    assert "class Ruff(ToolBase[_R]):" in fresh
     assert "def __call__(" in fresh
 
 
@@ -1674,7 +1782,7 @@ def test_stub_renders_positional_only_and_keyword_only():
     )
     text = _stubgen.render(req)
     ast.parse(text)
-    assert "image: str,\n" in text and "/,\n" in text
+    assert "image: str | PathLike[str],\n" in text and "/,\n" in text
 
 
 def test_stub_falls_back_when_the_lead_collides_with_an_option():
@@ -1688,7 +1796,7 @@ def test_stub_falls_back_when_the_lead_collides_with_an_option():
     )
     text = _stubgen.render(ToolSpec(name="uv", verbs=(verb,)))
     ast.parse(text)  # a duplicate `group` parameter would be a syntax error
-    assert "*args: str," in text
+    assert "*args: str | PathLike[str]," in text
 
 
 def test_wraps_detected_from_a_trailing_command_metavar():
@@ -2019,14 +2127,16 @@ def test_reserved_flag_name_falls_through_to_the_catchall():
     )
     text = _stubgen.render(spec)
     ast.parse(text)  # a duplicate `flags` parameter would be a syntax error
-    assert "quiet: _Flag" in text
-    assert "flags: _Flag" not in text  # the `--flags` option isn't a typed param
+    assert "quiet: Flag" in text
+    assert "flags: Flag" not in text  # the `--flags` option isn't a typed param
     assert "**flags: Any" in text  # it falls through to the catch-all
 
 
-def test_arg_help_escapes_a_markdown_header_at_a_wrapped_line_start():
-    # git's merge-stage notation (`#2 (ours)`) would render as an H1 in the
-    # reference page if a wrap dropped it to the start of a docstring line.
+def test_arg_help_keeps_a_markdown_header_mid_line():
+    # git's merge-stage notation (`#2 (ours)`) used to need escaping when a
+    # wrap could drop it to the start of a docstring line, where Markdown
+    # reads a header. Entries are one line now and always lead with the
+    # option's own name, so a `#` can only ever sit mid-line — not a block.
     from machinery._toolspec import Option
 
     option = Option(
@@ -2038,18 +2148,9 @@ def test_arg_help_escapes_a_markdown_header_at_a_wrapped_line_start():
             "#2 (ours) or #3 (theirs) for unmerged paths"
         ),
     )
-    lines = _stubgen._arg_lines(option)
-    for line in lines:
-        assert not line.lstrip().startswith("#"), line  # never a bare header
-    # The escape is a *double* backslash: this is docstring source, where a
-    # lone `\#` is an invalid Python escape sequence.
-    assert any("\\\\#" in line for line in lines)
-    # And the whole thing still parses as Python without a SyntaxWarning.
-    import warnings
-
-    with warnings.catch_warnings():
-        warnings.simplefilter("error", SyntaxWarning)
-        ast.parse('def f():\n    """\n' + "\n".join(lines) + '\n    """\n')
+    (line,) = _stubgen._arg_lines(option)
+    assert line.lstrip().startswith("ours: ")
+    assert "#2 (ours)" in line  # verbatim — mid-line needs no escape
 
 
 def test_md_safe_touches_only_leading_header_and_quote():

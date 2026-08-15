@@ -6,39 +6,34 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 
-class Markdownlint(_Tool[_R]):
+class Markdownlint(ToolBase[_R]):
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        config: _Value = ...,
-        configPointer: _Value = ...,
-        fix: _Flag = ...,
-        format: _Flag = ...,
-        no_globs: _Flag = ...,
+        *args: str | PathLike[str],
+        config: Value = ...,
+        configPointer: Value = ...,
+        fix: Flag = ...,
+        format: Flag = ...,
+        no_globs: Flag = ...,
         **flags: Any,
     ) -> _R:
         """markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)
 
         Args:
-            config: specifies the path to a configuration file to define the base
-                configuration.
-            configPointer: specifies a JSON Pointer to a configuration object within
-                the --config file. Added in 0.22.0.
-            fix: updates files to resolve fixable issues (can be overridden in
-                configuration).
-            format: reads standard input (stdin), applies fixes, writes standard
-                output (stdout). Added in 0.19.0.
-            no_globs: ignores the "globs" property if present in the top-level
-                options object.
+            config: specifies the path to a configuration file to define the base configuration.
+            configPointer: specifies a JSON Pointer to a configuration object within the --config file. Added in 0.22.0.
+            fix: updates files to resolve fixable issues (can be overridden in configuration).
+            format: reads standard input (stdin), applies fixes, writes standard output (stdout). Added in 0.19.0.
+            no_globs: ignores the "globs" property if present in the top-level options object.
         """
         ...
     @property
-    def argv(self) -> Markdownlint[_Argv]: ...
+    def argv(self) -> Markdownlint[Argv]: ...

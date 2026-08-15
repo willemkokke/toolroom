@@ -63,6 +63,9 @@ select = ["E", "F", "I", "UP", "B", "SIM", "C4", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["A", "B", "ARG"]
+# Generated docstrings keep each Args entry on one line so hovers reflow
+# them; the .pyi is not where they are read.
+"src/toolroom/_stubs/*.pyi" = ["E501"]
 
 [tool.basedpyright]
 include = ["src", "tests", "tasks.py"]

@@ -6,44 +6,43 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, Self, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 _R3 = TypeVar("_R3")
 _R4 = TypeVar("_R4")
 
-class Claude(_Tool[_R]):
-    class Auth(_Tool[_R2]):
-        class Login(_Tool[_R3]):
+class Claude(ToolBase[_R]):
+    class Auth(ToolBase[_R2]):
+        class Login(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                claudeai: _Flag = ...,
-                console: _Flag = ...,
-                email: _Value = ...,
-                sso: _Flag = ...,
+                claudeai: Flag = ...,
+                console: Flag = ...,
+                email: Value = ...,
+                sso: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Sign in to your Anthropic account
 
                 Args:
                     claudeai: Use Claude subscription (default).
-                    console: Use Anthropic Console (API usage billing) instead of
-                        Claude subscription.
+                    console: Use Anthropic Console (API usage billing) instead of Claude subscription.
                     email: Pre-populate email address on the login page.
                     sso: Force SSO login flow.
                 """
                 ...
             @property
-            def argv(self) -> Claude.Auth.Login[_Argv]: ...
+            def argv(self) -> Claude.Auth.Login[Argv]: ...
 
         login: Login[_R2]
-        class Logout(_Tool[_R3]):
+        class Logout(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 **flags: Any,
@@ -51,15 +50,15 @@ class Claude(_Tool[_R]):
                 """Log out from your Anthropic account"""
                 ...
             @property
-            def argv(self) -> Claude.Auth.Logout[_Argv]: ...
+            def argv(self) -> Claude.Auth.Logout[Argv]: ...
 
         logout: Logout[_R2]
-        class Status(_Tool[_R3]):
+        class Status(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                json: _Flag = ...,
-                text: _Flag = ...,
+                json: Flag = ...,
+                text: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Show authentication status
@@ -70,7 +69,7 @@ class Claude(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Claude.Auth.Status[_Argv]: ...
+            def argv(self) -> Claude.Auth.Status[Argv]: ...
 
         status: Status[_R2]
         def __call__(  # type: ignore[override]
@@ -79,7 +78,7 @@ class Claude(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Claude.Auth[_Argv]: ...
+        def argv(self) -> Claude.Auth[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -91,70 +90,65 @@ class Claude(_Tool[_R]):
             ...
 
     auth: Auth[_R]
-    class Mcp(_Tool[_R2]):
-        class Add(_Tool[_R3]):
+    class Mcp(ToolBase[_R2]):
+        class Add(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                name: str,
+                name: str | PathLike[str],
                 /,
-                *args: str,
-                callback_port: _Value = ...,
-                client_id: _Value = ...,
-                client_secret: _Flag = ...,
-                env: _Value = ...,
-                header: _Value = ...,
-                scope: _Value = ...,
-                transport: _Value = ...,
+                *args: str | PathLike[str],
+                callback_port: Value = ...,
+                client_id: Value = ...,
+                client_secret: Flag = ...,
+                env: Value = ...,
+                header: Value = ...,
+                scope: Value = ...,
+                transport: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Add an MCP server to Claude Code.
 
                 Args:
-                    callback_port: Fixed port for OAuth callback (for servers
-                        requiring pre-registered redirect URIs).
+                    callback_port: Fixed port for OAuth callback (for servers requiring pre-registered redirect URIs).
                     client_id: OAuth client ID for HTTP/SSE servers.
-                    client_secret: Prompt for OAuth client secret (or set
-                        MCP_CLIENT_SECRET env var).
+                    client_secret: Prompt for OAuth client secret (or set MCP_CLIENT_SECRET env var).
                     env: Set environment variables (e.g.
                     header: Set WebSocket headers (e.g.
-                    scope: Configuration scope (local, user, or project). Defaults
-                        to `local`.
+                    scope: Configuration scope (local, user, or project). Defaults to `local`.
                     transport: Transport type (stdio, sse, http).
                 """
                 ...
             @property
-            def argv(self) -> Claude.Mcp.Add[_Argv]: ...
+            def argv(self) -> Claude.Mcp.Add[Argv]: ...
 
         add: Add[_R2]
-        class AddJson(_Tool[_R3]):
+        class AddJson(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                name: str,
+                name: str | PathLike[str],
                 /,
-                *args: str,
-                client_secret: _Flag = ...,
-                scope: _Value = ...,
+                *args: str | PathLike[str],
+                client_secret: Flag = ...,
+                scope: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Add an MCP server (stdio or SSE) with a JSON string
 
                 Args:
-                    client_secret: Prompt for OAuth client secret (or set
-                        MCP_CLIENT_SECRET env var).
-                    scope: Configuration scope (local, user, or project). Defaults
-                        to `local`.
+                    client_secret: Prompt for OAuth client secret (or set MCP_CLIENT_SECRET env var).
+                    scope: Configuration scope (local, user, or project). Defaults to `local`.
                 """
                 ...
             @property
-            def argv(self) -> Claude.Mcp.AddJson[_Argv]: ...
+            def argv(self) -> Claude.Mcp.AddJson[Argv]: ...
 
         add_json: AddJson[_R2]
-        class Get(_Tool[_R3]):
+        class Get(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                name: str,
+                name: str | PathLike[str],
                 /,
-                *args: str,
+                *args: str | PathLike[str],
                 **flags: Any,
             ) -> _R3:
                 """Get details about an MCP server. Unapproved .mcp.json servers are
@@ -162,10 +156,10 @@ class Claude(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Claude.Mcp.Get[_Argv]: ...
+            def argv(self) -> Claude.Mcp.Get[Argv]: ...
 
         get: Get[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 **flags: Any,
@@ -175,35 +169,34 @@ class Claude(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Claude.Mcp.List[_Argv]: ...
+            def argv(self) -> Claude.Mcp.List[Argv]: ...
 
         list: List[_R2]
-        class Remove(_Tool[_R3]):
+        class Remove(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                name: str,
+                name: str | PathLike[str],
                 /,
-                *args: str,
-                scope: _Value = ...,
+                *args: str | PathLike[str],
+                scope: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Remove an MCP server
 
                 Args:
-                    scope: Configuration scope (local, user, or project) - if not
-                        specified, removes from whichever scope it exists in.
+                    scope: Configuration scope (local, user, or project) - if not specified, removes from whichever scope it exists in.
                 """
                 ...
             @property
-            def argv(self) -> Claude.Mcp.Remove[_Argv]: ...
+            def argv(self) -> Claude.Mcp.Remove[Argv]: ...
 
         remove: Remove[_R2]
-        class Serve(_Tool[_R3]):
+        class Serve(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                debug: _Flag = ...,
-                verbose: _Flag = ...,
+                debug: Flag = ...,
+                verbose: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Start the Claude Code MCP server
@@ -214,7 +207,7 @@ class Claude(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Claude.Mcp.Serve[_Argv]: ...
+            def argv(self) -> Claude.Mcp.Serve[Argv]: ...
 
         serve: Serve[_R2]
         def __call__(  # type: ignore[override]
@@ -223,7 +216,7 @@ class Claude(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Claude.Mcp[_Argv]: ...
+        def argv(self) -> Claude.Mcp[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -235,36 +228,34 @@ class Claude(_Tool[_R]):
             ...
 
     mcp: Mcp[_R]
-    class Plugin(_Tool[_R2]):
-        class Marketplace(_Tool[_R3]):
-            class Add(_Tool[_R4]):
+    class Plugin(ToolBase[_R2]):
+        class Marketplace(ToolBase[_R3]):
+            class Add(ToolBase[_R4]):
                 def __call__(  # type: ignore[override]
                     self,
-                    source: str,
+                    source: str | PathLike[str],
                     /,
-                    *args: str,
-                    scope: _Value = ...,
-                    sparse: _Value = ...,
+                    *args: str | PathLike[str],
+                    scope: Value = ...,
+                    sparse: Value = ...,
                     **flags: Any,
                 ) -> _R4:
                     """Add a marketplace from a URL, path, or GitHub repo
 
                     Args:
-                        scope: Where to declare the marketplace: user (default),
-                            project, or local.
-                        sparse: Limit checkout to specific directories via git
-                            sparse-checkout (for monorepos).
+                        scope: Where to declare the marketplace: user (default), project, or local.
+                        sparse: Limit checkout to specific directories via git sparse-checkout (for monorepos).
                     """
                     ...
                 @property
-                def argv(self) -> Claude.Plugin.Marketplace.Add[_Argv]: ...
+                def argv(self) -> Claude.Plugin.Marketplace.Add[Argv]: ...
 
             add: Add[_R3]
-            class List(_Tool[_R4]):
+            class List(ToolBase[_R4]):
                 def __call__(  # type: ignore[override]
                     self,
                     *,
-                    json: _Flag = ...,
+                    json: Flag = ...,
                     **flags: Any,
                 ) -> _R4:
                     """List all configured marketplaces
@@ -274,33 +265,32 @@ class Claude(_Tool[_R]):
                     """
                     ...
                 @property
-                def argv(self) -> Claude.Plugin.Marketplace.List[_Argv]: ...
+                def argv(self) -> Claude.Plugin.Marketplace.List[Argv]: ...
 
             list: List[_R3]
-            class Remove(_Tool[_R4]):
+            class Remove(ToolBase[_R4]):
                 def __call__(  # type: ignore[override]
                     self,
-                    name: str,
+                    name: str | PathLike[str],
                     /,
-                    *args: str,
-                    scope: _Value = ...,
+                    *args: str | PathLike[str],
+                    scope: Value = ...,
                     **flags: Any,
                 ) -> _R4:
                     """Remove a configured marketplace
 
                     Args:
-                        scope: Remove the marketplace declaration from a specific
-                            settings scope: user, project, or local.
+                        scope: Remove the marketplace declaration from a specific settings scope: user, project, or local.
                     """
                     ...
                 @property
-                def argv(self) -> Claude.Plugin.Marketplace.Remove[_Argv]: ...
+                def argv(self) -> Claude.Plugin.Marketplace.Remove[Argv]: ...
 
             remove: Remove[_R3]
-            class Update(_Tool[_R4]):
+            class Update(ToolBase[_R4]):
                 def __call__(  # type: ignore[override]
                     self,
-                    *args: str,
+                    *args: str | PathLike[str],
                     **flags: Any,
                 ) -> _R4:
                     """Update marketplace(s) from their source - updates all if no name
@@ -308,7 +298,7 @@ class Claude(_Tool[_R]):
                     """
                     ...
                 @property
-                def argv(self) -> Claude.Plugin.Marketplace.Update[_Argv]: ...
+                def argv(self) -> Claude.Plugin.Marketplace.Update[Argv]: ...
 
             update: Update[_R3]
             def __call__(  # type: ignore[override]
@@ -317,7 +307,7 @@ class Claude(_Tool[_R]):
                 **flags: Any,
             ) -> _R3: ...
             @property
-            def argv(self) -> Claude.Plugin.Marketplace[_Argv]: ...
+            def argv(self) -> Claude.Plugin.Marketplace[Argv]: ...
             def flags(
                 self,
                 **flags: Any,
@@ -329,146 +319,136 @@ class Claude(_Tool[_R]):
                 ...
 
         marketplace: Marketplace[_R2]
-        class Disable(_Tool[_R3]):
+        class Disable(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                *args: str,
-                all: _Flag = ...,
-                scope: _Value = ...,
+                *args: str | PathLike[str],
+                all: Flag = ...,
+                scope: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Disable an enabled plugin
 
                 Args:
                     all: Disable all enabled plugins.
-                    scope: Installation scope: user, project, local. Defaults to
-                        `auto-detect`.
+                    scope: Installation scope: user, project, local. Defaults to `auto-detect`.
                 """
                 ...
             @property
-            def argv(self) -> Claude.Plugin.Disable[_Argv]: ...
+            def argv(self) -> Claude.Plugin.Disable[Argv]: ...
 
         disable: Disable[_R2]
-        class Enable(_Tool[_R3]):
+        class Enable(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                plugin: str,
+                plugin: str | PathLike[str],
                 /,
-                *args: str,
-                scope: _Value = ...,
+                *args: str | PathLike[str],
+                scope: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Enable a disabled plugin
 
                 Args:
-                    scope: Installation scope: user, project, local. Defaults to
-                        `auto-detect`.
+                    scope: Installation scope: user, project, local. Defaults to `auto-detect`.
                 """
                 ...
             @property
-            def argv(self) -> Claude.Plugin.Enable[_Argv]: ...
+            def argv(self) -> Claude.Plugin.Enable[Argv]: ...
 
         enable: Enable[_R2]
-        class Install(_Tool[_R3]):
+        class Install(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                plugin: str,
+                plugin: str | PathLike[str],
                 /,
-                *args: str,
-                config: _Value = ...,
-                scope: _Value = ...,
+                *args: str | PathLike[str],
+                config: Value = ...,
+                scope: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Install a plugin from available marketplaces (use plugin@marketplace
                 for
 
                 Args:
-                    config: Set a userConfig option declared in the plugin's
-                        manifest (repeatable).
-                    scope: Installation scope: user, project, or local. Defaults to
-                        `user`.
+                    config: Set a userConfig option declared in the plugin's manifest (repeatable).
+                    scope: Installation scope: user, project, or local. Defaults to `user`.
                 """
                 ...
             @property
-            def argv(self) -> Claude.Plugin.Install[_Argv]: ...
+            def argv(self) -> Claude.Plugin.Install[Argv]: ...
 
         install: Install[_R2]
-        class List(_Tool[_R3]):
+        class List(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
                 *,
-                available: _Flag = ...,
-                json: _Flag = ...,
+                available: Flag = ...,
+                json: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """List installed plugins
 
                 Args:
-                    available: Include available plugins from marketplaces (requires
-                        --json).
+                    available: Include available plugins from marketplaces (requires --json).
                     json: Output as JSON.
                 """
                 ...
             @property
-            def argv(self) -> Claude.Plugin.List[_Argv]: ...
+            def argv(self) -> Claude.Plugin.List[Argv]: ...
 
         list: List[_R2]
-        class Uninstall(_Tool[_R3]):
+        class Uninstall(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                plugin: str,
+                plugin: str | PathLike[str],
                 /,
-                *args: str,
-                keep_data: _Flag = ...,
-                prune: _Flag = ...,
-                scope: _Value = ...,
-                yes: _Flag = ...,
+                *args: str | PathLike[str],
+                keep_data: Flag = ...,
+                prune: Flag = ...,
+                scope: Value = ...,
+                yes: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Uninstall an installed plugin
 
                 Args:
-                    keep_data: Preserve the plugin's persistent data directory
-                        (~/.claude/plugins/data/{id}/).
-                    prune: Also remove auto-installed dependencies that are no
-                        longer needed (requires -y in non-interactive contexts).
-                    scope: Uninstall from scope: user, project, or local. Defaults
-                        to `user`.
-                    yes: Skip the --prune confirmation prompt (required when stdin
-                        or stdout is not a TTY).
+                    keep_data: Preserve the plugin's persistent data directory (~/.claude/plugins/data/{id}/).
+                    prune: Also remove auto-installed dependencies that are no longer needed (requires -y in non-interactive contexts).
+                    scope: Uninstall from scope: user, project, or local. Defaults to `user`.
+                    yes: Skip the --prune confirmation prompt (required when stdin or stdout is not a TTY).
                 """
                 ...
             @property
-            def argv(self) -> Claude.Plugin.Uninstall[_Argv]: ...
+            def argv(self) -> Claude.Plugin.Uninstall[Argv]: ...
 
         uninstall: Uninstall[_R2]
-        class Update(_Tool[_R3]):
+        class Update(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                plugin: str,
+                plugin: str | PathLike[str],
                 /,
-                *args: str,
-                scope: _Value = ...,
+                *args: str | PathLike[str],
+                scope: Value = ...,
                 **flags: Any,
             ) -> _R3:
                 """Update a plugin to the latest version (restart required to apply)
 
                 Args:
-                    scope: Installation scope: user, project, local, managed.
-                        Defaults to `user`.
+                    scope: Installation scope: user, project, local, managed. Defaults to `user`.
                 """
                 ...
             @property
-            def argv(self) -> Claude.Plugin.Update[_Argv]: ...
+            def argv(self) -> Claude.Plugin.Update[Argv]: ...
 
         update: Update[_R2]
-        class Validate(_Tool[_R3]):
+        class Validate(ToolBase[_R3]):
             def __call__(  # type: ignore[override]
                 self,
-                path: str,
+                path: str | PathLike[str],
                 /,
-                *args: str,
-                strict: _Flag = ...,
+                *args: str | PathLike[str],
+                strict: Flag = ...,
                 **flags: Any,
             ) -> _R3:
                 """Validate a plugin or marketplace manifest
@@ -478,7 +458,7 @@ class Claude(_Tool[_R]):
                 """
                 ...
             @property
-            def argv(self) -> Claude.Plugin.Validate[_Argv]: ...
+            def argv(self) -> Claude.Plugin.Validate[Argv]: ...
 
         validate: Validate[_R2]
         def __call__(  # type: ignore[override]
@@ -487,7 +467,7 @@ class Claude(_Tool[_R]):
             **flags: Any,
         ) -> _R2: ...
         @property
-        def argv(self) -> Claude.Plugin[_Argv]: ...
+        def argv(self) -> Claude.Plugin[Argv]: ...
         def flags(
             self,
             **flags: Any,
@@ -499,63 +479,52 @@ class Claude(_Tool[_R]):
             ...
 
     plugin: Plugin[_R]
-    class Agents(_Tool[_R2]):
+    class Agents(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            add_dir: _Value = ...,
-            agent: _Value = ...,
-            all: _Flag = ...,
-            allow_dangerously_skip_permissions: _Flag = ...,
-            cwd: _Value = ...,
-            dangerously_skip_permissions: _Flag = ...,
-            effort: _Value = ...,
-            json: _Flag = ...,
-            mcp_config: _Value = ...,
-            model: _Value = ...,
-            permission_mode: _Value = ...,
-            plugin_dir: _Value = ...,
-            setting_sources: _Value = ...,
-            settings: _Value = ...,
-            strict_mcp_config: _Flag = ...,
+            add_dir: Value = ...,
+            agent: Value = ...,
+            all: Flag = ...,
+            allow_dangerously_skip_permissions: Flag = ...,
+            cwd: Value = ...,
+            dangerously_skip_permissions: Flag = ...,
+            effort: Value = ...,
+            json: Flag = ...,
+            mcp_config: Value = ...,
+            model: Value = ...,
+            permission_mode: Value = ...,
+            plugin_dir: Value = ...,
+            setting_sources: Value = ...,
+            settings: Value = ...,
+            strict_mcp_config: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Manage background agents
 
             Args:
-                add_dir: Additional directory to allow tool access to in dispatched
-                    sessions (repeatable).
+                add_dir: Additional directory to allow tool access to in dispatched sessions (repeatable).
                 agent: Default agent for sessions dispatched from agent view.
                 all: With --json: also include completed background sessions.
-                allow_dangerously_skip_permissions: Make bypass-permissions mode
-                    available to dispatched sessions without defaulting to it.
+                allow_dangerously_skip_permissions: Make bypass-permissions mode available to dispatched sessions without defaulting to it.
                 cwd: Show only background sessions started under <path>.
-                dangerously_skip_permissions: Alias for --permission-mode
-                    bypassPermissions.
-                effort: Default effort level for sessions dispatched from agent
-                    view.
-                json: Print active sessions (interactive and background) as a JSON
-                    array and exit (for scripting; does not require a TTY).
-                mcp_config: MCP server configuration to apply to dispatched sessions
-                    (repeatable).
+                dangerously_skip_permissions: Alias for --permission-mode bypassPermissions.
+                effort: Default effort level for sessions dispatched from agent view.
+                json: Print active sessions (interactive and background) as a JSON array and exit (for scripting; does not require a TTY).
+                mcp_config: MCP server configuration to apply to dispatched sessions (repeatable).
                 model: Default model for sessions dispatched from agent view.
-                permission_mode: Default permission mode for sessions dispatched
-                    from agent view.
-                plugin_dir: Load plugins from specified directory for the agent view
-                    and dispatched sessions (repeatable).
-                setting_sources: Comma-separated list of setting sources to load
-                    (user, project, local).
-                settings: Settings file or JSON string to apply to the agent view
-                    and dispatched sessions.
-                strict_mcp_config: Only use MCP servers from --mcp-config in
-                    dispatched sessions.
+                permission_mode: Default permission mode for sessions dispatched from agent view.
+                plugin_dir: Load plugins from specified directory for the agent view and dispatched sessions (repeatable).
+                setting_sources: Comma-separated list of setting sources to load (user, project, local).
+                settings: Settings file or JSON string to apply to the agent view and dispatched sessions.
+                strict_mcp_config: Only use MCP servers from --mcp-config in dispatched sessions.
             """
             ...
         @property
-        def argv(self) -> Claude.Agents[_Argv]: ...
+        def argv(self) -> Claude.Agents[Argv]: ...
 
     agents: Agents[_R]
-    class Doctor(_Tool[_R2]):
+    class Doctor(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             **flags: Any,
@@ -565,14 +534,14 @@ class Claude(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Claude.Doctor[_Argv]: ...
+        def argv(self) -> Claude.Doctor[Argv]: ...
 
     doctor: Doctor[_R]
-    class Install(_Tool[_R2]):
+    class Install(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            force: _Flag = ...,
+            *args: str | PathLike[str],
+            force: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Install Claude Code native build. Use [target] to specify version
@@ -583,10 +552,10 @@ class Claude(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Claude.Install[_Argv]: ...
+        def argv(self) -> Claude.Install[Argv]: ...
 
     install: Install[_R]
-    class SetupToken(_Tool[_R2]):
+    class SetupToken(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             **flags: Any,
@@ -596,10 +565,10 @@ class Claude(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Claude.SetupToken[_Argv]: ...
+        def argv(self) -> Claude.SetupToken[Argv]: ...
 
     setup_token: SetupToken[_R]
-    class Update(_Tool[_R2]):
+    class Update(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             **flags: Any,
@@ -607,71 +576,71 @@ class Claude(_Tool[_R]):
             """Check for updates and install if available"""
             ...
         @property
-        def argv(self) -> Claude.Update[_Argv]: ...
+        def argv(self) -> Claude.Update[Argv]: ...
 
     update: Update[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        add_dir: _Value = ...,
-        agent: _Value = ...,
-        agents: _Value = ...,
-        allow_dangerously_skip_permissions: _Flag = ...,
-        allowed_tools: _Value = ...,
-        append_system_prompt: _Value = ...,
-        autocompact: _Value = ...,
-        ax_screen_reader: _Flag = ...,
-        bare: _Flag = ...,
-        betas: _Value = ...,
-        bg: _Flag = ...,
-        brief: _Flag = ...,
-        chrome: _Flag = ...,
-        cloud: _Value = ...,
-        continue_: _Flag = ...,
-        dangerously_skip_permissions: _Flag = ...,
-        debug: _Value = ...,
-        debug_file: _Value = ...,
-        disable_slash_commands: _Flag = ...,
-        disallowed_tools: _Value = ...,
-        effort: _Value = ...,
-        environment: _Value = ...,
-        exclude_dynamic_system_prompt_sections: _Flag = ...,
-        fallback_model: _Value = ...,
-        file: _Value = ...,
-        fork_session: _Flag = ...,
-        forward_subagent_text: _Flag = ...,
-        from_pr: _Value = ...,
-        ide: _Flag = ...,
-        include_hook_events: _Flag = ...,
-        include_partial_messages: _Flag = ...,
-        input_format: _Value = ...,
-        json_schema: _Value = ...,
-        max_budget_usd: _Value = ...,
-        mcp_config: _Value = ...,
-        model: _Value = ...,
-        name: _Value = ...,
-        no_session_persistence: _Flag = ...,
-        output_format: _Value = ...,
-        permission_mode: _Value = ...,
-        plugin_dir: _Value = ...,
-        plugin_url: _Value = ...,
-        print: _Flag = ...,
-        prompt_suggestions: _Value = ...,
-        remote_control: _Value = ...,
-        remote_control_session_name_prefix: _Value = ...,
-        replay_user_messages: _Flag = ...,
-        resume: _Value = ...,
-        safe_mode: _Flag = ...,
-        session_id: _Value = ...,
-        setting_sources: _Value = ...,
-        settings: _Value = ...,
-        strict_mcp_config: _Flag = ...,
-        system_prompt: _Value = ...,
-        teleport: _Value = ...,
-        tmux: _Flag = ...,
-        tools: _Value = ...,
-        verbose: _Flag = ...,
-        worktree: _Value = ...,
+        *args: str | PathLike[str],
+        add_dir: Value = ...,
+        agent: Value = ...,
+        agents: Value = ...,
+        allow_dangerously_skip_permissions: Flag = ...,
+        allowed_tools: Value = ...,
+        append_system_prompt: Value = ...,
+        autocompact: Value = ...,
+        ax_screen_reader: Flag = ...,
+        bare: Flag = ...,
+        betas: Value = ...,
+        bg: Flag = ...,
+        brief: Flag = ...,
+        chrome: Flag = ...,
+        cloud: Value = ...,
+        continue_: Flag = ...,
+        dangerously_skip_permissions: Flag = ...,
+        debug: Value = ...,
+        debug_file: Value = ...,
+        disable_slash_commands: Flag = ...,
+        disallowed_tools: Value = ...,
+        effort: Value = ...,
+        environment: Value = ...,
+        exclude_dynamic_system_prompt_sections: Flag = ...,
+        fallback_model: Value = ...,
+        file: Value = ...,
+        fork_session: Flag = ...,
+        forward_subagent_text: Flag = ...,
+        from_pr: Value = ...,
+        ide: Flag = ...,
+        include_hook_events: Flag = ...,
+        include_partial_messages: Flag = ...,
+        input_format: Value = ...,
+        json_schema: Value = ...,
+        max_budget_usd: Value = ...,
+        mcp_config: Value = ...,
+        model: Value = ...,
+        name: Value = ...,
+        no_session_persistence: Flag = ...,
+        output_format: Value = ...,
+        permission_mode: Value = ...,
+        plugin_dir: Value = ...,
+        plugin_url: Value = ...,
+        print: Flag = ...,
+        prompt_suggestions: Value = ...,
+        remote_control: Value = ...,
+        remote_control_session_name_prefix: Value = ...,
+        replay_user_messages: Flag = ...,
+        resume: Value = ...,
+        safe_mode: Flag = ...,
+        session_id: Value = ...,
+        setting_sources: Value = ...,
+        settings: Value = ...,
+        strict_mcp_config: Flag = ...,
+        system_prompt: Value = ...,
+        teleport: Value = ...,
+        tmux: Flag = ...,
+        tools: Value = ...,
+        verbose: Flag = ...,
+        worktree: Value = ...,
         **flags: Any,
     ) -> _R:
         """Claude Code - starts an interactive session by default, use -p/--print for
@@ -680,178 +649,128 @@ class Claude(_Tool[_R]):
             add_dir: Additional directories to allow tool access to.
             agent: Agent for the current session.
             agents: JSON object defining custom agents (e.g.
-            allow_dangerously_skip_permissions: Enable bypassing all permission
-                checks as an option, without it being enabled by default.
-            allowed_tools: Comma or space-separated list of tool names to allow
-                (e.g.
-            append_system_prompt: Append a system prompt to the default system
-                prompt.
+            allow_dangerously_skip_permissions: Enable bypassing all permission checks as an option, without it being enabled by default.
+            allowed_tools: Comma or space-separated list of tool names to allow (e.g.
+            append_system_prompt: Append a system prompt to the default system prompt.
             autocompact: Auto-compact window size (auto, or 100k-1M tokens).
-            ax_screen_reader: Render screen-reader friendly output (flat text, no
-                decorative borders or animations).
-            bare: Minimal mode: skip hooks, LSP, plugin sync, attribution,
-                auto-memory, background prefetches, keychain reads, and CLAUDE.md
-                auto-discovery.
+            ax_screen_reader: Render screen-reader friendly output (flat text, no decorative borders or animations).
+            bare: Minimal mode: skip hooks, LSP, plugin sync, attribution, auto-memory, background prefetches, keychain reads, and CLAUDE.md auto-discovery.
             betas: Beta headers to include in API requests (API key users only).
-            bg: Start the session as a background agent and return immediately
-                (manage with `claude agents`).
+            bg: Start the session as a background agent and return immediately (manage with `claude agents`).
             brief: Enable SendUserMessage tool for agent-to-user communication.
-            chrome: Enable Claude in Chrome integration. `chrome=off` emits
-                `--no-chrome`.
-            cloud: Create a cloud session with the given description, or attach to
-                an existing one by session ID or claude.ai/code URL.
-            continue_: Continue the most recent conversation in the current
-                directory.
+            chrome: Enable Claude in Chrome integration. `chrome=off` emits `--no-chrome`.
+            cloud: Create a cloud session with the given description, or attach to an existing one by session ID or claude.ai/code URL.
+            continue_: Continue the most recent conversation in the current directory.
             dangerously_skip_permissions: Bypass all permission checks.
-            debug: Enable debug mode with optional category filtering (e.g.,
-                "api,hooks" or "!1p,!file").
-            debug_file: Write debug logs to a specific file path (implicitly enables
-                debug mode).
+            debug: Enable debug mode with optional category filtering (e.g., "api,hooks" or "!1p,!file").
+            debug_file: Write debug logs to a specific file path (implicitly enables debug mode).
             disable_slash_commands: Disable all skills.
-            disallowed_tools: Comma or space-separated list of tool names to deny
-                (e.g.
-            effort: Effort level for the current session (low, medium, high, xhigh,
-                max).
-            environment: Create a new cloud session that runs on the given
-                self-hosted environment (ccpool_...).
-            exclude_dynamic_system_prompt_sections: Move per-machine sections (cwd,
-                env info, memory paths, git status) from the system prompt into the
-                first user message.
-            fallback_model: Enable automatic fallback to specified model(s) when the
-                default model is overloaded or not available.
+            disallowed_tools: Comma or space-separated list of tool names to deny (e.g.
+            effort: Effort level for the current session (low, medium, high, xhigh, max).
+            environment: Create a new cloud session that runs on the given self-hosted environment (ccpool_...).
+            exclude_dynamic_system_prompt_sections: Move per-machine sections (cwd, env info, memory paths, git status) from the system prompt into the first user message.
+            fallback_model: Enable automatic fallback to specified model(s) when the default model is overloaded or not available.
             file: File resources to download at startup.
-            fork_session: When resuming, create a new session ID instead of reusing
-                the original (use with --resume or --continue).
-            forward_subagent_text: Forward subagent text and thinking blocks as
-                assistant/user messages with parent_tool_use_id set (only works with
-                --print and --output-format=stream-json).
-            from_pr: Resume a session linked to a PR by PR number/URL, or open
-                interactive picker with optional search term.
-            ide: Automatically connect to IDE on startup if exactly one valid IDE is
-                available.
-            include_hook_events: Include all hook lifecycle events in the output
-                stream (only works with --output-format=stream-json).
-            include_partial_messages: Include partial message chunks as they arrive
-                (only works with --print and --output-format=stream-json).
-            input_format: Input format (only works with --print): "text" (default),
-                or "stream-json" (realtime streaming input) (choices: "text",
-                "stream-json").
+            fork_session: When resuming, create a new session ID instead of reusing the original (use with --resume or --continue).
+            forward_subagent_text: Forward subagent text and thinking blocks as assistant/user messages with parent_tool_use_id set (only works with --print and --output-format=stream-json).
+            from_pr: Resume a session linked to a PR by PR number/URL, or open interactive picker with optional search term.
+            ide: Automatically connect to IDE on startup if exactly one valid IDE is available.
+            include_hook_events: Include all hook lifecycle events in the output stream (only works with --output-format=stream-json).
+            include_partial_messages: Include partial message chunks as they arrive (only works with --print and --output-format=stream-json).
+            input_format: Input format (only works with --print): "text" (default), or "stream-json" (realtime streaming input) (choices: "text", "stream-json").
             json_schema: JSON Schema for structured output validation.
-            max_budget_usd: Maximum dollar amount to spend on API calls (only works
-                with --print).
-            mcp_config: Load MCP servers from JSON files or strings
-                (space-separated).
+            max_budget_usd: Maximum dollar amount to spend on API calls (only works with --print).
+            mcp_config: Load MCP servers from JSON files or strings (space-separated).
             model: Model for the current session.
-            name: Set a display name for this session (shown in the prompt box,
-                /resume picker, and terminal title).
-            no_session_persistence: Disable session persistence - sessions will not
-                be saved to disk and cannot be resumed (only works with --print).
-            output_format: Output format (only works with --print): "text"
-                (default), "json" (single result), or "stream-json" (realtime
-                streaming) (choices: "text", "json", "stream-json").
-            permission_mode: Permission mode to use for the session (choices:
-                "acceptEdits", "auto", "bypassPermissions", "manual", "dontAsk",
-                "plan").
-            plugin_dir: Load a plugin from a directory or .zip for this session only
-                (repeatable: --plugin-dir A --plugin-dir B.zip). Defaults to `[]`.
-            plugin_url: Fetch a plugin .zip from a URL for this session only
-                (repeatable: --plugin-url A --plugin-url B). Defaults to `[]`.
+            name: Set a display name for this session (shown in the prompt box, /resume picker, and terminal title).
+            no_session_persistence: Disable session persistence - sessions will not be saved to disk and cannot be resumed (only works with --print).
+            output_format: Output format (only works with --print): "text" (default), "json" (single result), or "stream-json" (realtime streaming) (choices: "text", "json", "stream-json").
+            permission_mode: Permission mode to use for the session (choices: "acceptEdits", "auto", "bypassPermissions", "manual", "dontAsk", "plan").
+            plugin_dir: Load a plugin from a directory or .zip for this session only (repeatable: --plugin-dir A --plugin-dir B.zip). Defaults to `[]`.
+            plugin_url: Fetch a plugin .zip from a URL for this session only (repeatable: --plugin-url A --plugin-url B). Defaults to `[]`.
             print: Print response and exit (useful for pipes).
             prompt_suggestions: Enable prompt suggestions.
-            remote_control: Start an interactive session with Remote Control enabled
-                (optionally named).
-            remote_control_session_name_prefix: Prefix for auto-generated Remote
-                Control session names. Defaults to `hostname`.
-            replay_user_messages: Re-emit user messages from stdin back on stdout
-                for acknowledgment (only works with --input-format=stream-json and
-                --output-format=stream-json).
-            resume: Resume a conversation by session ID, or open interactive picker
-                with optional search term.
-            safe_mode: Start with all customizations (CLAUDE.md, skills, plugins,
-                hooks, MCP servers, custom commands and agents, output styles,
-                workflows, custom themes, keybindings, and more) disabled - useful
-                for troubleshooting a broken configuration.
-            session_id: Use a specific session ID for the conversation (must be a
-                valid UUID).
-            setting_sources: Comma-separated list of setting sources to load (user,
-                project, local).
-            settings: Path to a settings JSON file or a JSON string to load
-                additional settings from.
-            strict_mcp_config: Only use MCP servers from --mcp-config, ignoring all
-                other MCP configurations.
+            remote_control: Start an interactive session with Remote Control enabled (optionally named).
+            remote_control_session_name_prefix: Prefix for auto-generated Remote Control session names. Defaults to `hostname`.
+            replay_user_messages: Re-emit user messages from stdin back on stdout for acknowledgment (only works with --input-format=stream-json and --output-format=stream-json).
+            resume: Resume a conversation by session ID, or open interactive picker with optional search term.
+            safe_mode: Start with all customizations (CLAUDE.md, skills, plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled - useful for troubleshooting a broken configuration.
+            session_id: Use a specific session ID for the conversation (must be a valid UUID).
+            setting_sources: Comma-separated list of setting sources to load (user, project, local).
+            settings: Path to a settings JSON file or a JSON string to load additional settings from.
+            strict_mcp_config: Only use MCP servers from --mcp-config, ignoring all other MCP configurations.
             system_prompt: System prompt to use for the session.
             teleport: Resume a teleport session, optionally specify session ID.
             tmux: Create a tmux session for the worktree (requires --worktree).
             tools: Specify the list of available tools from the built-in set.
             verbose: Override verbose mode setting from config.
-            worktree: Create a new git worktree for this session (optionally specify
-                a name).
+            worktree: Create a new git worktree for this session (optionally specify a name).
         """
         ...
     @property
-    def argv(self) -> Claude[_Argv]: ...
+    def argv(self) -> Claude[Argv]: ...
     def flags(
         self,
         *,
-        add_dir: _Value = ...,
-        agent: _Value = ...,
-        agents: _Value = ...,
-        allow_dangerously_skip_permissions: _Flag = ...,
-        allowed_tools: _Value = ...,
-        append_system_prompt: _Value = ...,
-        autocompact: _Value = ...,
-        ax_screen_reader: _Flag = ...,
-        bare: _Flag = ...,
-        betas: _Value = ...,
-        bg: _Flag = ...,
-        brief: _Flag = ...,
-        chrome: _Flag = ...,
-        cloud: _Value = ...,
-        continue_: _Flag = ...,
-        dangerously_skip_permissions: _Flag = ...,
-        debug: _Value = ...,
-        debug_file: _Value = ...,
-        disable_slash_commands: _Flag = ...,
-        disallowed_tools: _Value = ...,
-        effort: _Value = ...,
-        environment: _Value = ...,
-        exclude_dynamic_system_prompt_sections: _Flag = ...,
-        fallback_model: _Value = ...,
-        file: _Value = ...,
-        fork_session: _Flag = ...,
-        forward_subagent_text: _Flag = ...,
-        from_pr: _Value = ...,
-        ide: _Flag = ...,
-        include_hook_events: _Flag = ...,
-        include_partial_messages: _Flag = ...,
-        input_format: _Value = ...,
-        json_schema: _Value = ...,
-        max_budget_usd: _Value = ...,
-        mcp_config: _Value = ...,
-        model: _Value = ...,
-        name: _Value = ...,
-        no_session_persistence: _Flag = ...,
-        output_format: _Value = ...,
-        permission_mode: _Value = ...,
-        plugin_dir: _Value = ...,
-        plugin_url: _Value = ...,
-        print: _Flag = ...,
-        prompt_suggestions: _Value = ...,
-        remote_control: _Value = ...,
-        remote_control_session_name_prefix: _Value = ...,
-        replay_user_messages: _Flag = ...,
-        resume: _Value = ...,
-        safe_mode: _Flag = ...,
-        session_id: _Value = ...,
-        setting_sources: _Value = ...,
-        settings: _Value = ...,
-        strict_mcp_config: _Flag = ...,
-        system_prompt: _Value = ...,
-        teleport: _Value = ...,
-        tmux: _Flag = ...,
-        tools: _Value = ...,
-        verbose: _Flag = ...,
-        worktree: _Value = ...,
+        add_dir: Value = ...,
+        agent: Value = ...,
+        agents: Value = ...,
+        allow_dangerously_skip_permissions: Flag = ...,
+        allowed_tools: Value = ...,
+        append_system_prompt: Value = ...,
+        autocompact: Value = ...,
+        ax_screen_reader: Flag = ...,
+        bare: Flag = ...,
+        betas: Value = ...,
+        bg: Flag = ...,
+        brief: Flag = ...,
+        chrome: Flag = ...,
+        cloud: Value = ...,
+        continue_: Flag = ...,
+        dangerously_skip_permissions: Flag = ...,
+        debug: Value = ...,
+        debug_file: Value = ...,
+        disable_slash_commands: Flag = ...,
+        disallowed_tools: Value = ...,
+        effort: Value = ...,
+        environment: Value = ...,
+        exclude_dynamic_system_prompt_sections: Flag = ...,
+        fallback_model: Value = ...,
+        file: Value = ...,
+        fork_session: Flag = ...,
+        forward_subagent_text: Flag = ...,
+        from_pr: Value = ...,
+        ide: Flag = ...,
+        include_hook_events: Flag = ...,
+        include_partial_messages: Flag = ...,
+        input_format: Value = ...,
+        json_schema: Value = ...,
+        max_budget_usd: Value = ...,
+        mcp_config: Value = ...,
+        model: Value = ...,
+        name: Value = ...,
+        no_session_persistence: Flag = ...,
+        output_format: Value = ...,
+        permission_mode: Value = ...,
+        plugin_dir: Value = ...,
+        plugin_url: Value = ...,
+        print: Flag = ...,
+        prompt_suggestions: Value = ...,
+        remote_control: Value = ...,
+        remote_control_session_name_prefix: Value = ...,
+        replay_user_messages: Flag = ...,
+        resume: Value = ...,
+        safe_mode: Flag = ...,
+        session_id: Value = ...,
+        setting_sources: Value = ...,
+        settings: Value = ...,
+        strict_mcp_config: Flag = ...,
+        system_prompt: Value = ...,
+        teleport: Value = ...,
+        tmux: Flag = ...,
+        tools: Value = ...,
+        verbose: Flag = ...,
+        worktree: Value = ...,
         **flags: Any,
     ) -> Self:
         """Bind tool-level global options before the subcommand.

@@ -6,94 +6,94 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value, _ValuedFlag
+from toolroom import Argv, Flag, Value, ValuedFlag
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 
-class Cmake(_Tool[_R]):
+class Cmake(ToolBase[_R]):
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        A: _Value = ...,
-        B: _Value = ...,
-        C: _Value = ...,
-        D: _Value = ...,
-        E: _Flag = ...,
-        G: _Value = ...,
-        L: _Flag = ...,
-        LR: _Flag = ...,
-        N: _Flag = ...,
-        P: _Value = ...,
-        S: _Value = ...,
-        T: _Value = ...,
-        U: _Value = ...,
-        W: _Flag = ...,
-        Wdeprecated: _Flag = ...,
-        Wdev: _Flag = ...,
-        Werror: _Value = ...,
-        Wno_: _Flag = ...,
-        Wno_deprecated: _Flag = ...,
-        Wno_dev: _Flag = ...,
-        Wno_error: _Value = ...,
-        build: _Value = ...,
-        check_system_vars: _Flag = ...,
-        compile_no_warning_as_error: _Flag = ...,
-        debug_find: _Flag = ...,
-        debug_find_pkg: _Value = ...,
-        debug_find_var: _Value = ...,
-        debug_output: _Flag = ...,
-        debug_trycompile: _Flag = ...,
-        find_package: _Flag = ...,
-        fresh: _Flag = ...,
-        graphviz: _Value = ...,
-        help_command: _Value = ...,
-        help_command_list: _Value = ...,
-        help_commands: _Value = ...,
-        help_diagnostic: _Value = ...,
-        help_diagnostic_list: _Value = ...,
-        help_diagnostics: _Value = ...,
-        help_full: _Value = ...,
-        help_manual: _Value = ...,
-        help_manual_list: _Value = ...,
-        help_module: _Value = ...,
-        help_module_list: _Value = ...,
-        help_modules: _Value = ...,
-        help_policies: _Value = ...,
-        help_policy: _Value = ...,
-        help_policy_list: _Value = ...,
-        help_properties: _Value = ...,
-        help_property: _Value = ...,
-        help_property_list: _Value = ...,
-        help_variable: _Value = ...,
-        help_variable_list: _Value = ...,
-        help_variables: _Value = ...,
-        install: _Value = ...,
-        install_prefix: _Value = ...,
-        link_no_warning_as_error: _Flag = ...,
-        list_presets: _ValuedFlag = ...,
-        log_context: _Flag = ...,
-        log_level: _Value = ...,
-        no_warn_unused_cli: _Flag = ...,
-        open: _Value = ...,
-        preset: _Value = ...,
-        presets_file: _Value = ...,
-        print_config_dir: _Flag = ...,
-        profiling_format: _Value = ...,
-        profiling_output: _Value = ...,
-        project_file: _Value = ...,
-        system_information: _Value = ...,
-        toolchain: _Value = ...,
-        trace: _Flag = ...,
-        trace_expand: _Flag = ...,
-        trace_format: _Value = ...,
-        trace_redirect: _Value = ...,
-        trace_source: _Value = ...,
-        warn_uninitialized: _Flag = ...,
-        workflow: _Value = ...,
+        *args: str | PathLike[str],
+        A: Value = ...,
+        B: Value = ...,
+        C: Value = ...,
+        D: Value = ...,
+        E: Flag = ...,
+        G: Value = ...,
+        L: Flag = ...,
+        LR: Flag = ...,
+        N: Flag = ...,
+        P: Value = ...,
+        S: Value = ...,
+        T: Value = ...,
+        U: Value = ...,
+        W: Flag = ...,
+        Wdeprecated: Flag = ...,
+        Wdev: Flag = ...,
+        Werror: Value = ...,
+        Wno_: Flag = ...,
+        Wno_deprecated: Flag = ...,
+        Wno_dev: Flag = ...,
+        Wno_error: Value = ...,
+        build: Value = ...,
+        check_system_vars: Flag = ...,
+        compile_no_warning_as_error: Flag = ...,
+        debug_find: Flag = ...,
+        debug_find_pkg: Value = ...,
+        debug_find_var: Value = ...,
+        debug_output: Flag = ...,
+        debug_trycompile: Flag = ...,
+        find_package: Flag = ...,
+        fresh: Flag = ...,
+        graphviz: Value = ...,
+        help_command: Value = ...,
+        help_command_list: Value = ...,
+        help_commands: Value = ...,
+        help_diagnostic: Value = ...,
+        help_diagnostic_list: Value = ...,
+        help_diagnostics: Value = ...,
+        help_full: Value = ...,
+        help_manual: Value = ...,
+        help_manual_list: Value = ...,
+        help_module: Value = ...,
+        help_module_list: Value = ...,
+        help_modules: Value = ...,
+        help_policies: Value = ...,
+        help_policy: Value = ...,
+        help_policy_list: Value = ...,
+        help_properties: Value = ...,
+        help_property: Value = ...,
+        help_property_list: Value = ...,
+        help_variable: Value = ...,
+        help_variable_list: Value = ...,
+        help_variables: Value = ...,
+        install: Value = ...,
+        install_prefix: Value = ...,
+        link_no_warning_as_error: Flag = ...,
+        list_presets: ValuedFlag = ...,
+        log_context: Flag = ...,
+        log_level: Value = ...,
+        no_warn_unused_cli: Flag = ...,
+        open: Value = ...,
+        preset: Value = ...,
+        presets_file: Value = ...,
+        print_config_dir: Flag = ...,
+        profiling_format: Value = ...,
+        profiling_output: Value = ...,
+        project_file: Value = ...,
+        system_information: Value = ...,
+        toolchain: Value = ...,
+        trace: Flag = ...,
+        trace_expand: Flag = ...,
+        trace_format: Value = ...,
+        trace_redirect: Value = ...,
+        trace_source: Value = ...,
+        warn_uninitialized: Flag = ...,
+        workflow: Value = ...,
         **flags: Any,
     ) -> _R:
         """cmake [options] <path-to-source>
@@ -124,23 +124,17 @@ class Cmake(_Tool[_R]):
             check_system_vars: = Find problems with variable usage in system files.
             compile_no_warning_as_error: CMAKE_COMPILE_WARNING_AS_ERROR variable.
             debug_find: = Put cmake find in a debug mode.
-            debug_find_pkg: = Limit cmake debug-find to the comma-separated list of
-                packages.
-            debug_find_var: = Limit cmake debug-find to the comma-separated list of
-                result variables.
+            debug_find_pkg: = Limit cmake debug-find to the comma-separated list of packages.
+            debug_find_var: = Limit cmake debug-find to the comma-separated list of result variables.
             debug_output: = Put cmake in a debug mode.
             debug_trycompile: = Do not delete the try_compile build tree.
             find_package: = Legacy pkg-config like mode.
             fresh: = Configure a fresh build tree, removing any existing cache file.
-            graphviz: = Generate graphviz of dependencies, see
-                CMakeGraphVizOptions.cmake for more.
+            graphviz: = Generate graphviz of dependencies, see CMakeGraphVizOptions.cmake for more.
             help_commands: = Print cmake-commands manual and exit.
-            help_diagnostic: = Print help for one diagnostic and exit. Added in
-                4.4.0.
-            help_diagnostic_list: = List diagnostics with help available and exit.
-                Added in 4.4.0.
-            help_diagnostics: = Print cmake-diagnostics manual and exit. Added in
-                4.4.0.
+            help_diagnostic: = Print help for one diagnostic and exit. Added in 4.4.0.
+            help_diagnostic_list: = List diagnostics with help available and exit. Added in 4.4.0.
+            help_diagnostics: = Print cmake-diagnostics manual and exit. Added in 4.4.0.
             help_full: = Print all help manuals and exit.
             help_manual_list: = List help manuals available and exit.
             help_module_list: = List modules with help available and exit.
@@ -153,22 +147,17 @@ class Cmake(_Tool[_R]):
             help_variables: = Print cmake-variables manual and exit.
             install: = Install a CMake-generated project binary tree.
             install_prefix: [CMAKE_INSTALL_PREFIX].
-            link_no_warning_as_error: = Ignore LINK_WARNING_AS_ERROR property and
-                CMAKE_LINK_WARNING_AS_ERROR variable.
-            list_presets: = List available presets. Value optional: `True` for the
-                bare flag, or pass one.
+            link_no_warning_as_error: = Ignore LINK_WARNING_AS_ERROR property and CMAKE_LINK_WARNING_AS_ERROR variable.
+            list_presets: = List available presets. Value optional: `True` for the bare flag, or pass one.
             log_context: = Prepend log messages with context, if given.
             log_level: = Set the verbosity of messages from CMake files.
-            no_warn_unused_cli: = Don't warn about command line options. Gone since
-                4.4.0.
+            no_warn_unused_cli: = Don't warn about command line options. Gone since 4.4.0.
             open: = Open generated project in the associated application.
             preset: = Specify a configure preset.
             presets_file: = Specify the path to a presets file. Added in 4.4.0.
-            print_config_dir: = Print CMake config directory for user-wide FileAPI
-                queries.
+            print_config_dir: = Print CMake config directory for user-wide FileAPI queries.
             profiling_format: = Output data for profiling CMake scripts.
-            profiling_output: = Select an output path for the profiling data enabled
-                through --profiling-format.
+            profiling_output: = Select an output path for the profiling data enabled through --profiling-format.
             project_file: = Specify an alternate project file name.
             system_information: = Dump information about this system.
             toolchain: = Specify toolchain file [CMAKE_TOOLCHAIN_FILE].
@@ -182,4 +171,4 @@ class Cmake(_Tool[_R]):
         """
         ...
     @property
-    def argv(self) -> Cmake[_Argv]: ...
+    def argv(self) -> Cmake[Argv]: ...

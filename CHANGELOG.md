@@ -7,6 +7,37 @@ breaking changes.
 
 ## [Unreleased]
 
+### Added
+
+- **`Flag`, `Value`, and `ValuedFlag` are public.** The three types every
+  generated signature is written in were private aliases (`_Flag`, …) —
+  internals-flavoured names in the one place users look, and
+  unimportable for a wrapper that wanted to annotate its own parameters
+  with exactly what a call accepts. They now live on `toolroom` directly,
+  at runtime too, and every generated stub spells them bare.
+
+### Changed
+
+- **Signatures accept paths.** The bridge has always `str()`-ed what it
+  was handed, so `ruff.check(Path("src"))` ran fine and only the types
+  called it an error. Positionals are `str | PathLike[str]` now, and
+  `Value` takes `PathLike` scalars and sequences alike — the annotations
+  caught up with the runtime.
+- **Hover signatures shrank to one line per flag.** An option with a
+  closed set of values used to inline its `Literal` union twice over
+  (`Literal[…] | Sequence[Literal[…]] | None` — ruff's `output_format`
+  alone was eight hover lines); each distinct choice set is now a named
+  module-level alias in its tool's stub (`OutputFormat`, `TargetVersion`),
+  and checkers render the name. Generated classes derive from
+  `ToolBase` — the same `Tool`, imported under a name that reads public
+  in every class header a hover shows. A verb that would collide with a
+  stub import (none does) makes the renderer refuse loudly rather than
+  write a stub that means the wrong thing.
+- **Flag help stays on one line per entry.** Docstring wraps chosen for
+  the .pyi's column limit landed as hard breaks mid-sentence in every
+  hover; entries are unwrapped now, so each renderer reflows them to its
+  own width.
+
 ## [0.4.0] — 2026-08-09
 
 ### Changed

@@ -47,9 +47,9 @@ import subprocess as _subprocess
 import sys as _sys
 import threading as _threading
 import types as _types
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from pathlib import Path as _Path
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, TypeAlias
 from typing import cast as _cast
 
 # `Argv`/`Result`/`ToolError` are public, unlike the private aliases: every tool
@@ -151,6 +151,36 @@ class _Off:
 
 
 off = _Off()
+
+
+# The three types every generated signature is written in — public, because
+# they are what a reader hovers and what a wrapper's own parameters want to
+# be annotated with. Wide on purpose: the bridge `str()`-s whatever it is
+# handed (so `Path` and `int` work) and repeats the flag for each item of a
+# sequence, so a narrower type would reject calls that demonstrably work.
+
+Flag: TypeAlias = bool | _Off | None
+"""A boolean flag: `True` → `--flag`, `off` → the tool's own negation,
+`False`/`None` → omitted (which is what lets a task parameter's default
+flow straight through)."""
+
+Value: TypeAlias = (
+    str
+    | int
+    | float
+    | _os.PathLike[str]
+    | Sequence[str | int | float | _os.PathLike[str]]
+    | _Off
+    | None
+)
+"""An option that takes a value. Scalars are `str()`-ed — a `Path` passes
+straight through — and a sequence repeats the flag once per item."""
+
+ValuedFlag: TypeAlias = bool | Value
+"""An option whose value is *optional* — usable bare (`gpg_sign=True`, sign
+with the default key) or with a value (`gpg_sign="KEY"`). Both spell a
+valid command; the tool prints its placeholder attached to the flag,
+`--gpg-sign[=<key-id>]`, which is how the extractor tells the two apart."""
 
 
 # How a tool spells "off" when it is *not* `--no-<name>`. Only the

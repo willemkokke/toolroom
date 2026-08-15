@@ -6,29 +6,29 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 
-class Ninja(_Tool[_R]):
+class Ninja(ToolBase[_R]):
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        C: _Value = ...,
-        d: _Value = ...,
-        f: _Value = ...,
-        j: _Value = ...,
-        k: _Value = ...,
-        l: _Value = ...,
-        n: _Flag = ...,
-        quiet: _Flag = ...,
-        t: _Value = ...,
-        verbose: _Flag = ...,
-        w: _Value = ...,
+        *args: str | PathLike[str],
+        C: Value = ...,
+        d: Value = ...,
+        f: Value = ...,
+        j: Value = ...,
+        k: Value = ...,
+        l: Value = ...,
+        n: Flag = ...,
+        quiet: Flag = ...,
+        t: Value = ...,
+        verbose: Flag = ...,
+        w: Value = ...,
         **flags: Any,
     ) -> _R:
         """if targets are unspecified, builds the 'default' target (see manual).
@@ -37,17 +37,15 @@ class Ninja(_Tool[_R]):
             C: change to DIR before doing anything else.
             d: enable debugging (use '-d list' to list modes).
             f: specify input build file [default=build.ninja].
-            j: run N jobs in parallel (0 means infinity) [default=30 on this
-                system].
+            j: run N jobs in parallel (0 means infinity) [default=30 on this system].
             k: keep going until N jobs fail (0 means infinity) [default=1].
             l: do not start new jobs if the load average is greater than N.
             n: dry run (don't run commands but act like they succeeded).
             quiet: don't show progress status, just command output. Added in 1.11.1.
-            t: run a subtool (use '-t list' to list subtools) terminates toplevel
-                options; further flags are passed to the tool.
+            t: run a subtool (use '-t list' to list subtools) terminates toplevel options; further flags are passed to the tool.
             verbose: show all command lines while building.
             w: adjust warnings (use '-w list' to list warnings).
         """
         ...
     @property
-    def argv(self) -> Ninja[_Argv]: ...
+    def argv(self) -> Ninja[Argv]: ...

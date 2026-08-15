@@ -7,65 +7,64 @@
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
 from collections.abc import Sequence
-from typing import Any, Literal, TypeVar
+from os import PathLike
+from typing import Any, Literal, TypeAlias, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 
-class GitCliff(_Tool[_R]):
+Sort: TypeAlias = Literal["oldest", "newest"]
+Strip: TypeAlias = Literal["header", "footer", "all"]
+
+class GitCliff(ToolBase[_R]):
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        azure_devops_repo: _Value = ...,
-        azure_devops_token: _Value = ...,
-        bitbucket_repo: _Value = ...,
-        bitbucket_token: _Value = ...,
-        body: _Value = ...,
-        bump: _Value = ...,
-        bumped_version: _Flag = ...,
-        config: _Value = ...,
-        config_url: _Value = ...,
-        context: _Flag = ...,
-        count_tags: _Value = ...,
-        current: _Flag = ...,
-        exclude_path: _Value = ...,
-        from_context: _Value = ...,
-        gitea_repo: _Value = ...,
-        gitea_token: _Value = ...,
-        github_repo: _Value = ...,
-        github_token: _Value = ...,
-        gitlab_repo: _Value = ...,
-        gitlab_token: _Value = ...,
-        ignore_tags: _Value = ...,
-        include_path: _Value = ...,
-        init: _Value = ...,
-        latest: _Flag = ...,
-        no_exec: _Flag = ...,
-        offline: _Flag = ...,
-        output: _Value = ...,
-        prepend: _Value = ...,
-        repository: _Value = ...,
-        skip_commit: _Value = ...,
-        skip_tags: _Value = ...,
-        sort: Literal["oldest", "newest"]
-        | Sequence[Literal["oldest", "newest"]]
-        | None = ...,
-        strip: Literal["header", "footer", "all"]
-        | Sequence[Literal["header", "footer", "all"]]
-        | None = ...,
-        tag: _Value = ...,
-        tag_pattern: _Value = ...,
-        topo_order: _Flag = ...,
-        unreleased: _Flag = ...,
-        use_branch_tags: _Flag = ...,
-        use_native_tls: _Flag = ...,
-        verbose: _Flag = ...,
-        with_commit: _Value = ...,
-        with_tag_message: _Value = ...,
-        workdir: _Value = ...,
+        *args: str | PathLike[str],
+        azure_devops_repo: Value = ...,
+        azure_devops_token: Value = ...,
+        bitbucket_repo: Value = ...,
+        bitbucket_token: Value = ...,
+        body: Value = ...,
+        bump: Value = ...,
+        bumped_version: Flag = ...,
+        config: Value = ...,
+        config_url: Value = ...,
+        context: Flag = ...,
+        count_tags: Value = ...,
+        current: Flag = ...,
+        exclude_path: Value = ...,
+        from_context: Value = ...,
+        gitea_repo: Value = ...,
+        gitea_token: Value = ...,
+        github_repo: Value = ...,
+        github_token: Value = ...,
+        gitlab_repo: Value = ...,
+        gitlab_token: Value = ...,
+        ignore_tags: Value = ...,
+        include_path: Value = ...,
+        init: Value = ...,
+        latest: Flag = ...,
+        no_exec: Flag = ...,
+        offline: Flag = ...,
+        output: Value = ...,
+        prepend: Value = ...,
+        repository: Value = ...,
+        skip_commit: Value = ...,
+        skip_tags: Value = ...,
+        sort: Sort | Sequence[Sort] | None = ...,
+        strip: Strip | Sequence[Strip] | None = ...,
+        tag: Value = ...,
+        tag_pattern: Value = ...,
+        topo_order: Flag = ...,
+        unreleased: Flag = ...,
+        use_branch_tags: Flag = ...,
+        use_native_tls: Flag = ...,
+        verbose: Flag = ...,
+        with_commit: Value = ...,
+        with_tag_message: Value = ...,
+        workdir: Value = ...,
         **flags: Any,
     ) -> _R:
         """git-cliff 2.13.1
@@ -83,8 +82,7 @@ class GitCliff(_Tool[_R]):
             context: Prints changelog context as JSON.
             count_tags: Sets the tags to count in the changelog.
             current: Processes the commits that belong to the current tag.
-            exclude_path: Sets the path to exclude related commits. May be repeated:
-                a list emits the flag once per item.
+            exclude_path: Sets the path to exclude related commits. May be repeated: a list emits the flag once per item.
             from_context: Generates changelog from a JSON context.
             gitea_repo: Sets the Gitea repository.
             gitea_token: Sets the Gitea API token.
@@ -93,19 +91,15 @@ class GitCliff(_Tool[_R]):
             gitlab_repo: Sets the GitLab repository.
             gitlab_token: Sets the GitLab API token.
             ignore_tags: Sets the tags to ignore in the changelog.
-            include_path: Sets the path to include related commits. May be repeated:
-                a list emits the flag once per item.
+            include_path: Sets the path to include related commits. May be repeated: a list emits the flag once per item.
             init: Writes the default configuration file to cliff.toml.
             latest: Processes the commits starting from the latest tag.
             no_exec: Disables the external command execution.
-            offline: Disable network access for remote repositories. Added in
-                2.12.0.
+            offline: Disable network access for remote repositories. Added in 2.12.0.
             output: Writes output to the given file.
             prepend: Prepends entries to the given changelog file.
-            repository: Sets the git repository. May be repeated: a list emits the
-                flag once per item.
-            skip_commit: Sets commits that will be skipped in the changelog. May be
-                repeated: a list emits the flag once per item.
+            repository: Sets the git repository. May be repeated: a list emits the flag once per item.
+            skip_commit: Sets commits that will be skipped in the changelog. May be repeated: a list emits the flag once per item.
             skip_tags: Sets the tags to skip in the changelog. Added in 2.12.0.
             sort: Sets sorting of the commits inside sections. Defaults to `oldest`.
             strip: Strips the given parts from the changelog.
@@ -113,16 +107,13 @@ class GitCliff(_Tool[_R]):
             tag_pattern: Sets the regex for matching git tags.
             topo_order: Sorts the tags topologically.
             unreleased: Processes the commits that do not belong to a tag.
-            use_branch_tags: Include only the tags that belong to the current
-                branch.
-            use_native_tls: Load TLS certificates from the native certificate store.
-                Added in 2.8.0.
+            use_branch_tags: Include only the tags that belong to the current branch.
+            use_native_tls: Load TLS certificates from the native certificate store. Added in 2.8.0.
             verbose: Increases the logging verbosity.
-            with_commit: Sets custom commit messages to include in the changelog.
-                May be repeated: a list emits the flag once per item.
+            with_commit: Sets custom commit messages to include in the changelog. May be repeated: a list emits the flag once per item.
             with_tag_message: Sets custom message for the latest release.
             workdir: Sets the working directory.
         """
         ...
     @property
-    def argv(self) -> GitCliff[_Argv]: ...
+    def argv(self) -> GitCliff[Argv]: ...

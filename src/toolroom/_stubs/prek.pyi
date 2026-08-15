@@ -7,100 +7,112 @@
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
 from collections.abc import Sequence
-from typing import Any, Literal, Self, TypeVar
+from os import PathLike
+from typing import Any, Literal, Self, TypeAlias, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 
-class Prek(_Tool[_R]):
-    class Autoupdate(_Tool[_R2]):
+Color: TypeAlias = Literal["auto", "always", "never"]
+HookType: TypeAlias = Literal[
+    "commit-msg",
+    "post-checkout",
+    "post-commit",
+    "post-merge",
+    "post-rewrite",
+    "pre-commit",
+    "pre-merge-commit",
+    "pre-push",
+    "pre-rebase",
+    "prepare-commit-msg",
+]
+Stage: TypeAlias = Literal[
+    "manual",
+    "commit-msg",
+    "post-checkout",
+    "post-commit",
+    "post-merge",
+    "post-rewrite",
+    "pre-commit",
+    "pre-merge-commit",
+    "pre-push",
+    "pre-rebase",
+    "prepare-commit-msg",
+]
+
+class Prek(ToolBase[_R]):
+    class Autoupdate(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            bleeding_edge: _Flag = ...,
-            cd: _Value = ...,
-            check: _Flag = ...,
-            color: Literal["auto", "always", "never"]
-            | Sequence[Literal["auto", "always", "never"]]
-            | None = ...,
-            config: _Value = ...,
-            cooldown_days: _Value = ...,
-            dry_run: _Flag = ...,
-            exclude_repo: _Value = ...,
-            exclude_tag: _Value = ...,
-            exit_code: _Flag = ...,
-            freeze: _Flag = ...,
-            include_tag: _Value = ...,
-            jobs: _Value = ...,
-            log_file: _Value = ...,
-            no_progress: _Flag = ...,
-            quiet: _Flag = ...,
-            refresh: _Flag = ...,
-            repo: _Value = ...,
-            repo_exclude_tag: _Value = ...,
-            repo_include_tag: _Value = ...,
-            verbose: _Flag = ...,
+            bleeding_edge: Flag = ...,
+            cd: Value = ...,
+            check: Flag = ...,
+            color: Color | Sequence[Color] | None = ...,
+            config: Value = ...,
+            cooldown_days: Value = ...,
+            dry_run: Flag = ...,
+            exclude_repo: Value = ...,
+            exclude_tag: Value = ...,
+            exit_code: Flag = ...,
+            freeze: Flag = ...,
+            include_tag: Value = ...,
+            jobs: Value = ...,
+            log_file: Value = ...,
+            no_progress: Flag = ...,
+            quiet: Flag = ...,
+            refresh: Flag = ...,
+            repo: Value = ...,
+            repo_exclude_tag: Value = ...,
+            repo_include_tag: Value = ...,
+            verbose: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Update configured repositories
 
             Args:
-                bleeding_edge: Update to the bleeding edge of the default branch
-                    instead of the latest tagged version.
+                bleeding_edge: Update to the bleeding edge of the default branch instead of the latest tagged version.
                 cd: Change to directory before running.
                 check: Alias of `--dry-run --exit-code`.
                 color: Whether to use color in output. Defaults to `auto`.
                 config: Path to alternate config file.
-                cooldown_days: Minimum release age (in days) required for a version
-                    to be eligible.
-                dry_run: Do not write changes to the config file, only display what
-                    would be changed.
-                exclude_repo: Do not update this repository. May be repeated: a list
-                    emits the flag once per item.
-                exclude_tag: Ignore tags matching this glob pattern. May be
-                    repeated: a list emits the flag once per item.
+                cooldown_days: Minimum release age (in days) required for a version to be eligible.
+                dry_run: Do not write changes to the config file, only display what would be changed.
+                exclude_repo: Do not update this repository. May be repeated: a list emits the flag once per item.
+                exclude_tag: Ignore tags matching this glob pattern. May be repeated: a list emits the flag once per item.
                 exit_code: Exit with status 1 if updates are available.
                 freeze: Store "frozen" hashes in `rev` instead of tag names.
-                include_tag: Only consider tags matching this glob pattern. May be
-                    repeated: a list emits the flag once per item.
+                include_tag: Only consider tags matching this glob pattern. May be repeated: a list emits the flag once per item.
                 jobs: Number of threads to use. Defaults to `0`.
                 log_file: Write trace logs to the specified file.
                 no_progress: Hide all progress outputs.
                 quiet: Use quiet output.
                 refresh: Refresh all cached data.
-                repo: Only update this repository. May be repeated: a list emits the
-                    flag once per item.
-                repo_exclude_tag: Ignore tags matching this glob pattern for a
-                    repository (`<repo>=<pattern>`). May be repeated: a list emits
-                    the flag once per item.
-                repo_include_tag: Only consider tags matching this glob pattern for
-                    a repository (`<repo>=<pattern>`). May be repeated: a list emits
-                    the flag once per item.
+                repo: Only update this repository. May be repeated: a list emits the flag once per item.
+                repo_exclude_tag: Ignore tags matching this glob pattern for a repository (`<repo>=<pattern>`). May be repeated: a list emits the flag once per item.
+                repo_include_tag: Only consider tags matching this glob pattern for a repository (`<repo>=<pattern>`). May be repeated: a list emits the flag once per item.
                 verbose: Use verbose output.
             """
             ...
         @property
-        def argv(self) -> Prek.Autoupdate[_Argv]: ...
+        def argv(self) -> Prek.Autoupdate[Argv]: ...
 
     autoupdate: Autoupdate[_R]
-    class Clean(_Tool[_R2]):
+    class Clean(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            cd: _Value = ...,
-            color: Literal["auto", "always", "never"]
-            | Sequence[Literal["auto", "always", "never"]]
-            | None = ...,
-            config: _Value = ...,
-            log_file: _Value = ...,
-            no_progress: _Flag = ...,
-            quiet: _Flag = ...,
-            refresh: _Flag = ...,
-            verbose: _Flag = ...,
+            cd: Value = ...,
+            color: Color | Sequence[Color] | None = ...,
+            config: Value = ...,
+            log_file: Value = ...,
+            no_progress: Flag = ...,
+            quiet: Flag = ...,
+            refresh: Flag = ...,
+            verbose: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Remove all prek cached data
@@ -117,56 +129,28 @@ class Prek(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Prek.Clean[_Argv]: ...
+        def argv(self) -> Prek.Clean[Argv]: ...
 
     clean: Clean[_R]
-    class Install(_Tool[_R2]):
+    class Install(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            allow_missing_config: _Flag = ...,
-            cd: _Value = ...,
-            color: Literal["auto", "always", "never"]
-            | Sequence[Literal["auto", "always", "never"]]
-            | None = ...,
-            config: _Value = ...,
-            force: _Flag = ...,
-            git_dir: _Value = ...,
-            hook_type: Literal[
-                "commit-msg",
-                "post-checkout",
-                "post-commit",
-                "post-merge",
-                "post-rewrite",
-                "pre-commit",
-                "pre-merge-commit",
-                "pre-push",
-                "pre-rebase",
-                "prepare-commit-msg",
-            ]
-            | Sequence[
-                Literal[
-                    "commit-msg",
-                    "post-checkout",
-                    "post-commit",
-                    "post-merge",
-                    "post-rewrite",
-                    "pre-commit",
-                    "pre-merge-commit",
-                    "pre-push",
-                    "pre-rebase",
-                    "prepare-commit-msg",
-                ]
-            ]
-            | None = ...,
-            log_file: _Value = ...,
-            no_progress: _Flag = ...,
-            overwrite: _Flag = ...,
-            prepare_hooks: _Flag = ...,
-            quiet: _Flag = ...,
-            refresh: _Flag = ...,
-            skip: _Value = ...,
-            verbose: _Flag = ...,
+            *args: str | PathLike[str],
+            allow_missing_config: Flag = ...,
+            cd: Value = ...,
+            color: Color | Sequence[Color] | None = ...,
+            config: Value = ...,
+            force: Flag = ...,
+            git_dir: Value = ...,
+            hook_type: HookType | Sequence[HookType] | None = ...,
+            log_file: Value = ...,
+            no_progress: Flag = ...,
+            overwrite: Flag = ...,
+            prepare_hooks: Flag = ...,
+            quiet: Flag = ...,
+            refresh: Flag = ...,
+            skip: Value = ...,
+            verbose: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Install prek Git hook shims
@@ -176,16 +160,13 @@ class Prek(_Tool[_R]):
                 cd: Change to directory before running.
                 color: Whether to use color in output. Defaults to `auto`.
                 config: Path to alternate config file.
-                force: Force installation and overwrite existing Git shims. Added in
-                    0.4.12.
-                git_dir: Install Git shims into the `hooks` subdirectory of the
-                    given git directory (`<GIT_DIR>/hooks/`).
+                force: Force installation and overwrite existing Git shims. Added in 0.4.12.
+                git_dir: Install Git shims into the `hooks` subdirectory of the given git directory (`<GIT_DIR>/hooks/`).
                 hook_type: Which Git shim(s) to install.
                 log_file: Write trace logs to the specified file.
                 no_progress: Hide all progress outputs.
                 overwrite: Overwrite existing Git shims. Gone since 0.4.12.
-                prepare_hooks: Also prepare environments for all hooks used in the
-                    config file.
+                prepare_hooks: Also prepare environments for all hooks used in the config file.
                 quiet: Use quiet output.
                 refresh: Refresh all cached data.
                 skip: Skip the specified hooks or projects.
@@ -193,66 +174,36 @@ class Prek(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Prek.Install[_Argv]: ...
+        def argv(self) -> Prek.Install[Argv]: ...
 
     install: Install[_R]
-    class Run(_Tool[_R2]):
+    class Run(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            all_files: _Flag = ...,
-            cd: _Value = ...,
-            color: Literal["auto", "always", "never"]
-            | Sequence[Literal["auto", "always", "never"]]
-            | None = ...,
-            config: _Value = ...,
-            directory: _Value = ...,
-            dry_run: _Flag = ...,
-            fail_fast: _Flag = ...,
-            files: _Value = ...,
-            from_ref: _Value = ...,
-            glob: _Value = ...,
-            group: _Value = ...,
-            last_commit: _Flag = ...,
-            log_file: _Value = ...,
-            no_group: _Value = ...,
-            no_progress: _Flag = ...,
-            quiet: _Flag = ...,
-            refresh: _Flag = ...,
-            require_group: _Value = ...,
-            show_diff_on_failure: _Flag = ...,
-            skip: _Value = ...,
-            stage: Literal[
-                "manual",
-                "commit-msg",
-                "post-checkout",
-                "post-commit",
-                "post-merge",
-                "post-rewrite",
-                "pre-commit",
-                "pre-merge-commit",
-                "pre-push",
-                "pre-rebase",
-                "prepare-commit-msg",
-            ]
-            | Sequence[
-                Literal[
-                    "manual",
-                    "commit-msg",
-                    "post-checkout",
-                    "post-commit",
-                    "post-merge",
-                    "post-rewrite",
-                    "pre-commit",
-                    "pre-merge-commit",
-                    "pre-push",
-                    "pre-rebase",
-                    "prepare-commit-msg",
-                ]
-            ]
-            | None = ...,
-            to_ref: _Value = ...,
-            verbose: _Flag = ...,
+            *args: str | PathLike[str],
+            all_files: Flag = ...,
+            cd: Value = ...,
+            color: Color | Sequence[Color] | None = ...,
+            config: Value = ...,
+            directory: Value = ...,
+            dry_run: Flag = ...,
+            fail_fast: Flag = ...,
+            files: Value = ...,
+            from_ref: Value = ...,
+            glob: Value = ...,
+            group: Value = ...,
+            last_commit: Flag = ...,
+            log_file: Value = ...,
+            no_group: Value = ...,
+            no_progress: Flag = ...,
+            quiet: Flag = ...,
+            refresh: Flag = ...,
+            require_group: Value = ...,
+            show_diff_on_failure: Flag = ...,
+            skip: Value = ...,
+            stage: Stage | Sequence[Stage] | None = ...,
+            to_ref: Value = ...,
+            verbose: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Run configured hooks
@@ -263,81 +214,45 @@ class Prek(_Tool[_R]):
                 color: Whether to use color in output. Defaults to `auto`.
                 config: Path to alternate config file.
                 directory: Run hooks on tracked files under the specified directory.
-                dry_run: Do not run the hooks, but print the hooks that would have
-                    been run.
+                dry_run: Do not run the hooks, but print the hooks that would have been run.
                 fail_fast: Stop running hooks after the first failure.
-                files: Run hooks on the specified file paths. May be repeated: a
-                    list emits the flag once per item.
-                from_ref: The original ref in a `<from_ref>...<to_ref>` diff
-                    expression.
-                glob: Run hooks on tracked files matching the specified glob
-                    pattern. Added in 0.4.11.
+                files: Run hooks on the specified file paths. May be repeated: a list emits the flag once per item.
+                from_ref: The original ref in a `<from_ref>...<to_ref>` diff expression.
+                glob: Run hooks on tracked files matching the specified glob pattern. Added in 0.4.11.
                 group: Run hooks belonging to the specified group. Added in 0.4.4.
                 last_commit: Run hooks against the last commit.
                 log_file: Write trace logs to the specified file.
-                no_group: Do not run hooks belonging to the specified group. Added
-                    in 0.4.4.
+                no_group: Do not run hooks belonging to the specified group. Added in 0.4.4.
                 no_progress: Hide all progress outputs.
                 quiet: Use quiet output.
                 refresh: Refresh all cached data.
-                require_group: Run hooks belonging to every specified group. Added
-                    in 0.4.12.
-                show_diff_on_failure: When hooks fail, run `git diff` directly
-                    afterward.
+                require_group: Run hooks belonging to every specified group. Added in 0.4.12.
+                show_diff_on_failure: When hooks fail, run `git diff` directly afterward.
                 skip: Skip the specified hooks or projects.
                 stage: The stage during which the hook is fired.
-                to_ref: The destination ref in a `from_ref...to_ref` diff
-                    expression.
+                to_ref: The destination ref in a `from_ref...to_ref` diff expression.
                 verbose: Use verbose output.
             """
             ...
         @property
-        def argv(self) -> Prek.Run[_Argv]: ...
+        def argv(self) -> Prek.Run[Argv]: ...
 
     run: Run[_R]
-    class Uninstall(_Tool[_R2]):
+    class Uninstall(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
             *,
-            all: _Flag = ...,
-            cd: _Value = ...,
-            color: Literal["auto", "always", "never"]
-            | Sequence[Literal["auto", "always", "never"]]
-            | None = ...,
-            config: _Value = ...,
-            git_dir: _Value = ...,
-            hook_type: Literal[
-                "commit-msg",
-                "post-checkout",
-                "post-commit",
-                "post-merge",
-                "post-rewrite",
-                "pre-commit",
-                "pre-merge-commit",
-                "pre-push",
-                "pre-rebase",
-                "prepare-commit-msg",
-            ]
-            | Sequence[
-                Literal[
-                    "commit-msg",
-                    "post-checkout",
-                    "post-commit",
-                    "post-merge",
-                    "post-rewrite",
-                    "pre-commit",
-                    "pre-merge-commit",
-                    "pre-push",
-                    "pre-rebase",
-                    "prepare-commit-msg",
-                ]
-            ]
-            | None = ...,
-            log_file: _Value = ...,
-            no_progress: _Flag = ...,
-            quiet: _Flag = ...,
-            refresh: _Flag = ...,
-            verbose: _Flag = ...,
+            all: Flag = ...,
+            cd: Value = ...,
+            color: Color | Sequence[Color] | None = ...,
+            config: Value = ...,
+            git_dir: Value = ...,
+            hook_type: HookType | Sequence[HookType] | None = ...,
+            log_file: Value = ...,
+            no_progress: Flag = ...,
+            quiet: Flag = ...,
+            refresh: Flag = ...,
+            verbose: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Uninstall prek Git hook shims
@@ -347,8 +262,7 @@ class Prek(_Tool[_R]):
                 cd: Change to directory before running.
                 color: Whether to use color in output. Defaults to `auto`.
                 config: Path to alternate config file.
-                git_dir: Uninstall Git shims from the `hooks` subdirectory of the
-                    given git directory (`<GIT_DIR>/hooks/`).
+                git_dir: Uninstall Git shims from the `hooks` subdirectory of the given git directory (`<GIT_DIR>/hooks/`).
                 hook_type: Which Git shim(s) to uninstall.
                 log_file: Write trace logs to the specified file.
                 no_progress: Hide all progress outputs.
@@ -358,65 +272,35 @@ class Prek(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Prek.Uninstall[_Argv]: ...
+        def argv(self) -> Prek.Uninstall[Argv]: ...
 
     uninstall: Uninstall[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        all_files: _Flag = ...,
-        cd: _Value = ...,
-        color: Literal["auto", "always", "never"]
-        | Sequence[Literal["auto", "always", "never"]]
-        | None = ...,
-        config: _Value = ...,
-        directory: _Value = ...,
-        dry_run: _Flag = ...,
-        fail_fast: _Flag = ...,
-        files: _Value = ...,
-        from_ref: _Value = ...,
-        glob: _Value = ...,
-        group: _Value = ...,
-        last_commit: _Flag = ...,
-        log_file: _Value = ...,
-        no_group: _Value = ...,
-        no_progress: _Flag = ...,
-        quiet: _Flag = ...,
-        refresh: _Flag = ...,
-        require_group: _Value = ...,
-        show_diff_on_failure: _Flag = ...,
-        skip: _Value = ...,
-        stage: Literal[
-            "manual",
-            "commit-msg",
-            "post-checkout",
-            "post-commit",
-            "post-merge",
-            "post-rewrite",
-            "pre-commit",
-            "pre-merge-commit",
-            "pre-push",
-            "pre-rebase",
-            "prepare-commit-msg",
-        ]
-        | Sequence[
-            Literal[
-                "manual",
-                "commit-msg",
-                "post-checkout",
-                "post-commit",
-                "post-merge",
-                "post-rewrite",
-                "pre-commit",
-                "pre-merge-commit",
-                "pre-push",
-                "pre-rebase",
-                "prepare-commit-msg",
-            ]
-        ]
-        | None = ...,
-        to_ref: _Value = ...,
-        verbose: _Flag = ...,
+        *args: str | PathLike[str],
+        all_files: Flag = ...,
+        cd: Value = ...,
+        color: Color | Sequence[Color] | None = ...,
+        config: Value = ...,
+        directory: Value = ...,
+        dry_run: Flag = ...,
+        fail_fast: Flag = ...,
+        files: Value = ...,
+        from_ref: Value = ...,
+        glob: Value = ...,
+        group: Value = ...,
+        last_commit: Flag = ...,
+        log_file: Value = ...,
+        no_group: Value = ...,
+        no_progress: Flag = ...,
+        quiet: Flag = ...,
+        refresh: Flag = ...,
+        require_group: Value = ...,
+        show_diff_on_failure: Flag = ...,
+        skip: Value = ...,
+        stage: Stage | Sequence[Stage] | None = ...,
+        to_ref: Value = ...,
+        verbose: Flag = ...,
         **flags: Any,
     ) -> _R:
         """A fast Git hook manager written in Rust, designed as a drop-in alternative
@@ -428,26 +312,20 @@ class Prek(_Tool[_R]):
             color: Whether to use color in output. Defaults to `auto`.
             config: Path to alternate config file.
             directory: Run hooks on tracked files under the specified directory.
-            dry_run: Do not run the hooks, but print the hooks that would have been
-                run.
+            dry_run: Do not run the hooks, but print the hooks that would have been run.
             fail_fast: Stop running hooks after the first failure.
-            files: Run hooks on the specified file paths. May be repeated: a list
-                emits the flag once per item.
+            files: Run hooks on the specified file paths. May be repeated: a list emits the flag once per item.
             from_ref: The original ref in a `<from_ref>...<to_ref>` diff expression.
-            glob: Run hooks on tracked files matching the specified glob pattern.
-                Added in 0.4.11.
+            glob: Run hooks on tracked files matching the specified glob pattern. Added in 0.4.11.
             group: Run hooks belonging to the specified group. Added in 0.4.4.
             last_commit: Run hooks against the last commit.
             log_file: Write trace logs to the specified file.
-            no_group: Do not run hooks belonging to the specified group. Added in
-                0.4.4.
+            no_group: Do not run hooks belonging to the specified group. Added in 0.4.4.
             no_progress: Hide all progress outputs.
             quiet: Use quiet output.
             refresh: Refresh all cached data.
-            require_group: Run hooks belonging to every specified group. Added in
-                0.4.12.
-            show_diff_on_failure: When hooks fail, run `git diff` directly
-                afterward.
+            require_group: Run hooks belonging to every specified group. Added in 0.4.12.
+            show_diff_on_failure: When hooks fail, run `git diff` directly afterward.
             skip: Skip the specified hooks or projects.
             stage: The stage during which the hook is fired.
             to_ref: The destination ref in a `from_ref...to_ref` diff expression.
@@ -455,63 +333,33 @@ class Prek(_Tool[_R]):
         """
         ...
     @property
-    def argv(self) -> Prek[_Argv]: ...
+    def argv(self) -> Prek[Argv]: ...
     def flags(
         self,
         *,
-        all_files: _Flag = ...,
-        cd: _Value = ...,
-        color: Literal["auto", "always", "never"]
-        | Sequence[Literal["auto", "always", "never"]]
-        | None = ...,
-        config: _Value = ...,
-        directory: _Value = ...,
-        dry_run: _Flag = ...,
-        fail_fast: _Flag = ...,
-        files: _Value = ...,
-        from_ref: _Value = ...,
-        glob: _Value = ...,
-        group: _Value = ...,
-        last_commit: _Flag = ...,
-        log_file: _Value = ...,
-        no_group: _Value = ...,
-        no_progress: _Flag = ...,
-        quiet: _Flag = ...,
-        refresh: _Flag = ...,
-        require_group: _Value = ...,
-        show_diff_on_failure: _Flag = ...,
-        skip: _Value = ...,
-        stage: Literal[
-            "manual",
-            "commit-msg",
-            "post-checkout",
-            "post-commit",
-            "post-merge",
-            "post-rewrite",
-            "pre-commit",
-            "pre-merge-commit",
-            "pre-push",
-            "pre-rebase",
-            "prepare-commit-msg",
-        ]
-        | Sequence[
-            Literal[
-                "manual",
-                "commit-msg",
-                "post-checkout",
-                "post-commit",
-                "post-merge",
-                "post-rewrite",
-                "pre-commit",
-                "pre-merge-commit",
-                "pre-push",
-                "pre-rebase",
-                "prepare-commit-msg",
-            ]
-        ]
-        | None = ...,
-        to_ref: _Value = ...,
-        verbose: _Flag = ...,
+        all_files: Flag = ...,
+        cd: Value = ...,
+        color: Color | Sequence[Color] | None = ...,
+        config: Value = ...,
+        directory: Value = ...,
+        dry_run: Flag = ...,
+        fail_fast: Flag = ...,
+        files: Value = ...,
+        from_ref: Value = ...,
+        glob: Value = ...,
+        group: Value = ...,
+        last_commit: Flag = ...,
+        log_file: Value = ...,
+        no_group: Value = ...,
+        no_progress: Flag = ...,
+        quiet: Flag = ...,
+        refresh: Flag = ...,
+        require_group: Value = ...,
+        show_diff_on_failure: Flag = ...,
+        skip: Value = ...,
+        stage: Stage | Sequence[Stage] | None = ...,
+        to_ref: Value = ...,
+        verbose: Flag = ...,
         **flags: Any,
     ) -> Self:
         """Bind tool-level global options before the subcommand.

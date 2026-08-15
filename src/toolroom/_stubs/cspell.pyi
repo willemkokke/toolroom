@@ -6,25 +6,25 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, Self, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 
-class Cspell(_Tool[_R]):
-    class Check(_Tool[_R2]):
+class Cspell(ToolBase[_R]):
+    class Check(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            color: _Flag = ...,
-            config: _Value = ...,
-            no_default_configuration: _Flag = ...,
-            no_exit_code: _Flag = ...,
-            validate_directives: _Flag = ...,
+            *args: str | PathLike[str],
+            color: Flag = ...,
+            config: Value = ...,
+            no_default_configuration: Flag = ...,
+            no_exit_code: Flag = ...,
+            validate_directives: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Spell check file(s) and display the result. The full file is displayed
@@ -33,145 +33,128 @@ class Cspell(_Tool[_R]):
             Args:
                 color: Force color. `color=off` emits `--no-color`.
                 config: Configuration file to use.
-                no_default_configuration: Do not load the default configuration and
-                    dictionaries.
+                no_default_configuration: Do not load the default configuration and dictionaries.
                 no_exit_code: Do not return an exit code if issues are found.
-                validate_directives: Validate in-document CSpell directives.
-                    `validate_directives=off` emits `--no-validate-directives`.
+                validate_directives: Validate in-document CSpell directives. `validate_directives=off` emits `--no-validate-directives`.
             """
             ...
         @property
-        def argv(self) -> Cspell.Check[_Argv]: ...
+        def argv(self) -> Cspell.Check[Argv]: ...
 
     check: Check[_R]
-    class Lint(_Tool[_R2]):
+    class Lint(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            cache: _Flag = ...,
-            cache_location: _Value = ...,
-            cache_reset: _Flag = ...,
-            cache_strategy: _Value = ...,
-            color: _Flag = ...,
-            config: _Value = ...,
-            continue_on_error: _Flag = ...,
-            dictionary: _Value = ...,
-            disable_dictionary: _Value = ...,
-            dot: _Flag = ...,
-            exclude: _Value = ...,
-            fail_fast: _Flag = ...,
-            file: _Value = ...,
-            file_list: _Value = ...,
-            gitignore: _Flag = ...,
-            gitignore_root: _Value = ...,
-            issue_template: _Value = ...,
-            language_id: _Value = ...,
-            locale: _Value = ...,
-            max_file_size: _Value = ...,
-            no_config_search: _Flag = ...,
-            no_default_configuration: _Flag = ...,
-            no_exit_code: _Flag = ...,
-            no_issues: _Flag = ...,
-            no_must_find_files: _Flag = ...,
-            no_progress: _Flag = ...,
-            no_relative: _Flag = ...,
-            no_summary: _Flag = ...,
-            quiet: _Flag = ...,
-            report: _Value = ...,
-            reporter: _Value = ...,
-            root: _Value = ...,
-            show_context: _Flag = ...,
-            show_suggestions: _Flag = ...,
-            silent: _Flag = ...,
-            stop_config_search_at: _Value = ...,
-            unique: _Flag = ...,
-            validate_directives: _Flag = ...,
-            verbose: _Flag = ...,
-            words_only: _Flag = ...,
+            *args: str | PathLike[str],
+            cache: Flag = ...,
+            cache_location: Value = ...,
+            cache_reset: Flag = ...,
+            cache_strategy: Value = ...,
+            color: Flag = ...,
+            config: Value = ...,
+            continue_on_error: Flag = ...,
+            dictionary: Value = ...,
+            disable_dictionary: Value = ...,
+            dot: Flag = ...,
+            exclude: Value = ...,
+            fail_fast: Flag = ...,
+            file: Value = ...,
+            file_list: Value = ...,
+            gitignore: Flag = ...,
+            gitignore_root: Value = ...,
+            issue_template: Value = ...,
+            language_id: Value = ...,
+            locale: Value = ...,
+            max_file_size: Value = ...,
+            no_config_search: Flag = ...,
+            no_default_configuration: Flag = ...,
+            no_exit_code: Flag = ...,
+            no_issues: Flag = ...,
+            no_must_find_files: Flag = ...,
+            no_progress: Flag = ...,
+            no_relative: Flag = ...,
+            no_summary: Flag = ...,
+            quiet: Flag = ...,
+            report: Value = ...,
+            reporter: Value = ...,
+            root: Value = ...,
+            show_context: Flag = ...,
+            show_suggestions: Flag = ...,
+            silent: Flag = ...,
+            stop_config_search_at: Value = ...,
+            unique: Flag = ...,
+            validate_directives: Flag = ...,
+            verbose: Flag = ...,
+            words_only: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Run this verb.
 
             Args:
-                cache: Use cache to only check changed files. `cache=off` emits
-                    `--no-cache`.
-                cache_location: Path to the cache file or directory. Defaults to
-                    `.cspellcache`.
+                cache: Use cache to only check changed files. `cache=off` emits `--no-cache`.
+                cache_location: Path to the cache file or directory. Defaults to `.cspellcache`.
                 cache_reset: Reset the cache file.
                 cache_strategy: Strategy to use for detecting changed files.
                 color: Force color. `color=off` emits `--no-color`.
                 config: Configuration file to use.
-                continue_on_error: Continue processing files even if there is a
-                    configuration error.
+                continue_on_error: Continue processing files even if there is a configuration error.
                 dictionary: Enable a dictionary by name.
                 disable_dictionary: Disable a dictionary by name.
-                dot: Include files and directories starting with `.` (period) when
-                    matching globs.
-                exclude: Exclude files matching the glob pattern. May be repeated: a
-                    list emits the flag once per item.
+                dot: Include files and directories starting with `.` (period) when matching globs.
+                exclude: Exclude files matching the glob pattern. May be repeated: a list emits the flag once per item.
                 fail_fast: Exit after first file with an issue or error.
-                file: Specify files to spell check. May be repeated: a list emits
-                    the flag once per item.
+                file: Specify files to spell check. May be repeated: a list emits the flag once per item.
                 file_list: Specify a list of files to be spell checked.
-                gitignore: Ignore files matching glob patterns found in .gitignore
-                    files. `gitignore=off` emits `--no-gitignore`.
+                gitignore: Ignore files matching glob patterns found in .gitignore files. `gitignore=off` emits `--no-gitignore`.
                 gitignore_root: Prevent searching for .gitignore files past root.
                 issue_template: Use a custom issue template.
                 language_id: Force programming language for unknown extensions.
                 locale: Set language locales.
                 max_file_size: Prevent checking large files.
-                no_config_search: Disable automatic searching for additional
-                    configuration files in parent directories.
-                no_default_configuration: Do not load the default configuration and
-                    dictionaries.
+                no_config_search: Disable automatic searching for additional configuration files in parent directories.
+                no_default_configuration: Do not load the default configuration and dictionaries.
                 no_exit_code: Do not return an exit code if issues are found.
                 no_issues: Do not show the spelling errors.
                 no_must_find_files: Do not error if no files are found.
                 no_progress: Turn off progress messages.
-                no_relative: Issues are displayed with absolute path instead of
-                    relative to the root.
+                no_relative: Issues are displayed with absolute path instead of relative to the root.
                 no_summary: Turn off summary message in console.
                 quiet: Only show spelling issues or errors.
-                report: Set how unknown words are reported (choices: "all",
-                    "simple", "typos", "flagged").
+                report: Set how unknown words are reported (choices: "all", "simple", "typos", "flagged").
                 reporter: Specify one or more reporters to use.
                 root: Root directory, defaults to current directory.
                 show_context: Show the surrounding text around an issue.
-                show_suggestions: Show spelling suggestions. `show_suggestions=off`
-                    emits `--no-show-suggestions`.
+                show_suggestions: Show spelling suggestions. `show_suggestions=off` emits `--no-show-suggestions`.
                 silent: Silent mode, suppress error messages.
-                stop_config_search_at: Specify a directory at which to stop
-                    searching for configuration files when walking up from the files
-                    being checked.
-                unique: Only output the first instance of a word not found in the
-                    dictionaries.
+                stop_config_search_at: Specify a directory at which to stop searching for configuration files when walking up from the files being checked.
+                unique: Only output the first instance of a word not found in the dictionaries.
                 validate_directives: Validate in-document CSpell directives.
                 verbose: Display more information about the files being checked.
                 words_only: Only output the words not found in the dictionaries.
             """
             ...
         @property
-        def argv(self) -> Cspell.Lint[_Argv]: ...
+        def argv(self) -> Cspell.Lint[Argv]: ...
 
     lint: Lint[_R]
-    class Suggest(_Tool[_R2]):
+    class Suggest(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            color: _Flag = ...,
-            config: _Value = ...,
-            dictionaries: _Value = ...,
-            dictionary: _Value = ...,
-            ignore_case: _Flag = ...,
-            language_id: _Value = ...,
-            locale: _Value = ...,
-            no_include_ties: _Flag = ...,
-            no_strict: _Flag = ...,
-            num_changes: _Value = ...,
-            num_suggestions: _Value = ...,
-            repl: _Flag = ...,
-            stdin: _Flag = ...,
-            verbose: _Flag = ...,
+            *args: str | PathLike[str],
+            color: Flag = ...,
+            config: Value = ...,
+            dictionaries: Value = ...,
+            dictionary: Value = ...,
+            ignore_case: Flag = ...,
+            language_id: Value = ...,
+            locale: Value = ...,
+            no_include_ties: Flag = ...,
+            no_strict: Flag = ...,
+            num_changes: Value = ...,
+            num_suggestions: Value = ...,
+            repl: Flag = ...,
+            stdin: Flag = ...,
+            verbose: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Spelling Suggestions for words.
@@ -184,8 +167,7 @@ class Cspell(_Tool[_R]):
                 ignore_case: Alias of --no-strict.
                 language_id: Use programming language.
                 locale: Set language locales.
-                no_include_ties: Force the number of suggested to be limited, by not
-                    including suggestions that have the same edit cost.
+                no_include_ties: Force the number of suggested to be limited, by not including suggestions that have the same edit cost.
                 no_strict: Ignore case and accents when searching for words.
                 num_changes: Number of changes allowed to a word. Defaults to `4`.
                 num_suggestions: Number of suggestions. Defaults to `8`.
@@ -195,64 +177,59 @@ class Cspell(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Cspell.Suggest[_Argv]: ...
+        def argv(self) -> Cspell.Suggest[Argv]: ...
 
     suggest: Suggest[_R]
-    class Trace(_Tool[_R2]):
+    class Trace(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            *args: str,
-            all: _Flag = ...,
-            allow_compound_words: _Flag = ...,
-            color: _Flag = ...,
-            config: _Value = ...,
-            dictionary: _Value = ...,
-            dictionary_path: _Value = ...,
-            ignore_case: _Flag = ...,
-            language_id: _Value = ...,
-            locale: _Value = ...,
-            no_default_configuration: _Flag = ...,
-            no_dictionary: _Value = ...,
-            only_found: _Flag = ...,
-            stdin: _Flag = ...,
+            *args: str | PathLike[str],
+            all: Flag = ...,
+            allow_compound_words: Flag = ...,
+            color: Flag = ...,
+            config: Value = ...,
+            dictionary: Value = ...,
+            dictionary_path: Value = ...,
+            ignore_case: Flag = ...,
+            language_id: Value = ...,
+            locale: Value = ...,
+            no_default_configuration: Flag = ...,
+            no_dictionary: Value = ...,
+            only_found: Flag = ...,
+            stdin: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Trace words -- Search for words in the configuration and dictionaries.
 
             Args:
                 all: Show all dictionaries.
-                allow_compound_words: Turn on allowCompoundWords.
-                    `allow_compound_words=off` emits `--no-allow-compound-words`.
+                allow_compound_words: Turn on allowCompoundWords. `allow_compound_words=off` emits `--no-allow-compound-words`.
                 color: Force color. `color=off` emits `--no-color`.
                 config: Configuration file to use.
-                dictionary: Enable a dictionary by name. May be repeated: a list
-                    emits the flag once per item.
+                dictionary: Enable a dictionary by name. May be repeated: a list emits the flag once per item.
                 dictionary_path: Configure how to display the dictionary path.
-                ignore_case: Ignore case and accents when searching for words.
-                    `ignore_case=off` emits `--no-ignore-case`.
+                ignore_case: Ignore case and accents when searching for words. `ignore_case=off` emits `--no-ignore-case`.
                 language_id: Use programming language.
                 locale: Set language locales.
-                no_default_configuration: Do not load the default configuration and
-                    dictionaries.
-                no_dictionary: Disable a dictionary by name. May be repeated: a list
-                    emits the flag once per item. Added in 9.6.4.
+                no_default_configuration: Do not load the default configuration and dictionaries.
+                no_dictionary: Disable a dictionary by name. May be repeated: a list emits the flag once per item. Added in 9.6.4.
                 only_found: Show only dictionaries that have the words.
                 stdin: Read words from stdin.
             """
             ...
         @property
-        def argv(self) -> Cspell.Trace[_Argv]: ...
+        def argv(self) -> Cspell.Trace[Argv]: ...
 
     trace: Trace[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
+        *args: str | PathLike[str],
         **flags: Any,
     ) -> _R:
         """Spelling Checker for Code"""
         ...
     @property
-    def argv(self) -> Cspell[_Argv]: ...
+    def argv(self) -> Cspell[Argv]: ...
     def flags(
         self,
         **flags: Any,

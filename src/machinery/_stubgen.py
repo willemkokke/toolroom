@@ -40,6 +40,38 @@ _HEADER = """\
 """
 
 
+class NameCollision(ValueError):
+    """A verb would generate a class named like one of the stub's imports.
+
+    The generated names are title-cased verbs, so a verb literally called
+    `tool-base` or `flag` would shadow the import inside its tool's class
+    body and every annotation after it would silently mean the wrong thing.
+    No real tool spells such a verb; refusing loudly keeps the checked-in
+    stub (sync and restub skip, and say why) until the renderer is taught
+    an escape hatch it has never yet needed.
+    """
+
+
+# Every name a generated stub imports at module level. A generated class
+# name landing in this set is the collision `NameCollision` refuses.
+_RESERVED_IMPORTS = frozenset(
+    {
+        "Argv",
+        "ToolBase",
+        "Flag",
+        "Value",
+        "ValuedFlag",
+        "PathLike",
+        "Sequence",
+        "Any",
+        "Literal",
+        "Self",
+        "TypeAlias",
+        "TypeVar",
+    }
+)
+
+
 def render(
     spec: ToolSpec,
     *,
@@ -49,38 +81,126 @@ def render(
 ) -> str:
     """The full text of `_stubs/<tool>.pyi` for *spec*."""
     root = class_name or _class_name(spec.name)
-    body = _classes(_tree(spec.verbs), root)
+    tree = _tree(spec.verbs)
+    taken = _generated_names(tree, root)
+    if clash := sorted(taken & _RESERVED_IMPORTS):
+        raise NameCollision(
+            f"verb class{'es' if len(clash) > 1 else ''} "
+            f"{', '.join(clash)} would shadow a stub import"
+        )
+    hoisted = _hoisted(tree, taken)
+    body = _classes(tree, root, hoisted=hoisted)
+    aliases = _alias_block(hoisted)
     header = _HEADER.format(
         name=spec.name,
         version=spec.version or "an unpinned version",
         platform=platform or "this machine",
         in_process=in_process or ("available" if spec.in_process else "no"),
-        imports=_imports(body),
+        imports=_imports(body, aliases),
     )
-    return f"{header}\n{_typevars(body)}\n\n{body}"
+    between = f"\n\n{aliases}" if aliases else ""
+    return f"{header}\n{_typevars(body)}{between}\n\n{body}"
 
 
-def _imports(body: str) -> str:
-    """Just the imports the body uses — an unused one fails the lint gate."""
-    typing = ["Any"] + (["Literal"] if "Literal[" in body else [])
-    if "-> Self:" in body:
+# Docstrings carry the tools' own prose, where words like "Value" are just
+# words — imports are decided by the *code*, so the prose is cut first.
+_DOCSTRING = re.compile(r'"""[\s\S]*?"""')
+
+
+def _imports(body: str, aliases: str = "") -> str:
+    """Just the imports the code uses — an unused one fails the lint gate."""
+    code = _DOCSTRING.sub("", body)
+    scan = f"{code}\n{aliases}"
+    typing = ["Any"] + (["Literal"] if "Literal[" in scan else [])
+    if "-> Self:" in code:
         typing.append("Self")
+    if aliases:
+        typing.append("TypeAlias")
     typing.append("TypeVar")
-    aliases = ("_Flag", "_Value", "_ValuedFlag")
-    # footman's own names are aliased private, because a subcommand becomes a
-    # nested class named after the verb — and `uv tool` would otherwise
-    # generate `class Tool(Tool)`, which cannot derive from itself. A verb
-    # can never produce a leading underscore, so the collision is gone
-    # rather than dodged.
-    names = ["Argv as _Argv", "Tool as _Tool"] + [
-        n for n in aliases if re.search(rf"\b{n}\b", body)
+    # `Tool` alone is aliased, because a subcommand becomes a nested class
+    # named after the verb — and `uv tool` would otherwise generate
+    # `class Tool(Tool)`, which cannot derive from itself. `ToolBase` reads
+    # public in every class header a hover shows; render() refuses the
+    # pathological verb that could collide with it (see NameCollision).
+    names = ["Argv", "Tool as ToolBase"] + [
+        n for n in ("Flag", "Value", "ValuedFlag") if re.search(rf"\b{n}\b", code)
     ]
     lines = []
-    if "Sequence[" in body:
+    if "Sequence[" in scan:
         lines.append("from collections.abc import Sequence")
+    if re.search(r"\bPathLike\b", code):
+        lines.append("from os import PathLike")
     lines.append(f"from typing import {', '.join(typing)}")
     lines.append("")
-    lines.append(f"from toolroom import {', '.join(names)}")
+    lines.append(f"from toolroom import {', '.join(sorted(names))}")
+    return "\n".join(lines)
+
+
+def _generated_names(tree: dict[str, object], root: str) -> set[str]:
+    """Every class name this tree will generate — the root and each verb."""
+    names = {root}
+
+    def walk(node: dict[str, object]) -> None:
+        for key, child in node.items():
+            if not key:
+                continue
+            names.add(key.title().replace("_", ""))
+            if isinstance(child, dict):
+                walk(child)
+
+    walk(tree)
+    return names
+
+
+def _verbs(tree: dict[str, object]) -> Iterable[Verb]:
+    """Every Verb in the tree, groups and leaves alike."""
+    for node in tree.values():
+        if isinstance(node, dict):
+            yield from _verbs(node)
+        elif isinstance(node, Verb):
+            yield node
+
+
+def _hoisted(
+    tree: dict[str, object], taken: set[str]
+) -> dict[tuple[str, tuple[str, ...]], str]:
+    """One module-level alias per distinct choice set, named after its option.
+
+    Inlining a `Literal` spells the whole union twice per option
+    (`Literal[…] | Sequence[Literal[…]] | None`) — ruff's `output_format`
+    alone was eight hover lines. A named alias renders as its *name* in
+    every checker's hover, so the signature stays one line per flag.
+
+    Keyed by (option name, choices): the same option carrying the same
+    choices across verbs shares one alias; a name that is already a class
+    in this file — or claimed by another choice set — counts up
+    (`Color`, `Color2`) until it is free.
+    """
+    out: dict[tuple[str, tuple[str, ...]], str] = {}
+    used = set(taken) | set(_RESERVED_IMPORTS)
+    for verb in _verbs(tree):
+        for option in _unique(verb.options):
+            if option.type_name in ("bool", "optvalue") or not option.choices:
+                continue
+            key = (option.name, tuple(option.choices))
+            if key in out:
+                continue
+            base = _class_name(_safe(option.name))
+            name, n = base, 1
+            while name in used:
+                n += 1
+                name = f"{base}{n}"
+            used.add(name)
+            out[key] = name
+    return out
+
+
+def _alias_block(hoisted: dict[tuple[str, tuple[str, ...]], str]) -> str:
+    """The alias definitions, one line each, sorted by name."""
+    lines = [
+        f"{name}: TypeAlias = Literal[{', '.join(repr(c) for c in choices)}]"
+        for (_, choices), name in sorted(hoisted.items(), key=lambda kv: kv[1])
+    ]
     return "\n".join(lines)
 
 
@@ -126,7 +246,11 @@ def _tv(depth: int) -> str:
 
 
 def _classes(
-    tree: dict[str, object], name: str, depth: int = 0, path: tuple[str, ...] = ()
+    tree: dict[str, object],
+    name: str,
+    depth: int = 0,
+    path: tuple[str, ...] = (),
+    hoisted: dict[tuple[str, tuple[str, ...]], str] | None = None,
 ) -> str:
     """One class, with every subcommand — group or verb — nested *inside* it.
 
@@ -148,16 +272,16 @@ def _classes(
         if isinstance(node, dict):
             child = key.title().replace("_", "")
             subtree = cast("dict[str, object]", node)
-            body.append(_indent(_classes(subtree, child, depth + 1, here)))
+            body.append(_indent(_classes(subtree, child, depth + 1, here, hoisted)))
             body.append(f"    {key}: {child}[{_tv(depth)}]")
     for key in sorted(tree):
         node = tree[key]
         if isinstance(node, Verb) and key:
             child = key.title().replace("_", "")
-            body.append(_indent(_classes({"": node}, child, depth + 1, here)))
+            body.append(_indent(_classes({"": node}, child, depth + 1, here, hoisted)))
             body.append(f"    {key}: {child}[{_tv(depth)}]")
     root = tree.get("")
-    body.append(_method(root if isinstance(root, Verb) else None, depth))
+    body.append(_method(root if isinstance(root, Verb) else None, depth, hoisted))
     body.append(_argv_property(here, depth))
     # A tool with subcommands gets a typed `.flags()` returning `Self`, so a
     # globals-before-verb chain stays checked. The root verb's options are the
@@ -167,12 +291,12 @@ def _classes(
     # (footman run-control rides the inherited `.opts()`, typed on Tool.)
     if _has_subcommands(tree):
         globals_ = root.options if isinstance(root, Verb) else ()
-        body.append(_flags_method(globals_))
+        body.append(_flags_method(globals_, hoisted))
     # Deriving from the *parameterised* base is what makes every member a
     # plain covariant override — `__call__` answers the inherited TypeVar
     # and `argv` narrows `Tool[Argv]` to a subclass of it — so no checker
     # needs a Liskov suppression.
-    return f"class {name}(_Tool[{_tv(depth)}]):\n" + "\n".join(body)
+    return f"class {name}(ToolBase[{_tv(depth)}]):\n" + "\n".join(body)
 
 
 def _argv_property(path: tuple[str, ...], depth: int) -> str:
@@ -184,11 +308,11 @@ def _argv_property(path: tuple[str, ...], depth: int) -> str:
     every class here derives from `_Tool[…]`.
     """
     qualified = ".".join(path)
-    line = f"    def argv(self) -> {qualified}[_Argv]: ..."
+    line = f"    def argv(self) -> {qualified}[Argv]: ..."
     if len(line) + 4 * depth <= 88:
         return f"    @property\n{line}"
     return (
-        f"    @property\n    def argv(\n        self,\n    ) -> {qualified}[_Argv]: ..."
+        f"    @property\n    def argv(\n        self,\n    ) -> {qualified}[Argv]: ..."
     )
 
 
@@ -205,7 +329,10 @@ def _has_subcommands(tree: dict[str, object]) -> bool:
     return any(key != "" for key in tree)
 
 
-def _flags_method(options: tuple[Option, ...]) -> str:
+def _flags_method(
+    options: tuple[Option, ...],
+    hoisted: dict[tuple[str, tuple[str, ...]], str] | None = None,
+) -> str:
     """The typed `flags()` for a tool's global options — returns `Self`, so
     `tools.docker.flags(host=…).compose.up(…)` stays checked. With no
     globals it is still declared, so the return type carries the chain.
@@ -216,7 +343,8 @@ def _flags_method(options: tuple[Option, ...]) -> str:
     if typed:  # a `*` separator with only `**flags` after it is a syntax error
         lines.append("        *,")
         for option in typed:
-            lines.append(f"        {_safe(option.name)}: {_annotation(option)} = ...,")
+            annotation = _annotation(option, hoisted)
+            lines.append(f"        {_safe(option.name)}: {annotation} = ...,")
     lines.append("        **flags: Any,")
     lines.append("    ) -> Self:")
     lines.append('        """Bind tool-level global options before the subcommand.')
@@ -227,7 +355,11 @@ def _flags_method(options: tuple[Option, ...]) -> str:
     return "\n".join(lines)
 
 
-def _method(verb: Verb | None, depth: int = 0) -> str:
+def _method(
+    verb: Verb | None,
+    depth: int = 0,
+    hoisted: dict[tuple[str, tuple[str, ...]], str] | None = None,
+) -> str:
     """A class's `__call__` — the verb's own signature, answering in the
     class's TypeVar.
 
@@ -260,7 +392,9 @@ def _method(verb: Verb | None, depth: int = 0) -> str:
         positional = []
     lines = [header, "        self,", *positional]
     for option in options:
-        lines.append(f"        {_safe(option.name)}: {_annotation(option)} = ...,")
+        lines.append(
+            f"        {_safe(option.name)}: {_annotation(option, hoisted)} = ...,"
+        )
     lines.append("        **flags: Any,")
     lines.append(f"    ) -> {_tv(depth)}:")
     doc = _docstring(verb, depth)
@@ -277,7 +411,12 @@ def _positional_lines(verb: Verb) -> list[str]:
     `"required"` → a positional-only leading argument, so passing it by
     keyword is one too; `"any"` → `*args`, the conservative default that
     forbids nothing.
+
+    `str | PathLike[str]`, because positionals are so often paths and the
+    bridge `str()`-s whatever it is handed — `ruff.check(Path("src"))`
+    already ran; the annotation just stopped calling it a type error.
     """
+    arg = "str | PathLike[str]"
     if verb.positional == "none":
         return ["        *,"]
     if verb.positional == "required":
@@ -286,9 +425,9 @@ def _positional_lines(verb: Verb) -> list[str]:
         # would collide into one parameter. Can't spell both, so don't
         # constrain: fall back to `*args`.
         if lead in {_safe(o.name) for o in verb.options}:
-            return ["        *args: str,"]
-        return [f"        {lead}: str,", "        /,", "        *args: str,"]
-    return ["        *args: str,"]
+            return [f"        *args: {arg},"]
+        return [f"        {lead}: {arg},", "        /,", f"        *args: {arg},"]
+    return [f"        *args: {arg},"]
 
 
 # The method's own structural parameters. An option named the same (git
@@ -331,27 +470,33 @@ def _esc(text: str) -> str:
     return text.replace("\\", "\\\\")
 
 
-def _annotation(option: Option) -> str:
+def _annotation(
+    option: Option,
+    hoisted: dict[tuple[str, tuple[str, ...]], str] | None = None,
+) -> str:
     """The stub's declared type for one option.
 
     Deliberately wide, because the stub's contract is to suggest and never
-    to forbid. `_Value` takes a sequence as well as a scalar for *every*
+    to forbid. `Value` takes a sequence as well as a scalar for *every*
     option, since the bridge repeats a flag for each item and whether the
     tool accepts repetition is the tool's business, not the stub's —
     `select=["E", "F"]` works, so it must type-check.
 
     A closed set of values is the one place a narrow type earns itself: a
     `Literal` makes the IDE offer the values, and the tool would reject a
-    non-member anyway.
+    non-member anyway. Spelled through its hoisted alias when one exists,
+    so a hover shows one name instead of the union twice over.
     """
     if option.type_name == "bool":
-        return "_Flag"
+        return "Flag"
     if option.type_name == "optvalue":
-        return "_ValuedFlag"  # usable bare or with a value — `--gpg-sign[=<key>]`
+        return "ValuedFlag"  # usable bare or with a value — `--gpg-sign[=<key>]`
     if option.choices:
-        literal = "Literal[" + ", ".join(repr(c) for c in option.choices) + "]"
-        return f"{literal} | Sequence[{literal}] | None"
-    return "_Value"
+        name = (hoisted or {}).get((option.name, tuple(option.choices)))
+        if name is None:
+            name = "Literal[" + ", ".join(repr(c) for c in option.choices) + "]"
+        return f"{name} | Sequence[{name}] | None"
+    return "Value"
 
 
 def _summary(help_text: str, depth: int, *, alone: bool) -> list[str]:
@@ -406,7 +551,7 @@ def _docstring(verb: Verb, depth: int = 0) -> str:
         lines.append("")
         lines.append("        Args:")
         for option in documented:
-            lines.extend(_arg_lines(option, depth))
+            lines.extend(_arg_lines(option))
     lines.append('        """')
     return "\n".join(lines)
 
@@ -433,8 +578,14 @@ def _md_safe(lines: list[str]) -> list[str]:
     return out
 
 
-def _arg_lines(option: Option, depth: int = 0) -> list[str]:
-    """One `Args:` entry, wrapped, with the `off` spelling when it matters."""
+def _arg_lines(option: Option) -> list[str]:
+    """One `Args:` entry — one *line*, with the `off` spelling when it matters.
+
+    Unwrapped on purpose: hovers treat a docstring's line breaks as hard
+    breaks, so a wrap chosen for the .pyi's column limit used to land
+    mid-sentence in every tooltip. One line per entry lets each renderer
+    reflow to its own width; E501 is waived for `_stubs/` in exchange.
+    """
     text = _esc(option.help).rstrip(".")
     if option.type_name.startswith("list[") or option.type_name.endswith("[]"):
         text = f"{text}. May be repeated: a list emits the flag once per item"
@@ -460,12 +611,5 @@ def _arg_lines(option: Option, depth: int = 0) -> list[str]:
     # reason the store keeps only the exceptions.
     if option.not_on:
         text = f"{text}. Not available on {_listed(option.not_on)}"
-    wrapped = textwrap.wrap(
-        f"{_safe(option.name)}: {text}.".replace("  ", " "),
-        width=84 - 4 * depth,
-        initial_indent=" " * 12,
-        subsequent_indent=" " * 16,
-        break_long_words=False,
-        break_on_hyphens=False,
-    )
-    return _md_safe(wrapped) or [f"{' ' * 12}{_safe(option.name)}: ."]
+    entry = f"{_safe(option.name)}: {text}.".replace("  ", " ")
+    return [f"{' ' * 12}{entry}"]

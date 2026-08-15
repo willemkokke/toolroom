@@ -6,28 +6,28 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 
-class SshKeyscan(_Tool[_R]):
+class SshKeyscan(ToolBase[_R]):
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        D: _Flag = ...,
-        H: _Flag = ...,
-        O: _Value = ...,
-        T: _Value = ...,
-        c: _Flag = ...,
-        f: _Value = ...,
-        p: _Value = ...,
-        q: _Flag = ...,
-        t: _Value = ...,
-        v: _Flag = ...,
+        *args: str | PathLike[str],
+        D: Flag = ...,
+        H: Flag = ...,
+        O: Value = ...,
+        T: Value = ...,
+        c: Flag = ...,
+        f: Value = ...,
+        p: Value = ...,
+        q: Flag = ...,
+        t: Value = ...,
+        v: Flag = ...,
         **flags: Any,
     ) -> _R:
         """SSH-KEYSCAN(1)
@@ -39,17 +39,13 @@ class SshKeyscan(_Tool[_R]):
             H: Hash all hostnames and addresses in the output. Added in 4.0p1.
             O: Specify a key/value option. Added in 9.3p1.
             T: Set the timeout for connection attempts. Added in 3.0p1.
-            c: Request certificates from target hosts instead of plain keys. Added
-                in 7.2p1.
+            c: Request certificates from target hosts instead of plain keys. Added in 7.2p1.
             f: Read hosts or "addrlist namelist" pairs from file, one per line.
             p: Connect to port on the remote host. Added in 3.0p1.
-            q: Quiet mode: do not print server host name and banners in comments.
-                Added in 9.8p1.
-            t: Specify the type of the key to fetch from the scanned hosts. May be
-                repeated: a list emits the flag once per item.
-            v: Verbose mode: print debugging messages about progress. Added in
-                3.0p1.
+            q: Quiet mode: do not print server host name and banners in comments. Added in 9.8p1.
+            t: Specify the type of the key to fetch from the scanned hosts. May be repeated: a list emits the flag once per item.
+            v: Verbose mode: print debugging messages about progress. Added in 3.0p1.
         """
         ...
     @property
-    def argv(self) -> SshKeyscan[_Argv]: ...
+    def argv(self) -> SshKeyscan[Argv]: ...

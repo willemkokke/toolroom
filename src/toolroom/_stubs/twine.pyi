@@ -6,23 +6,23 @@
 # verb is a class parameterised by what its call returns, which is how
 # `.argv` re-spells the same signature over `Argv` — same flags, same
 # checking, a built command line instead of a run.
+from os import PathLike
 from typing import Any, Self, TypeVar
 
-from toolroom import Argv as _Argv
-from toolroom import Tool as _Tool
-from toolroom import _Flag, _Value
+from toolroom import Argv, Flag, Value
+from toolroom import Tool as ToolBase
 
 _R = TypeVar("_R")
 _R2 = TypeVar("_R2")
 
-class Twine(_Tool[_R]):
-    class Check(_Tool[_R2]):
+class Twine(ToolBase[_R]):
+    class Check(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            dist: str,
+            dist: str | PathLike[str],
             /,
-            *args: str,
-            strict: _Flag = ...,
+            *args: str | PathLike[str],
+            strict: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Run this verb.
@@ -32,70 +32,62 @@ class Twine(_Tool[_R]):
             """
             ...
         @property
-        def argv(self) -> Twine.Check[_Argv]: ...
+        def argv(self) -> Twine.Check[Argv]: ...
 
     check: Check[_R]
-    class Upload(_Tool[_R2]):
+    class Upload(ToolBase[_R2]):
         def __call__(  # type: ignore[override]
             self,
-            dist: str,
+            dist: str | PathLike[str],
             /,
-            *args: str,
-            attestations: _Flag = ...,
-            cert: _Value = ...,
-            client_cert: _Value = ...,
-            comment: _Value = ...,
-            config_file: _Value = ...,
-            disable_progress_bar: _Flag = ...,
-            identity: _Value = ...,
-            non_interactive: _Flag = ...,
-            password: _Value = ...,
-            repository: _Value = ...,
-            repository_url: _Value = ...,
-            sign: _Flag = ...,
-            sign_with: _Value = ...,
-            skip_existing: _Flag = ...,
-            username: _Value = ...,
-            verbose: _Flag = ...,
+            *args: str | PathLike[str],
+            attestations: Flag = ...,
+            cert: Value = ...,
+            client_cert: Value = ...,
+            comment: Value = ...,
+            config_file: Value = ...,
+            disable_progress_bar: Flag = ...,
+            identity: Value = ...,
+            non_interactive: Flag = ...,
+            password: Value = ...,
+            repository: Value = ...,
+            repository_url: Value = ...,
+            sign: Flag = ...,
+            sign_with: Value = ...,
+            skip_existing: Flag = ...,
+            username: Value = ...,
+            verbose: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Run this verb.
 
             Args:
-                attestations: Upload each file's associated attestations. Added in
-                    5.1.0.
-                cert: Path to alternate CA bundle (can also be set via TWINE_CERT
-                    environment variable).
-                client_cert: Path to SSL client certificate, a single file
-                    containing the private key and the certificate in PEM format.
+                attestations: Upload each file's associated attestations. Added in 5.1.0.
+                cert: Path to alternate CA bundle (can also be set via TWINE_CERT environment variable).
+                client_cert: Path to SSL client certificate, a single file containing the private key and the certificate in PEM format.
                 comment: The comment to include with the distribution file.
                 config_file: The .pypirc config file to use.
                 disable_progress_bar: Disable the progress bar.
                 identity: GPG identity used to sign files.
-                non_interactive: Do not interactively prompt for username/password
-                    if the required credentials are missing.
-                password: The password to authenticate to the repository (package
-                    index) with.
-                repository: The repository (package index) to upload the package to.
-                    Defaults to `pypi`.
-                repository_url: The repository (package index) URL to upload the
-                    package to.
+                non_interactive: Do not interactively prompt for username/password if the required credentials are missing.
+                password: The password to authenticate to the repository (package index) with.
+                repository: The repository (package index) to upload the package to. Defaults to `pypi`.
+                repository_url: The repository (package index) URL to upload the package to.
                 sign: Sign files to upload using GPG.
                 sign_with: GPG program used to sign uploads. Defaults to `gpg`.
                 skip_existing: Continue uploading files if one already exists.
-                username: The username to authenticate to the repository (package
-                    index) as.
+                username: The username to authenticate to the repository (package index) as.
                 verbose: Show verbose output.
             """
             ...
         @property
-        def argv(self) -> Twine.Upload[_Argv]: ...
+        def argv(self) -> Twine.Upload[Argv]: ...
 
     upload: Upload[_R]
     def __call__(  # type: ignore[override]
         self,
-        *args: str,
-        no_color: _Flag = ...,
+        *args: str | PathLike[str],
+        no_color: Flag = ...,
         **flags: Any,
     ) -> _R:
         """Run this verb.
@@ -105,11 +97,11 @@ class Twine(_Tool[_R]):
         """
         ...
     @property
-    def argv(self) -> Twine[_Argv]: ...
+    def argv(self) -> Twine[Argv]: ...
     def flags(
         self,
         *,
-        no_color: _Flag = ...,
+        no_color: Flag = ...,
         **flags: Any,
     ) -> Self:
         """Bind tool-level global options before the subcommand.
