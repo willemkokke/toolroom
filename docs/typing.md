@@ -48,6 +48,7 @@ Positionals are `str | PathLike[str]` for the same reason:
 ```python
 from toolroom import Flag, Value, ruff
 
+
 def lint(fix: Flag = None, select: Value = None):
     ruff.check("src", fix=fix, select=select)
 ```
