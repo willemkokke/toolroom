@@ -21,7 +21,14 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  # A newer deploy supersedes an older one outright: the site is built
+  # from main in full, so the newest run already carries everything the
+  # runs behind it would have published. Cancelling rather than queueing
+  # also means a run that stalls — a Pages or runner incident — cannot
+  # hold the group and strand every push behind it; the next push clears
+  # it. Safe because `deploy-pages` swaps the site atomically: a deploy
+  # cancelled before that leaves the live one exactly as it was.
+  cancel-in-progress: true
 
 jobs:
   deploy:
