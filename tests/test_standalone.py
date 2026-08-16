@@ -272,3 +272,59 @@ def test_container_error_wording_matches_the_doors():
     text = _host.container_error(["a"], "git", example="git(*value)")
     assert "bare list" in text
     assert "git(*value)" in text
+
+
+# --- secrets: the display redacts, the execution never does -------------------
+
+
+class _Marked(str):
+    """footman's Secret, duck-typed: the marker is the *type*, `reveal()` the
+    explicit unwrap the bridge keys on. Local on purpose — this suite proves
+    the seam without footman in the picture."""
+
+    def reveal(self) -> str:
+        return str(self)
+
+
+def test_a_marked_value_reaches_the_child_intact_and_the_shown_line_redacted():
+    # Redaction is of the display, never the execution: the child sees the
+    # real token, and everything built from the invocation shows ***.
+    r = tools.python("-c", "import sys; print(sys.argv[1])", _Marked("hunter2"))
+    assert r.stdout.strip() == "hunter2"
+    assert "hunter2" not in r.command
+    assert "***" in r.command
+
+
+def test_marked_values_keep_their_type_through_a_built_argv():
+    # The attached form is what execution carries; the subclass must survive
+    # the join or a display-time redactor downstream has nothing to key on.
+    built = tools.git.commit.argv(author=_Marked("hunter2"))
+    (token,) = [t for t in built if "hunter2" in t]
+    assert token == "--author=hunter2"
+    assert hasattr(token, "reveal"), "the marker survives the attach"
+
+    built = tools.git.add.argv(_Marked("s3cret"))
+    assert any(hasattr(t, "reveal") for t in built), "positionals keep it too"
+
+
+def test_a_marked_error_line_redacts_too():
+    with pytest.raises(ToolError) as err:
+        tools.python("-c", "import sys; sys.exit(3)", _Marked("hunter2"))
+    assert "hunter2" not in str(err.value)
+    assert "***" in str(err.value)
+
+
+def test_plain_values_still_stringify_to_plain_str():
+    from pathlib import Path
+
+    built = tools.demo.argv(Path("src"), depth=3)
+    assert list(built) == ["demo", "src", "--depth=3"]
+    assert all(type(token) is str for token in built)
+
+
+def test_a_stringified_marked_value_passes_in_the_clear():
+    # The caller unwrapping is the caller choosing to expose — string
+    # operations answer in plain str, and the bridge respects that.
+    r = tools.python("-c", "import sys; print(sys.argv[1])", f"{_Marked('ok')}")
+    assert r.stdout.strip() == "ok"
+    assert "ok" in r.command

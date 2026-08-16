@@ -7,6 +7,32 @@ breaking changes.
 
 ## [Unreleased]
 
+### Fixed
+
+- **A `Secret` passed through the bridge no longer prints in the clear.**
+  A credential flag is exactly the shape a bridged call takes
+  (`author=Secret("…")` → `--author …`), and the bridge `str()`-ed every
+  value on its way to the argv — destroying the type marker footman's
+  display-time redaction keys on, and printing the real value in the
+  shown line, the step receipt, and the failure message. Three changes,
+  none of which imports footman:
+
+  - the execution path passes a `str` through *as its own type* —
+    positionals, option values, and the attached `--flag=value` form all
+    keep the subclass, so the marker reaches the argv (the child always
+    received the real value; `subprocess` stringifies at the syscall
+    boundary);
+  - toolroom's shown line and the standalone `Result.command` (and with
+    it `ToolError`'s message) render any `reveal`-carrying value as
+    `***`, duck-typed so the bridge never learns who defined it;
+  - a secret bound through `.flags()` redacts as the whole token, flag
+    name included — the safe direction.
+
+  `str(secret)`, f-strings, and `reveal()` still pass in the clear:
+  the caller unwrapping is the caller choosing to expose, which is
+  footman's documented contract. `.to_argv()` and a built `Argv` keep
+  real values — they exist to be executed, not shown.
+
 ## [0.5.0] — 2026-08-15
 
 ### Added

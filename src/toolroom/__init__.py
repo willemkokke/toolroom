@@ -346,7 +346,10 @@ def _emit(
             continue
         values = value if isinstance(value, (list, tuple)) else [value]
         for item in values:
-            yield flag, str(item)
+            # A str passes through *as its own type*: a subclass that marks
+            # itself (footman's Secret) must reach the argv intact, or
+            # display-time redaction has nothing left to redact.
+            yield flag, item if isinstance(item, str) else str(item)
 
 
 def _spell(flag: str, value: str | None, *, attach_long: bool) -> list[str]:
@@ -372,10 +375,30 @@ def _spell(flag: str, value: str | None, *, attach_long: bool) -> list[str]:
     long = flag.startswith("--")
     dash = value.startswith("-")
     if long and (attach_long or dash):
-        return [f"{flag}={value}"]
+        return [_attach(f"{flag}=", value)]
     if not long and dash:
-        return [f"{flag}{value}"]
+        return [_attach(flag, value)]
     return [flag, value]
+
+
+def _attach(prefix: str, value: str) -> str:
+    """`--flag=value` (or `-kvalue`) as one token, keeping the value's type.
+
+    A value that redacts itself — footman's `Secret`, duck-typed on
+    `reveal` so toolroom never imports it — must survive the join: the
+    attached token is what execution carries, and display-time redaction
+    can only redact what still holds the marker. The whole token turns
+    secret, which errs in the safe direction — a redactor shows `***`
+    where `--token=…` stood. A subclass that cannot be rebuilt from one
+    string falls back to the plain join rather than fail the call.
+    """
+    joined = prefix + value
+    if not hasattr(value, "reveal"):
+        return joined
+    try:
+        return type(value)(joined)
+    except Exception:
+        return joined
 
 
 def _flags(
@@ -412,10 +435,13 @@ def _show_parts(
     """
     parts: list[tuple[str, str]] = [("prog", argv0)]
     for token in base:
-        # `base` holds the verb path, and — from `.opts()` — global flags
-        # bound before a verb. A flag reads back in separated form so the
-        # shown line stays readable (`--host tcp://x`, not `--host=tcp://x`).
-        if token.startswith("--") and "=" in token:
+        # `base` holds the verb path, and — from `.flags()` — global flags
+        # bound before a verb. A token that redacts itself (a Secret global,
+        # kept whole by `_attach`) is checked *before* the partition below:
+        # string operations on it answer in plain str, marker gone.
+        if hasattr(token, "reveal"):
+            parts.append(("opt", "***"))
+        elif token.startswith("--") and "=" in token:
             flag, _, value = token.partition("=")
             parts.append(("opt", flag))
             parts.append(("value", _quote(value)))
@@ -423,7 +449,7 @@ def _show_parts(
             parts.append(("opt", token))
         else:
             parts.append(("group", token))
-    arg_parts = [("req", _quote(token)) for token in _positionals(args, argv0)]
+    arg_parts = [("req", _shown(token)) for token in _positionals(args, argv0)]
     flag_parts: list[tuple[str, str]] = []
     for flag, value in _emit(kwargs, argv0, single_dash=single_dash):
         if value is None:
@@ -432,7 +458,7 @@ def _show_parts(
         # Decide placement on the raw value (a dash leads), quote for the
         # shown text. Readable where a space is safe; attached only where
         # separating would produce a line that doesn't run.
-        quoted = _quote(value)
+        quoted = _shown(value)
         if value.startswith("-"):
             glue = "=" if flag.startswith("--") else ""
             flag_parts.append(("opt", f"{flag}{glue}{quoted}"))
@@ -445,6 +471,19 @@ def _show_parts(
     else:
         parts += arg_parts + flag_parts
     return tuple(parts)
+
+
+def _shown(value: str) -> str:
+    """One caller value as the shown line spells it.
+
+    A value that must be asked for explicitly is not shown by default: a
+    `reveal`-carrying value (footman's `Secret`, duck-typed so toolroom
+    never imports it) reads back as `***` — unquoted, because `***` needs
+    no quoting and the real value never reaches the quoting. `str(secret)`
+    and f-strings still pass in the clear: that is the caller unwrapping,
+    which is footman's documented way to mean it.
+    """
+    return "***" if hasattr(value, "reveal") else _quote(value)
 
 
 def _quote(text: str) -> str:
@@ -464,7 +503,10 @@ def _positionals(args: tuple[Any, ...], tool: str) -> list[str]:
     A bare container is refused — `Argv` included, since a built command
     line in one positional slot is ambiguous between its two meant
     spellings, `*cmd` (tokens) and `cmd.posix()` (one quoted line).
-    Everything else is `str()`-ed, which is what `Path` and `int` want.
+    Everything else is `str()`-ed, which is what `Path` and `int` want —
+    except a str, which passes as its own type: a subclass that marks
+    itself (footman's Secret) must reach the argv intact for display-time
+    redaction to have anything left to redact.
     """
     out: list[str] = []
     for arg in args:
@@ -473,7 +515,7 @@ def _positionals(args: tuple[Any, ...], tool: str) -> list[str]:
             raise TypeError(
                 _host.container_error(arg, tool, example=f"{tool}({spread}value)")
             )
-        out.append(str(arg))
+        out.append(arg if isinstance(arg, str) else str(arg))
     return out
 
 

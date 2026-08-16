@@ -125,8 +125,17 @@ class Result(int):
 
     @property
     def command(self) -> str:
-        """The command that ran, as one readable line."""
-        return shlex.join(self._tokens)
+        """The command that ran, as one readable line.
+
+        A token that redacts itself — footman's `Secret`, duck-typed on
+        `reveal` so nothing here imports it — reads back as `***`: this
+        line exists to be shown, and a secret leaves through `.to_argv()`
+        or the caller's own unwrap, never through display.
+        """
+        return " ".join(
+            "***" if hasattr(token, "reveal") else shlex.quote(token)
+            for token in self._tokens
+        )
 
     def to_argv(self) -> Argv:
         """The executed command as an `Argv` — raw tokens, re-quotable for

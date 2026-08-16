@@ -1343,3 +1343,45 @@ def test_a_flag_treats_an_argv_as_the_plain_list_it_is():
         "--trailer=-n",
         "--trailer=1",
     ]
+
+
+# --- secrets stay out of the shown line ---------------------------------------
+#
+# footman's Secret is a str subclass whose marker is the type; the bridge
+# keeps that type alive to the argv (execution needs the real value, and
+# display-time redaction can only redact what still carries the marker) and
+# redacts its own shown line. `reveal()` and f-strings still pass in the
+# clear — the caller unwrapping is the caller choosing to expose.
+
+
+def test_a_secret_option_value_is_redacted_in_the_shown_line():
+    from footman import Secret
+
+    cmd = _one(lambda: tools.git.commit(message="x", author=Secret("hunter2")))
+    assert "hunter2" not in cmd
+    assert "--author ***" in cmd
+
+
+def test_a_secret_positional_is_redacted_in_the_shown_line():
+    from footman import Secret
+
+    cmd = _one(lambda: tools.git.add(Secret("s3cret")))
+    assert "s3cret" not in cmd
+    assert "***" in cmd
+
+
+def test_a_secret_global_bound_via_flags_is_redacted_wholesale():
+    from footman import Secret
+
+    # `.flags()` lands in the chain's base as an attached token; the whole
+    # token redacts — hiding the flag name too errs in the safe direction.
+    cmd = _one(lambda: tools.docker.flags(token=Secret("hunter2")).ps())
+    assert "hunter2" not in cmd
+    assert "***" in cmd
+
+
+def test_a_stringified_secret_passes_in_the_clear():
+    from footman import Secret
+
+    cmd = _one(lambda: tools.git.commit(message=f"by {Secret('alice')}"))
+    assert "alice" in cmd
