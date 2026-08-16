@@ -68,6 +68,14 @@ toolroom's; code written against toolroom's (`ok`, `code`, `stdout`,
 packages carries only stdlib shapes — `list[str]` in,
 int-with-attributes out.
 
+A `str` subclass rides that seam as itself: the bridge never flattens a
+value to plain `str` on the execution path, so a marker carried by the
+type — footman's `Secret` is one — survives into the argv footman
+receives, and footman's own display surfaces can redact it. toolroom's
+side of the contract is duck-typed on `reveal()` and nothing else; see
+[Secrets show as `***`](usage.md#secrets-show-as) for the caller-facing
+half.
+
 ## Zero dependencies, both ways
 
 footman's headline — zero runtime dependencies — keeps no asterisk:

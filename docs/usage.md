@@ -65,6 +65,37 @@ if not r.ok:
     ...
 ```
 
+## Secrets show as `***`
+
+A value that redacts itself — footman's `Secret`, or any `str` subclass
+carrying a `reveal()` method — is never shown by default. The child
+process receives the real bytes; every surface built to be *read*
+spells it `***`: the shown line, `Result.command`, a `ToolError`
+message, and (hosted) footman's receipts, which see the marker because
+the bridge passes a `str` through as its own type rather than
+flattening it:
+
+<!-- example: fragment -->
+```python
+from footman import Secret
+from toolroom import docker
+
+docker.login("ghcr.io", username="ci", password=Secret("hunter2"))
+# shown and recorded: docker login ghcr.io --username ci --password ***
+# executed: the real token, which only the child ever sees
+```
+
+Redaction is of the display, never the execution — and unwrapping is
+the caller's to do. `str(secret)`, an f-string, or `reveal()` all pass
+in the clear, because a string operation on a `Secret` answers in plain
+`str`: that is footman's documented way of saying you meant it. The
+same line holds for `.argv` and `to_argv()` — a built command line
+carries real values, because it exists to be executed, not shown.
+
+toolroom never imports footman for any of this: the marker is
+duck-typed on `reveal()`, so the redaction works standalone and for any
+type that opts into the same shape.
+
 ## `.opts()` — run policy
 
 Policy rides *beside* the call and never becomes a tool flag, so a
