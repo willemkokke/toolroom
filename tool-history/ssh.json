@@ -3,18 +3,18 @@
  "tool": "ssh",
  "observed_from": "2.9p1",
  "base": {
-  "version": "10.4p1",
-  "date": "2026-08-01",
+  "version": "10.5p1",
+  "date": "",
   "platforms": [
    "Linux",
    "macOS"
   ],
   "extractor": 2,
   "surface": {
-   "help": "SSH(1)                                                                                 General Commands Manual                                                                               SSH(1)",
+   "help": "SSH(1)                      General Commands Manual                     SSH(1)",
    "verbs": {
     "": {
-     "help": "SSH(1)                                                                                 General Commands Manual                                                                               SSH(1)",
+     "help": "SSH(1)                      General Commands Manual                     SSH(1)",
      "wraps": true,
      "positional": "any",
      "lead": "",
@@ -44,7 +44,7 @@
         "-C"
        ],
        "negation": "",
-       "help": "Requests compression of all data (including stdin, stdout, stderr, and data for forwarded X11, TCP and Unix-domain connections)",
+       "help": "Requests compression of all data (including stdin, stdout, stderr, and data for forwarded X11, TCP and UNIX-domain connections)",
        "type": "bool",
        "default": null,
        "choices": []
@@ -245,6 +245,16 @@
        ],
        "negation": "",
        "help": "Enables trusted X11 forwarding",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "Z": {
+       "flags": [
+        "-Z"
+       ],
+       "negation": "",
+       "help": "List the public keys that would be attempted for authentication to the specified destination in preferred order and exit",
        "type": "bool",
        "default": null,
        "choices": []
@@ -455,6 +465,35 @@
   }
  },
  "deltas": {
+  "10.4p1": {
+   "date": "2026-08-01",
+   "platforms": [
+    "Linux",
+    "macOS"
+   ],
+   "extractor": 2,
+   "drop": [
+    "\tZ"
+   ],
+   "revert": {
+    "\tC": {
+     "flags": [
+      "-C"
+     ],
+     "negation": "",
+     "help": "Requests compression of all data (including stdin, stdout, stderr, and data for forwarded X11, TCP and Unix-domain connections)",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    }
+   },
+   "verbs": {
+    "": {
+     "help": "SSH(1)                                                                                 General Commands Manual                                                                               SSH(1)"
+    }
+   },
+   "help": "SSH(1)                                                                                 General Commands Manual                                                                               SSH(1)"
+  },
   "10.3p1": {
    "date": "",
    "platforms": [

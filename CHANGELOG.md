@@ -7,6 +7,16 @@ breaking changes.
 
 ## [Unreleased]
 
+## [0.5.2] — 2026-08-17
+
+### Changed
+
+- **claude 2.1.233** adds `--yes`, over 2 releases. It also rewords 1 description.
+- **ssh 10.5p1** adds `-Z`. It also rewords 2 descriptions and restates its own description.
+- **ssh_keygen 10.5p1** rewords 1 description. It also restates its own description.
+- **ssh_keyscan 10.5p1** rewords 1 description. It also restates its own description.
+- **uv 0.12.5** rewords 34 descriptions.
+
 ## [0.5.1] — 2026-08-16
 
 ### Fixed
@@ -256,7 +266,8 @@ breaking changes.
 - Name reservation on PyPI: an empty typed module and the
   trusted-publishing release workflow. Nothing importable of substance.
 
-[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/willemkokke/toolroom/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/willemkokke/toolroom/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/willemkokke/toolroom/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/willemkokke/toolroom/compare/v0.3.0...v0.4.0
