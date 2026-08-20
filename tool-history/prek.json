@@ -3,8 +3,8 @@
  "tool": "prek",
  "observed_from": "0.4.2",
  "base": {
-  "version": "0.4.12",
-  "date": "2026-08-03",
+  "version": "0.4.14",
+  "date": "2026-08-17",
   "platforms": [
    "Linux",
    "Windows",
@@ -1172,6 +1172,24 @@
   }
  },
  "deltas": {
+  "0.4.13": {
+   "date": "2026-08-10",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "0.4.12": {
+   "date": "2026-08-03",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
   "0.4.11": {
    "date": "2026-07-29",
    "platforms": [

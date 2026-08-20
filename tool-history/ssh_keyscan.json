@@ -3,18 +3,18 @@
  "tool": "ssh_keyscan",
  "observed_from": "2.9p1",
  "base": {
-  "version": "10.4p1",
-  "date": "2026-07-06",
+  "version": "10.5p1",
+  "date": "2026-08-10",
   "platforms": [
    "Linux",
    "macOS"
   ],
   "extractor": 2,
   "surface": {
-   "help": "SSH-KEYSCAN(1)                                                                         General Commands Manual                                                                       SSH-KEYSCAN(1)",
+   "help": "gather SSH public keys from servers",
    "verbs": {
     "": {
-     "help": "SSH-KEYSCAN(1)                                                                         General Commands Manual                                                                       SSH-KEYSCAN(1)",
+     "help": "gather SSH public keys from servers",
      "wraps": false,
      "positional": "any",
      "lead": "",
@@ -125,6 +125,20 @@
   }
  },
  "deltas": {
+  "10.4p1": {
+   "date": "2026-07-06",
+   "platforms": [
+    "Linux",
+    "macOS"
+   ],
+   "extractor": 2,
+   "verbs": {
+    "": {
+     "help": "SSH-KEYSCAN(1)                                                                         General Commands Manual                                                                       SSH-KEYSCAN(1)"
+    }
+   },
+   "help": "SSH-KEYSCAN(1)                                                                         General Commands Manual                                                                       SSH-KEYSCAN(1)"
+  },
   "10.3p1": {
    "date": "2026-04-02",
    "platforms": [
