@@ -22,13 +22,32 @@
 # requiring the `gate` check, auto-merge allowed in settings, and the
 # REFRESH_TOKEN secret (a fine-grained PAT: contents + pull-requests write)
 # — a PR opened with the default GITHUB_TOKEN never triggers CI.
+#
+# Three ways in, one job. Mondays read whatever shipped that week; the 1st
+# also reaches twenty releases below each floor, deepening the chains a
+# little every month instead of never. Dispatch takes both dials by hand
+# (`only` for one tool, `count` for the depth), which is what a targeted
+# rerun looks like. Re-reading a release the store already holds needs no
+# dial at all: `EXTRACTOR` records which generation took each reading and a
+# gather offers back every reading older than today's, so improving the
+# extractor is what schedules the rerun.
 
 name: refresh
 
 on:
   schedule:
-    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC — what is new
+    - cron: "0 7 1 * *" # the 1st, 07:00 UTC — also reach further back
   workflow_dispatch:
+    inputs:
+      only:
+        description: "one tool key (empty reads them all)"
+        type: string
+        default: ""
+      count:
+        description: "releases below the floor to also read; 0 reads none"
+        type: string
+        default: "0"
 
 permissions:
   contents: read
@@ -57,12 +76,35 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: uv run fm tools.provision --only=uv --strict
 
+      # A re-read needs no switch: `EXTRACTOR` says which generation took a
+      # reading, and a gather offers back everything older than today's. So
+      # improving the extractor *is* the rerun, and this only has to carry
+      # the two things a caller can still want — one tool, and how far below
+      # the floor to reach. Read through the environment rather than
+      # interpolated into the script, so a dispatch input is data.
+      - name: what this run is asked to read
+        id: scope
+        env:
+          ONLY: ${{ inputs.only }}
+          COUNT: ${{ inputs.count }}
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          args=""
+          [ -n "$ONLY" ] && args="$args --only=$ONLY"
+          count="$COUNT"
+          # The monthly tick deepens unless the dispatcher said otherwise.
+          [ "$SCHEDULE" = "0 7 1 * *" ] && [ -z "$count" ] && count=20
+          [ -n "$count" ] && [ "$count" != "0" ] && args="$args --count=$count"
+          echo "args=$args" >> "$GITHUB_OUTPUT"
+          echo "reading with:${args:- whatever is new}"
+
       - name: is there anything to read?
         id: owed
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          uv run fm --json tools.owed --prefix=.tools-latest > owed.json
+          uv run fm --json tools.owed --prefix=.tools-latest \
+            ${{ steps.scope.outputs.args }} > owed.json
           total=$(jq '[.items[] | select(.task) | select(.task | endswith("owed"))
                        | .returned.releases[] | length] | add // 0' owed.json)
           blocked=$(jq '[.items[] | select(.task) | select(.task | endswith("owed"))
@@ -86,6 +128,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >
           uv run fm tools.gather --prefix=.tools-latest
+          ${{ steps.scope.outputs.args }}
           --out=observations/${{ matrix.os }}.json
 
       - uses: actions/upload-artifact@v4
