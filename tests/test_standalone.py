@@ -232,11 +232,21 @@ def test_a_decided_colour_merges_over_an_explicit_environment(mode, expected):
         assert not any(var in composed for var in _host._FORCE_VARS)
 
 
+# What the child reports back: the names toolroom *manages*, by exact
+# match. A substring test for "COLOR" would also catch the terminal's own
+# COLORTERM and COLORFGBG — names toolroom deliberately leaves alone, so a
+# developer's terminal would fail an assertion a CI runner passes.
+_MANAGED = (
+    f"import os; managed = {sorted(_host._COLOR_VARS)!r}; "
+    "print(','.join(sorted(k for k in os.environ if k in managed)))"
+)
+
+
 def test_a_spawned_tool_inherits_the_forced_colour(monkeypatch, uncoloured):
     monkeypatch.setenv("FORCE_COLOR", "1")
     r = tools.python(
         "-c",
-        "import os; print(','.join(sorted(k for k in os.environ if 'COLOR' in k)))",
+        _MANAGED,
     )
     assert r.stdout.strip() == "CLICOLOR,CLICOLOR_FORCE,FORCE_COLOR"
 
@@ -245,9 +255,19 @@ def test_a_spawned_tool_inherits_the_silence(monkeypatch, uncoloured):
     monkeypatch.setenv("NO_COLOR", "1")
     r = tools.python(
         "-c",
-        "import os; print(','.join(sorted(k for k in os.environ if 'COLOR' in k)))",
+        _MANAGED,
     )
     assert r.stdout.strip() == "NO_COLOR"
+
+
+def test_a_capability_hint_is_left_alone(monkeypatch, uncoloured):
+    """`COLORTERM` says what the terminal can *render*, not whether to
+    colour, so toolroom writes the four switches and passes the rest
+    through — the child sees the hint exactly as this process had it."""
+    monkeypatch.setenv("COLORTERM", "truecolor")
+    monkeypatch.setenv("FORCE_COLOR", "1")
+    r = tools.python("-c", "import os; print(os.environ.get('COLORTERM', '<gone>'))")
+    assert r.stdout.strip() == "truecolor"
 
 
 def test_the_flag_half_follows_the_same_bit(monkeypatch, uncoloured):
