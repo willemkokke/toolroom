@@ -929,6 +929,18 @@ def _usage_line(text: str) -> str:
     return ""
 
 
+def _unpadded(text: str) -> str:
+    """One line of prose, with the layout that carried it collapsed.
+
+    A manual is justified to whatever width it was rendered at, and the
+    runs of spaces and tabs that do the justifying are not the tool's
+    words. Left in, they make a reading depend on the reader: the same
+    page read at two widths stores two strings, and the refresh reports a
+    description that was reworded when only the padding moved.
+    """
+    return " ".join(text.split())
+
+
 def _summary(text: str) -> str:
     """A tool's one-line self-description: its help's first prose line.
 
@@ -939,7 +951,7 @@ def _summary(text: str) -> str:
     """
     named = _MAN_NAME.search(text)
     if named:
-        return named.group(1).strip()
+        return _unpadded(named.group(1))
     if re.match(r"^Usage of \S", text):
         return ""  # Go's `flag` opens with `Usage of <prog>:` and has no summary
     # A wrapped usage stands between the `usage:` line and the description,
@@ -962,11 +974,18 @@ def _summary(text: str) -> str:
             # Reached the options/sections with no summary in between — a tool
             # like python opens straight into `Options …:`, so it has none.
             return ""
-        return stripped
+        return _unpadded(stripped)
     return ""
 
 
-_MAN_NAME = re.compile(r"^NAME\n\s+\S+ - (.+)$", re.M)
+# mdoc pages (every BSD manual, so the whole ssh family) separate the name
+# from its description with an en dash, groff pages with a hyphen. Matching
+# only the hyphen is how `ssh - OpenSSH remote login client` went unread and
+# the summary fell through to the running header — page furniture, and
+# tab-padded, so what got stored depended on the width the reader happened
+# to render at. Spelled as escapes: `re` understands them, and the source
+# stays ASCII where ruff reads a literal dash as ambiguous.
+_MAN_NAME = re.compile(r"^NAME\n\s+\S+ [-\u2013\u2014] (.+)$", re.M)
 
 
 def subcommands(text: str) -> dict[str, str]:

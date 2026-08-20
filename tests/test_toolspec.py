@@ -1361,6 +1361,36 @@ def test_no_stub_carries_a_home_directory():
     assert guilty == set()
 
 
+def test_a_manual_names_itself_with_whichever_dash_its_format_uses():
+    """groff pages write `git - the stupid content tracker`; mdoc pages —
+    every BSD manual, so the whole ssh family — write an en dash. Reading
+    only the hyphen left ssh with no NAME match at all."""
+    groff = "NAME\n       git - the stupid content tracker\n\nSYNOPSIS\n"
+    mdoc = "NAME\n     ssh \u2013 OpenSSH remote login client\n\nSYNOPSIS\n"
+    emdash = "NAME\n     ssh \u2014 OpenSSH remote login client\n\nSYNOPSIS\n"
+    assert _toolhelp._summary(groff) == "the stupid content tracker"
+    assert _toolhelp._summary(mdoc) == "OpenSSH remote login client"
+    assert _toolhelp._summary(emdash) == "OpenSSH remote login client"
+
+
+def test_a_summary_does_not_depend_on_the_width_it_was_rendered_at():
+    """A manual is justified to whatever width the reader had, and the
+    padding is not the tool's words. Stored raw, the same page read at two
+    widths made two strings and the refresh called it a rewording.
+
+    The running header is the case that bit: with no NAME match it became
+    the summary, tabs and all.
+    """
+    narrow = "SSH(1)      General Commands Manual      SSH(1)\n\nDESCRIPTION\n"
+    wide = "SSH(1)\t\t\t\tGeneral Commands Manual\t\t\t\tSSH(1)\n\nDESCRIPTION\n"
+    assert _toolhelp._summary(narrow) == _toolhelp._summary(wide)
+    assert _toolhelp._summary(narrow) == "SSH(1) General Commands Manual SSH(1)"
+
+    # And a NAME line that groff wrapped keeps its single spaces too.
+    named = "NAME\n     ssh \u2013 OpenSSH   remote     login client\n"
+    assert _toolhelp._summary(named) == "OpenSSH remote login client"
+
+
 def test_a_summary_is_found_past_a_wrapped_usage():
     """A wrapped usage stands between the `usage:` line and the
     description, and what it wraps onto decided what was found: a
