@@ -966,6 +966,15 @@ def _summary(text: str) -> str:
             continue
         if stripped.lower().startswith("usage"):
             continue
+        if _BANNER.match(stripped) or _BARE_URL.match(stripped):
+            # A signature, not a description: markdownlint-cli2 opens
+            # `markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)` and then its
+            # project URL, and neither says what the tool does. Stored as the
+            # description they also carry the version, so every release read
+            # back as a tool rewriting its own summary. Skipped, this one
+            # reaches its `Glob expressions:` heading and answers "none",
+            # which is the truthful reading — some tools simply do not say.
+            continue
         if (
             stripped.startswith("-")
             or _SECTION.match(stripped)
@@ -985,6 +994,13 @@ def _summary(text: str) -> str:
 # tab-padded, so what got stored depended on the width the reader happened
 # to render at. Spelled as escapes: `re` understands them, and the source
 # stays ASCII where ruff reads a literal dash as ambiguous.
+# A first line that signs the tool rather than describing it: a name, a
+# version, optionally the version of what it wraps. Deliberately anchored
+# whole-line — bun's description *ends* in a build stamp and is prose for
+# every word before it, which `_unstamped` trims instead.
+_BANNER = re.compile(r"^\S+ +v?\d[\w.+-]*(?: +\([^()]*\))?$")
+_BARE_URL = re.compile(r"^https?://\S+$")
+
 _MAN_NAME = re.compile(r"^NAME\n\s+\S+ [-\u2013\u2014] (.+)$", re.M)
 
 
