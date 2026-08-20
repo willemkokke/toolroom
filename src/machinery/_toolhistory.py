@@ -47,6 +47,7 @@ importlib_metadata 8 raises on, so it died before argparse ran and three
 releases were recorded with no options at all. Pinning the resolution and
 the interpreter to the release's own date changes what extraction can see,
 which is exactly what this number is for.
+
 """
 
 
@@ -518,8 +519,25 @@ def merge(
     for key, who in (absent or {}).items():
         missing[key] = sorted({*missing.get(key, []), *who})
 
+    # The tool's own description settles by the rule its verbs' summaries
+    # already use, rather than "whichever is non-empty". Falling back on
+    # truthiness made *no description* unsayable: once a tool had one
+    # stored, a reading that correctly found none read as a platform that
+    # had failed to look, and the stale text was kept forever. That is how
+    # markdownlint-cli2 held its own version banner as a description
+    # through every re-read — and it is precisely what a better extractor
+    # must be able to correct. Ranked, an empty reading from the platform
+    # that owns the text replaces it, while a lower-ranked platform's
+    # silence still cannot erase a good line.
     widened = {
-        "help": surface.get("help", "") or merged.get("help", ""),
+        "help": _preferred(
+            {"help": stored.get("help", "")} if "help" in stored else None,
+            {"help": surface.get("help", "")},
+            entry.get("platforms", []),
+            platforms,
+            missing,
+            _TOOL_HELP,
+        )["help"],
         "verbs": _ordered(merged.get("verbs", {})),
     }
     entry["platforms"] = observers
@@ -566,6 +584,14 @@ def _rewrite(doc: dict[str, Any], version: str, surface: dict[str, Any]) -> None
             if k in entry
         }
         doc["deltas"][older] = {**kept, **delta(surface, below)}
+
+
+# The `missing` key for a tool's own description. Two tabs, which no real
+# key can be: a verb's fields are keyed `<verb>\t` and an option `<verb>\t<name>`,
+# and neither a verb nor an option name may contain the separator. Only ever
+# read — nothing records a platform as lacking a description — so it never
+# reaches the stored sidecar.
+_TOOL_HELP = "\t\thelp"
 
 
 def _preferred(

@@ -2532,6 +2532,70 @@ def test_a_verb_missing_whole_is_said_once_not_per_option():
     assert sorted(surface["verbs"]["up"]["options"]) == ["build", "detach"]
 
 
+def _described(text):
+    """A one-verb surface whose tool description is *text*."""
+    return {"help": text, "verbs": {"": {"help": text, "options": {}}}}
+
+
+def test_a_re_read_can_say_a_tool_has_no_description():
+    """`markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)` is a signature, not
+    a description, and the tool has none to give. Settling the tool's own
+    line on truthiness made that unsayable: an empty reading looked like a
+    platform that had failed to look, so the banner survived every re-read
+    and no better extractor could ever correct it."""
+    doc = _toolhistory.new(
+        "markdownlint",
+        version="0.23.2",
+        date="2026-01-01",
+        surface=_described("markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)"),
+        platforms=["Linux", "Windows", "macOS"],
+    )
+    # The platform whose words these are reads again and finds none.
+    _toolhistory.merge(
+        doc, version="0.23.2", surface=_described(""), platforms=["Linux"]
+    )
+    assert (_toolhistory.at(doc, "0.23.2") or {})["help"] == ""
+
+
+def test_a_quieter_platform_still_cannot_erase_a_description():
+    """The other half of the same rule, and the reason truthiness was there:
+    a platform that reads nothing must not blank a line another platform
+    read properly."""
+    doc = _toolhistory.new(
+        "demo",
+        version="1.0.0",
+        date="2026-01-01",
+        surface=_described("A real description"),
+        platforms=["Linux"],
+    )
+    _toolhistory.merge(
+        doc, version="1.0.0", surface=_described(""), platforms=["macOS"]
+    )
+    assert (_toolhistory.at(doc, "1.0.0") or {})["help"] == "A real description"
+
+
+def test_a_better_reading_replaces_a_signature_with_the_real_line():
+    """git-cliff opens `git-cliff 2.13.1` and describes itself on the next
+    line. The extractor that learned to skip the signature must be able to
+    put the real description in its place."""
+    doc = _toolhistory.new(
+        "git_cliff",
+        version="2.13.1",
+        date="2026-01-01",
+        surface=_described("git-cliff 2.13.1"),
+        platforms=["Linux"],
+    )
+    _toolhistory.merge(
+        doc,
+        version="2.13.1",
+        surface=_described("A highly customizable changelog generator"),
+        platforms=["Linux"],
+    )
+    assert (_toolhistory.at(doc, "2.13.1") or {})["help"] == (
+        "A highly customizable changelog generator"
+    )
+
+
 def test_a_merge_widening_coverage_costs_the_chain_nothing():
     """The sidecar never enters a delta, so a platform looking for the first
     time cannot make the tool look like it changed — no recompute, no event,
