@@ -1361,6 +1361,37 @@ def test_no_stub_carries_a_home_directory():
     assert guilty == set()
 
 
+def test_a_tool_that_signs_its_help_is_not_describing_itself():
+    """Some tools open with a signature: `git-cliff 2.13.1`, or
+    markdownlint-cli2's name-and-version plus a project URL. Stored as the
+    description it carried the version, so every release read back as a
+    reworded summary — and it never said what the tool does anyway.
+
+    Skipping it finds the real description where there is one, and honestly
+    reports none where there is not.
+    """
+    signed = "git-cliff 2.13.1\nA highly customizable changelog generator\n\nUSAGE:\n"
+    assert _toolhelp._summary(signed) == "A highly customizable changelog generator"
+
+    # markdownlint-cli2 has no description at all: a banner, its URL, then
+    # the syntax line and a heading.
+    unsigned = (
+        "markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)\n"
+        "https://github.com/DavidAnson/markdownlint-cli2\n\n"
+        "Syntax: markdownlint-cli2 glob0 [glob1]\n\n"
+        "Glob expressions (from the globby library):\n"
+    )
+    assert _toolhelp._summary(unsigned) == ""
+
+
+def test_prose_that_merely_ends_in_a_version_is_still_prose():
+    """The banner rule matches a whole line, so bun — which describes itself
+    for every word before its build stamp — is trimmed by `_unstamped`
+    rather than thrown away here."""
+    bun = "Bun is a fast JavaScript runtime, and test runner. (1.4.0+34cbb9a40)"
+    assert _toolhelp._summary(f"{bun}\n\nUsage: bun <command>\n") == bun
+
+
 def test_a_tools_own_build_stamp_is_not_part_of_its_description():
     """bun signs its help line with its build. Stored, the stamp moves every
     release and an ordinary version bump reads as a reworded description —

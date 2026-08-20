@@ -634,13 +634,13 @@ def insert(
         return False
     chain = observed(doc)  # newest first
 
-    # The patchlevel rides between the tuple and the date for the same
-    # reason `_toolfetch._order` reads it: `version_tuple` deliberately
-    # reads OpenSSH's `9.9p1` and `9.9p2` as the same base and leaves the
-    # tie to the caller — and OpenSSH's listing carries no dates to break
-    # it. Without the middle component two patchlevels compare *equal*,
-    # the strict scan below finds no strictly-older entry, and the walk
-    # dies on the `next()`.
+    # The patchlevel rides between the tuple and the date because
+    # `version_tuple` deliberately reads OpenSSH's `9.9p1` and `9.9p2` as
+    # the same base and leaves the tie to the caller. The date can break it
+    # now that the listing's own dates are read, but two patchlevels of one
+    # release often share a day, so the middle component still earns its
+    # place: without it they compare *equal*, the strict scan below finds no
+    # strictly-older entry, and the walk dies on the `next()`.
     def placed(name: str) -> tuple[tuple[int, ...], int, str]:
         entry = doc["base"] if name == doc["base"]["version"] else doc["deltas"][name]
         return version_tuple(name), _patchlevel(name), entry.get("date", "")

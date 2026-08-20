@@ -3,8 +3,8 @@
  "tool": "basedpyright",
  "observed_from": "1.39.0",
  "base": {
-  "version": "1.39.9",
-  "date": "2026-07-29",
+  "version": "1.39.10",
+  "date": "2026-08-13",
   "platforms": [
    "Linux",
    "Windows",
@@ -240,6 +240,15 @@
   }
  },
  "deltas": {
+  "1.39.9": {
+   "date": "2026-07-29",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
   "1.39.8": {
    "date": "2026-06-14",
    "platforms": [

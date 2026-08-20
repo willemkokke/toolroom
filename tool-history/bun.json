@@ -3,8 +3,8 @@
  "tool": "bun",
  "observed_from": "1.3.5",
  "base": {
-  "version": "1.3.14",
-  "date": "2026-07-29",
+  "version": "1.4.0",
+  "date": "2026-08-20",
   "platforms": [
    "Linux",
    "Windows",
@@ -12,10 +12,10 @@
   ],
   "extractor": 2,
   "surface": {
-   "help": "Bun is a fast JavaScript runtime, package manager, bundler, and test runner. (1.3.14+0d9b296af)",
+   "help": "Bun is a fast JavaScript runtime, package manager, bundler, and test runner.",
    "verbs": {
     "": {
-     "help": "Bun is a fast JavaScript runtime, package manager, bundler, and test runner. (1.3.14+0d9b296af)",
+     "help": "Bun is a fast JavaScript runtime, package manager, bundler, and test runner.",
      "wraps": false,
      "positional": "any",
      "lead": "",
@@ -142,12 +142,43 @@
        "default": null,
        "choices": []
       },
+      "define": {
+       "flags": [
+        "--define",
+        "-d"
+       ],
+       "negation": "",
+       "help": "Substitute K:V while parsing, e.g. --define process.env.NODE_ENV:\"development\"",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "disable_warning": {
+       "flags": [
+        "--disable-warning"
+       ],
+       "negation": "",
+       "help": "Silence specific process warnings by code or type",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
       "dns_result_order": {
        "flags": [
         "--dns-result-order"
        ],
        "negation": "",
        "help": "Set the default order of DNS lookup results",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "drop": {
+       "flags": [
+        "--drop"
+       ],
+       "negation": "",
+       "help": "Remove function calls, e.g. --drop=console removes all console.* calls",
        "type": "str",
        "default": null,
        "choices": []
@@ -203,6 +234,16 @@
        "default": null,
        "choices": []
       },
+      "experimental_stream_iter": {
+       "flags": [
+        "--experimental-stream-iter"
+       ],
+       "negation": "",
+       "help": "Enable the experimental stream/iter API (node:stream/iter, node:zlib/iter)",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "expose_gc": {
        "flags": [
         "--expose-gc"
@@ -210,6 +251,26 @@
        "negation": "",
        "help": "Expose gc() on the global object",
        "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "extension_order": {
+       "flags": [
+        "--extension-order"
+       ],
+       "negation": "",
+       "help": "Defaults to: .tsx,.ts,.jsx,.js,.json",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "feature": {
+       "flags": [
+        "--feature"
+       ],
+       "negation": "",
+       "help": "Enable a feature flag for dead-code elimination, e.g. --feature=SUPER_SECRET",
+       "type": "str",
        "default": null,
        "choices": []
       },
@@ -239,7 +300,7 @@
         "--heap-prof"
        ],
        "negation": "",
-       "help": "Generate V8 heap snapshot on exit (.heapsnapshot)",
+       "help": "Write a heap profile to disk on exit (.heapprofile)",
        "type": "bool",
        "default": null,
        "choices": []
@@ -252,6 +313,16 @@
        "help": "Specify the directory where the heap profile will be saved",
        "type": "str",
        "default": null,
+       "choices": []
+      },
+      "heap_prof_interval": {
+       "flags": [
+        "--heap-prof-interval"
+       ],
+       "negation": "",
+       "help": "Specify the average sampling interval in bytes for heap profiling",
+       "type": "str",
+       "default": "524288",
        "choices": []
       },
       "heap_prof_md": {
@@ -304,6 +375,16 @@
        "default": null,
        "choices": []
       },
+      "ignore_dce_annotations": {
+       "flags": [
+        "--ignore-dce-annotations"
+       ],
+       "negation": "",
+       "help": "Ignore tree-shaking annotations such as @__PURE__",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "import": {
        "flags": [
         "--import"
@@ -311,6 +392,16 @@
        "negation": "",
        "help": "Alias of --preload, for Node.js compatibility",
        "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "insecure_http_parser": {
+       "flags": [
+        "--insecure-http-parser"
+       ],
+       "negation": "",
+       "help": "Use an insecure HTTP parser that accepts invalid HTTP headers",
+       "type": "bool",
        "default": null,
        "choices": []
       },
@@ -350,6 +441,87 @@
        ],
        "negation": "",
        "help": "Configure auto-install behavior",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "interactive": {
+       "flags": [
+        "--interactive"
+       ],
+       "negation": "",
+       "help": "Start a Node.js-compatible REPL, like node --interactive",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "jsx_factory": {
+       "flags": [
+        "--jsx-factory"
+       ],
+       "negation": "",
+       "help": "Changes the function called when compiling JSX elements using the classic JSX runtime",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "jsx_fragment": {
+       "flags": [
+        "--jsx-fragment"
+       ],
+       "negation": "",
+       "help": "Changes the function called when compiling JSX fragments",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "jsx_import_source": {
+       "flags": [
+        "--jsx-import-source"
+       ],
+       "negation": "",
+       "help": "Declares the module specifier to be used for importing the jsx and jsxs factory functions",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "jsx_runtime": {
+       "flags": [
+        "--jsx-runtime"
+       ],
+       "negation": "",
+       "help": "\"automatic\" (default) or \"classic\"",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "jsx_side_effects": {
+       "flags": [
+        "--jsx-side-effects"
+       ],
+       "negation": "",
+       "help": "Treat JSX elements as having side effects (disable pure annotations)",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "loader": {
+       "flags": [
+        "--loader",
+        "-l"
+       ],
+       "negation": "",
+       "help": "Parse files with .ext:loader, e.g. --loader .js:jsx",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "main_fields": {
+       "flags": [
+        "--main-fields"
+       ],
+       "negation": "",
+       "help": "Main fields to lookup in package.json",
        "type": "str",
        "default": null,
        "choices": []
@@ -424,12 +596,32 @@
        "default": null,
        "choices": []
       },
+      "no_macros": {
+       "flags": [
+        "--no-macros"
+       ],
+       "negation": "",
+       "help": "Disable macros from being executed in the bundler, transpiler and runtime",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "no_orphans": {
        "flags": [
         "--no-orphans"
        ],
        "negation": "",
-       "help": "Exit when the parent process dies, and on exit SIGKILL every descendant",
+       "help": "Exit when the parent process dies, and on exit kill every descendant",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "no_warnings": {
+       "flags": [
+        "--no-warnings"
+       ],
+       "negation": "",
+       "help": "Silence all process warnings",
        "type": "bool",
        "default": null,
        "choices": []
@@ -440,6 +632,16 @@
        ],
        "negation": "",
        "help": "Run multiple scripts concurrently with Foreman-style output",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "pending_deprecation": {
+       "flags": [
+        "--pending-deprecation"
+       ],
+       "negation": "",
+       "help": "Emit pending deprecation warnings",
        "type": "bool",
        "default": null,
        "choices": []
@@ -485,6 +687,26 @@
        "default": null,
        "choices": []
       },
+      "preserve_symlinks": {
+       "flags": [
+        "--preserve-symlinks"
+       ],
+       "negation": "",
+       "help": "Preserve symlinks when resolving files",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "preserve_symlinks_main": {
+       "flags": [
+        "--preserve-symlinks-main"
+       ],
+       "negation": "",
+       "help": "Preserve symlinks when resolving the main entry point",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "print": {
        "flags": [
         "--print",
@@ -492,6 +714,16 @@
        ],
        "negation": "",
        "help": "Evaluate argument as a script and print the result",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "redirect_warnings": {
+       "flags": [
+        "--redirect-warnings"
+       ],
+       "negation": "",
+       "help": "Write process warnings to the given file instead of printing to stderr",
        "type": "str",
        "default": null,
        "choices": []
@@ -596,6 +828,96 @@
        "default": null,
        "choices": []
       },
+      "tls_max_v1_2": {
+       "flags": [
+        "--tls-max-v1.2"
+       ],
+       "negation": "",
+       "help": "Set the default TLS maximum to TLSv1.2",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_max_v1_3": {
+       "flags": [
+        "--tls-max-v1.3"
+       ],
+       "negation": "",
+       "help": "Set the default TLS maximum to TLSv1.3",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_min_v1_0": {
+       "flags": [
+        "--tls-min-v1.0"
+       ],
+       "negation": "",
+       "help": "Set the default TLS minimum to TLSv1.0",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_min_v1_1": {
+       "flags": [
+        "--tls-min-v1.1"
+       ],
+       "negation": "",
+       "help": "Set the default TLS minimum to TLSv1.1",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_min_v1_2": {
+       "flags": [
+        "--tls-min-v1.2"
+       ],
+       "negation": "",
+       "help": "Set the default TLS minimum to TLSv1.2",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_min_v1_3": {
+       "flags": [
+        "--tls-min-v1.3"
+       ],
+       "negation": "",
+       "help": "Set the default TLS minimum to TLSv1.3",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "trace_deprecation": {
+       "flags": [
+        "--trace-deprecation"
+       ],
+       "negation": "",
+       "help": "Show stack traces on deprecations",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "trace_warnings": {
+       "flags": [
+        "--trace-warnings"
+       ],
+       "negation": "",
+       "help": "Show stack traces on process warnings",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tsconfig_override": {
+       "flags": [
+        "--tsconfig-override"
+       ],
+       "negation": "",
+       "help": "Specify custom tsconfig.json",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
       "unhandled_rejections": {
        "flags": [
         "--unhandled-rejections"
@@ -656,6 +978,16 @@
        "default": null,
        "choices": []
       },
+      "watch_kill_signal": {
+       "flags": [
+        "--watch-kill-signal"
+       ],
+       "negation": "",
+       "help": "Signal whose handlers run when --watch restarts the process",
+       "type": "str",
+       "default": "SIGTERM",
+       "choices": []
+      },
       "workspaces": {
        "flags": [
         "--workspaces"
@@ -678,8 +1010,8 @@
       }
      }
     },
-    "install": {
-     "help": "Alias: bun i",
+    "add": {
+     "help": "Alias: bun a",
      "wraps": false,
      "positional": "any",
      "lead": "",
@@ -690,7 +1022,7 @@
         "-a"
        ],
        "negation": "",
-       "help": "Analyze & install all dependencies of files passed as arguments recursively (using Bun's bundler)",
+       "help": "Recursively analyze & install dependencies of files passed as arguments (using Bun's bundler)",
        "type": "bool",
        "default": null,
        "choices": []
@@ -731,6 +1063,16 @@
        ],
        "negation": "",
        "help": "The same as `--ca`, but is a file path to the certificate",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "catalog": {
+       "flags": [
+        "--catalog"
+       ],
+       "negation": "",
+       "help": "Add the resolved version to the root package.json catalog and depend on it as \"catalog:\" (use --catalog=NAME for a named catalog)",
        "type": "str",
        "default": null,
        "choices": []
@@ -810,10 +1152,11 @@
       },
       "filter": {
        "flags": [
-        "--filter"
+        "--filter",
+        "-F"
        ],
        "negation": "",
-       "help": "Install packages for the matching workspaces",
+       "help": "Add the package(s) to the matching workspaces instead of the current package",
        "type": "str",
        "default": null,
        "choices": []
@@ -1084,8 +1427,537 @@
       }
      }
     },
-    "add": {
-     "help": "Alias: bun a",
+    "build": {
+     "help": "",
+     "wraps": false,
+     "positional": "required",
+     "lead": "entrypoint",
+     "options": {
+      "allow_unresolved": {
+       "flags": [
+        "--allow-unresolved"
+       ],
+       "negation": "",
+       "help": "Allow unresolved dynamic import()/require() specifiers matching these glob patterns",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "app": {
+       "flags": [
+        "--app"
+       ],
+       "negation": "",
+       "help": "(EXPERIMENTAL) Build a web app for production using Bun Bake",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "asset": {
+       "flags": [
+        "--asset"
+       ],
+       "negation": "",
+       "help": "Embed a file or directory into the compiled executable, preserving its relative path (requires --compile)",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "asset_naming": {
+       "flags": [
+        "--asset-naming"
+       ],
+       "negation": "",
+       "help": "Customize asset filenames",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "banner": {
+       "flags": [
+        "--banner"
+       ],
+       "negation": "",
+       "help": "Add a banner to the bundled output such as \"use client\"; for a bundle being used with RSCs",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "bytecode": {
+       "flags": [
+        "--bytecode"
+       ],
+       "negation": "",
+       "help": "Use a bytecode cache",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "chunk_naming": {
+       "flags": [
+        "--chunk-naming"
+       ],
+       "negation": "",
+       "help": "Customize chunk filenames",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "compile": {
+       "flags": [
+        "--compile"
+       ],
+       "negation": "",
+       "help": "Generate a standalone Bun executable containing your bundled code",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "compile_autoload_bunfig": {
+       "flags": [
+        "--compile-autoload-bunfig"
+       ],
+       "negation": "--no-compile-autoload-bunfig",
+       "help": "Enable autoloading of bunfig.toml in standalone executable",
+       "type": "bool",
+       "default": true,
+       "choices": []
+      },
+      "compile_autoload_dotenv": {
+       "flags": [
+        "--compile-autoload-dotenv"
+       ],
+       "negation": "--no-compile-autoload-dotenv",
+       "help": "Enable autoloading of .env files in standalone executable",
+       "type": "bool",
+       "default": true,
+       "choices": []
+      },
+      "compile_autoload_package_json": {
+       "flags": [
+        "--compile-autoload-package-json"
+       ],
+       "negation": "--no-compile-autoload-package-json",
+       "help": "Enable autoloading of package.json at runtime in standalone executable",
+       "type": "bool",
+       "default": false,
+       "choices": []
+      },
+      "compile_autoload_tsconfig": {
+       "flags": [
+        "--compile-autoload-tsconfig"
+       ],
+       "negation": "--no-compile-autoload-tsconfig",
+       "help": "Enable autoloading of tsconfig.json at runtime in standalone executable",
+       "type": "bool",
+       "default": false,
+       "choices": []
+      },
+      "compile_exec_argv": {
+       "flags": [
+        "--compile-exec-argv"
+       ],
+       "negation": "",
+       "help": "Prepend arguments to the standalone executable's execArgv",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "compile_executable_path": {
+       "flags": [
+        "--compile-executable-path"
+       ],
+       "negation": "",
+       "help": "Path to a Bun executable to use for cross-compilation instead of downloading",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "conditions": {
+       "flags": [
+        "--conditions"
+       ],
+       "negation": "",
+       "help": "Pass custom conditions to resolve",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "css_chunking": {
+       "flags": [
+        "--css-chunking"
+       ],
+       "negation": "",
+       "help": "Chunk CSS files together to reduce duplicated CSS loaded in a browser",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "emit_dce_annotations": {
+       "flags": [
+        "--emit-dce-annotations"
+       ],
+       "negation": "",
+       "help": "Re-emit DCE annotations in bundles",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "entry_naming": {
+       "flags": [
+        "--entry-naming"
+       ],
+       "negation": "",
+       "help": "Customize entry point filenames",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "env": {
+       "flags": [
+        "--env"
+       ],
+       "negation": "",
+       "help": "Inline environment variables into the bundle as process.env.${name}",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "external": {
+       "flags": [
+        "--external",
+        "-e"
+       ],
+       "negation": "",
+       "help": "Exclude module from transpilation (can use * wildcards)",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "footer": {
+       "flags": [
+        "--footer"
+       ],
+       "negation": "",
+       "help": "Add a footer to the bundled output such as // built with bun!",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "format": {
+       "flags": [
+        "--format"
+       ],
+       "negation": "",
+       "help": "Specifies the module format to build to",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "keep_names": {
+       "flags": [
+        "--keep-names"
+       ],
+       "negation": "",
+       "help": "Preserve original function and class names when minifying",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "metafile": {
+       "flags": [
+        "--metafile"
+       ],
+       "negation": "",
+       "help": "Write a JSON file with metadata about the build",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "metafile_md": {
+       "flags": [
+        "--metafile-md"
+       ],
+       "negation": "",
+       "help": "Write a markdown file with a visualization of the module graph (LLM-friendly)",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "minify": {
+       "flags": [
+        "--minify"
+       ],
+       "negation": "",
+       "help": "Enable all minification flags",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "minify_identifiers": {
+       "flags": [
+        "--minify-identifiers"
+       ],
+       "negation": "",
+       "help": "Minify identifiers",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "minify_syntax": {
+       "flags": [
+        "--minify-syntax"
+       ],
+       "negation": "",
+       "help": "Minify syntax and inline data",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "minify_whitespace": {
+       "flags": [
+        "--minify-whitespace"
+       ],
+       "negation": "",
+       "help": "Minify whitespace",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "no_bundle": {
+       "flags": [
+        "--no-bundle"
+       ],
+       "negation": "",
+       "help": "Transpile file only, do not bundle",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "no_clear_screen": {
+       "flags": [
+        "--no-clear-screen"
+       ],
+       "negation": "",
+       "help": "Disable clearing the terminal screen on reload when --watch is enabled",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "outdir": {
+       "flags": [
+        "--outdir"
+       ],
+       "negation": "",
+       "help": "Default to \"dist\" if multiple files",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "outfile": {
+       "flags": [
+        "--outfile"
+       ],
+       "negation": "",
+       "help": "Write to a file",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "packages": {
+       "flags": [
+        "--packages"
+       ],
+       "negation": "",
+       "help": "Add dependencies to bundle or keep them external",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "production": {
+       "flags": [
+        "--production"
+       ],
+       "negation": "",
+       "help": "Set NODE_ENV=production and enable minification",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "public_path": {
+       "flags": [
+        "--public-path"
+       ],
+       "negation": "",
+       "help": "A prefix to be appended to any import paths in bundled code",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "react_compiler": {
+       "flags": [
+        "--react-compiler"
+       ],
+       "negation": "",
+       "help": "Enable the React Compiler optimizing transform",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "react_fast_refresh": {
+       "flags": [
+        "--react-fast-refresh"
+       ],
+       "negation": "",
+       "help": "Enable React Fast Refresh transform (does not emit hot-module code, use this for testing)",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "reject_unresolved": {
+       "flags": [
+        "--reject-unresolved"
+       ],
+       "negation": "",
+       "help": "Fail the build on any dynamic import()/require() specifier that cannot be resolved at build time",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "root": {
+       "flags": [
+        "--root"
+       ],
+       "negation": "",
+       "help": "Root directory used for multiple entry points",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "server_components": {
+       "flags": [
+        "--server-components"
+       ],
+       "negation": "",
+       "help": "(EXPERIMENTAL) Enable server components",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "sourcemap": {
+       "flags": [
+        "--sourcemap"
+       ],
+       "negation": "",
+       "help": "Build with sourcemaps - 'linked', 'inline', 'external', or 'none'",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "splitting": {
+       "flags": [
+        "--splitting"
+       ],
+       "negation": "",
+       "help": "Enable code splitting",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "target": {
+       "flags": [
+        "--target"
+       ],
+       "negation": "",
+       "help": "The intended execution environment for the bundle",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "watch": {
+       "flags": [
+        "--watch"
+       ],
+       "negation": "",
+       "help": "Automatically restart the process on file change",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "windows_copyright": {
+       "flags": [
+        "--windows-copyright"
+       ],
+       "negation": "",
+       "help": "When using --compile targeting Windows, set the executable copyright",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "windows_description": {
+       "flags": [
+        "--windows-description"
+       ],
+       "negation": "",
+       "help": "When using --compile targeting Windows, set the executable description",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "windows_hide_console": {
+       "flags": [
+        "--windows-hide-console"
+       ],
+       "negation": "",
+       "help": "When using --compile targeting Windows, prevent a Command prompt from opening alongside the executable",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "windows_icon": {
+       "flags": [
+        "--windows-icon"
+       ],
+       "negation": "",
+       "help": "When using --compile targeting Windows, assign an executable icon",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "windows_publisher": {
+       "flags": [
+        "--windows-publisher"
+       ],
+       "negation": "",
+       "help": "When using --compile targeting Windows, set the executable company name",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "windows_title": {
+       "flags": [
+        "--windows-title"
+       ],
+       "negation": "",
+       "help": "When using --compile targeting Windows, set the executable product name",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "windows_version": {
+       "flags": [
+        "--windows-version"
+       ],
+       "negation": "",
+       "help": "When using --compile targeting Windows, set the executable version (e.g",
+       "type": "str",
+       "default": null,
+       "choices": []
+      }
+     }
+    },
+    "install": {
+     "help": "Alias: bun i",
      "wraps": false,
      "positional": "any",
      "lead": "",
@@ -1096,7 +1968,7 @@
         "-a"
        ],
        "negation": "",
-       "help": "Recursively analyze & install dependencies of files passed as arguments (using Bun's bundler)",
+       "help": "Analyze & install all dependencies of files passed as arguments recursively (using Bun's bundler)",
        "type": "bool",
        "default": null,
        "choices": []
@@ -1137,6 +2009,16 @@
        ],
        "negation": "",
        "help": "The same as `--ca`, but is a file path to the certificate",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "catalog": {
+       "flags": [
+        "--catalog"
+       ],
+       "negation": "",
+       "help": "Add the resolved version to the root package.json catalog and depend on it as \"catalog:\" (use --catalog=NAME for a named catalog)",
        "type": "str",
        "default": null,
        "choices": []
@@ -1211,6 +2093,17 @@
        "negation": "",
        "help": "Add the exact version instead of the ^range",
        "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "filter": {
+       "flags": [
+        "--filter",
+        "-F"
+       ],
+       "negation": "",
+       "help": "Install packages for the matching workspaces",
+       "type": "str",
        "default": null,
        "choices": []
       },
@@ -1574,6 +2467,17 @@
        "negation": "",
        "help": "Perform a dry run without making changes",
        "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "filter": {
+       "flags": [
+        "--filter",
+        "-F"
+       ],
+       "negation": "",
+       "help": "Remove the package(s) from the matching workspaces instead of the current package",
+       "type": "str",
        "default": null,
        "choices": []
       },
@@ -1952,6 +2856,16 @@
        "default": null,
        "choices": []
       },
+      "disable_warning": {
+       "flags": [
+        "--disable-warning"
+       ],
+       "negation": "",
+       "help": "Silence specific process warnings by code or type",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
       "dns_result_order": {
        "flags": [
         "--dns-result-order"
@@ -2023,6 +2937,16 @@
        "default": null,
        "choices": []
       },
+      "experimental_stream_iter": {
+       "flags": [
+        "--experimental-stream-iter"
+       ],
+       "negation": "",
+       "help": "Enable the experimental stream/iter API (node:stream/iter, node:zlib/iter)",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "expose_gc": {
        "flags": [
         "--expose-gc"
@@ -2079,7 +3003,7 @@
         "--heap-prof"
        ],
        "negation": "",
-       "help": "Generate V8 heap snapshot on exit (.heapsnapshot)",
+       "help": "Write a heap profile to disk on exit (.heapprofile)",
        "type": "bool",
        "default": null,
        "choices": []
@@ -2092,6 +3016,16 @@
        "help": "Specify the directory where the heap profile will be saved",
        "type": "str",
        "default": null,
+       "choices": []
+      },
+      "heap_prof_interval": {
+       "flags": [
+        "--heap-prof-interval"
+       ],
+       "negation": "",
+       "help": "Specify the average sampling interval in bytes for heap profiling",
+       "type": "str",
+       "default": "524288",
        "choices": []
       },
       "heap_prof_md": {
@@ -2164,6 +3098,16 @@
        "default": null,
        "choices": []
       },
+      "insecure_http_parser": {
+       "flags": [
+        "--insecure-http-parser"
+       ],
+       "negation": "",
+       "help": "Use an insecure HTTP parser that accepts invalid HTTP headers",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "inspect": {
        "flags": [
         "--inspect"
@@ -2201,6 +3145,16 @@
        "negation": "",
        "help": "Configure auto-install behavior",
        "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "interactive": {
+       "flags": [
+        "--interactive"
+       ],
+       "negation": "",
+       "help": "Start a Node.js-compatible REPL, like node --interactive",
+       "type": "bool",
        "default": null,
        "choices": []
       },
@@ -2360,7 +3314,17 @@
         "--no-orphans"
        ],
        "negation": "",
-       "help": "Exit when the parent process dies, and on exit SIGKILL every descendant",
+       "help": "Exit when the parent process dies, and on exit kill every descendant",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "no_warnings": {
+       "flags": [
+        "--no-warnings"
+       ],
+       "negation": "",
+       "help": "Silence all process warnings",
        "type": "bool",
        "default": null,
        "choices": []
@@ -2371,6 +3335,16 @@
        ],
        "negation": "",
        "help": "Run multiple scripts concurrently with Foreman-style output",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "pending_deprecation": {
+       "flags": [
+        "--pending-deprecation"
+       ],
+       "negation": "",
+       "help": "Emit pending deprecation warnings",
        "type": "bool",
        "default": null,
        "choices": []
@@ -2443,6 +3417,16 @@
        ],
        "negation": "",
        "help": "Evaluate argument as a script and print the result",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "redirect_warnings": {
+       "flags": [
+        "--redirect-warnings"
+       ],
+       "negation": "",
+       "help": "Write process warnings to the given file instead of printing to stderr",
        "type": "str",
        "default": null,
        "choices": []
@@ -2537,6 +3521,86 @@
        "default": null,
        "choices": []
       },
+      "tls_max_v1_2": {
+       "flags": [
+        "--tls-max-v1.2"
+       ],
+       "negation": "",
+       "help": "Set the default TLS maximum to TLSv1.2",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_max_v1_3": {
+       "flags": [
+        "--tls-max-v1.3"
+       ],
+       "negation": "",
+       "help": "Set the default TLS maximum to TLSv1.3",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_min_v1_0": {
+       "flags": [
+        "--tls-min-v1.0"
+       ],
+       "negation": "",
+       "help": "Set the default TLS minimum to TLSv1.0",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_min_v1_1": {
+       "flags": [
+        "--tls-min-v1.1"
+       ],
+       "negation": "",
+       "help": "Set the default TLS minimum to TLSv1.1",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_min_v1_2": {
+       "flags": [
+        "--tls-min-v1.2"
+       ],
+       "negation": "",
+       "help": "Set the default TLS minimum to TLSv1.2",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "tls_min_v1_3": {
+       "flags": [
+        "--tls-min-v1.3"
+       ],
+       "negation": "",
+       "help": "Set the default TLS minimum to TLSv1.3",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "trace_deprecation": {
+       "flags": [
+        "--trace-deprecation"
+       ],
+       "negation": "",
+       "help": "Show stack traces on deprecations",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "trace_warnings": {
+       "flags": [
+        "--trace-warnings"
+       ],
+       "negation": "",
+       "help": "Show stack traces on process warnings",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "tsconfig_override": {
        "flags": [
         "--tsconfig-override"
@@ -2607,6 +3671,16 @@
        "default": null,
        "choices": []
       },
+      "watch_kill_signal": {
+       "flags": [
+        "--watch-kill-signal"
+       ],
+       "negation": "",
+       "help": "Signal whose handlers run when --watch restarts the process",
+       "type": "str",
+       "default": "SIGTERM",
+       "choices": []
+      },
       "workspaces": {
        "flags": [
         "--workspaces"
@@ -2624,515 +3698,6 @@
        "negation": "",
        "help": "Boolean to force Buffer.allocUnsafe(size) to be zero-filled",
        "type": "bool",
-       "default": null,
-       "choices": []
-      }
-     }
-    },
-    "build": {
-     "help": "",
-     "wraps": false,
-     "positional": "required",
-     "lead": "entrypoint",
-     "options": {
-      "allow_unresolved": {
-       "flags": [
-        "--allow-unresolved"
-       ],
-       "negation": "",
-       "help": "Allow unresolved dynamic import()/require() specifiers matching these glob patterns",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "app": {
-       "flags": [
-        "--app"
-       ],
-       "negation": "",
-       "help": "(EXPERIMENTAL) Build a web app for production using Bun Bake",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "asset_naming": {
-       "flags": [
-        "--asset-naming"
-       ],
-       "negation": "",
-       "help": "Customize asset filenames",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "banner": {
-       "flags": [
-        "--banner"
-       ],
-       "negation": "",
-       "help": "Add a banner to the bundled output such as \"use client\"; for a bundle being used with RSCs",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "bytecode": {
-       "flags": [
-        "--bytecode"
-       ],
-       "negation": "",
-       "help": "Use a bytecode cache",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "chunk_naming": {
-       "flags": [
-        "--chunk-naming"
-       ],
-       "negation": "",
-       "help": "Customize chunk filenames",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "compile": {
-       "flags": [
-        "--compile"
-       ],
-       "negation": "",
-       "help": "Generate a standalone Bun executable containing your bundled code",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "compile_autoload_bunfig": {
-       "flags": [
-        "--compile-autoload-bunfig"
-       ],
-       "negation": "--no-compile-autoload-bunfig",
-       "help": "Enable autoloading of bunfig.toml in standalone executable",
-       "type": "bool",
-       "default": true,
-       "choices": []
-      },
-      "compile_autoload_dotenv": {
-       "flags": [
-        "--compile-autoload-dotenv"
-       ],
-       "negation": "--no-compile-autoload-dotenv",
-       "help": "Enable autoloading of .env files in standalone executable",
-       "type": "bool",
-       "default": true,
-       "choices": []
-      },
-      "compile_autoload_package_json": {
-       "flags": [
-        "--compile-autoload-package-json"
-       ],
-       "negation": "--no-compile-autoload-package-json",
-       "help": "Enable autoloading of package.json at runtime in standalone executable",
-       "type": "bool",
-       "default": false,
-       "choices": []
-      },
-      "compile_autoload_tsconfig": {
-       "flags": [
-        "--compile-autoload-tsconfig"
-       ],
-       "negation": "--no-compile-autoload-tsconfig",
-       "help": "Enable autoloading of tsconfig.json at runtime in standalone executable",
-       "type": "bool",
-       "default": false,
-       "choices": []
-      },
-      "compile_exec_argv": {
-       "flags": [
-        "--compile-exec-argv"
-       ],
-       "negation": "",
-       "help": "Prepend arguments to the standalone executable's execArgv",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "compile_executable_path": {
-       "flags": [
-        "--compile-executable-path"
-       ],
-       "negation": "",
-       "help": "Path to a Bun executable to use for cross-compilation instead of downloading",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "conditions": {
-       "flags": [
-        "--conditions"
-       ],
-       "negation": "",
-       "help": "Pass custom conditions to resolve",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "css_chunking": {
-       "flags": [
-        "--css-chunking"
-       ],
-       "negation": "",
-       "help": "Chunk CSS files together to reduce duplicated CSS loaded in a browser",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "emit_dce_annotations": {
-       "flags": [
-        "--emit-dce-annotations"
-       ],
-       "negation": "",
-       "help": "Re-emit DCE annotations in bundles",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "entry_naming": {
-       "flags": [
-        "--entry-naming"
-       ],
-       "negation": "",
-       "help": "Customize entry point filenames",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "env": {
-       "flags": [
-        "--env"
-       ],
-       "negation": "",
-       "help": "Inline environment variables into the bundle as process.env.${name}",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "external": {
-       "flags": [
-        "--external",
-        "-e"
-       ],
-       "negation": "",
-       "help": "Exclude module from transpilation (can use * wildcards)",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "footer": {
-       "flags": [
-        "--footer"
-       ],
-       "negation": "",
-       "help": "Add a footer to the bundled output such as // built with bun!",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "format": {
-       "flags": [
-        "--format"
-       ],
-       "negation": "",
-       "help": "Specifies the module format to build to",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "keep_names": {
-       "flags": [
-        "--keep-names"
-       ],
-       "negation": "",
-       "help": "Preserve original function and class names when minifying",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "metafile": {
-       "flags": [
-        "--metafile"
-       ],
-       "negation": "",
-       "help": "Write a JSON file with metadata about the build",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "metafile_md": {
-       "flags": [
-        "--metafile-md"
-       ],
-       "negation": "",
-       "help": "Write a markdown file with a visualization of the module graph (LLM-friendly)",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "minify": {
-       "flags": [
-        "--minify"
-       ],
-       "negation": "",
-       "help": "Enable all minification flags",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "minify_identifiers": {
-       "flags": [
-        "--minify-identifiers"
-       ],
-       "negation": "",
-       "help": "Minify identifiers",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "minify_syntax": {
-       "flags": [
-        "--minify-syntax"
-       ],
-       "negation": "",
-       "help": "Minify syntax and inline data",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "minify_whitespace": {
-       "flags": [
-        "--minify-whitespace"
-       ],
-       "negation": "",
-       "help": "Minify whitespace",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "no_bundle": {
-       "flags": [
-        "--no-bundle"
-       ],
-       "negation": "",
-       "help": "Transpile file only, do not bundle",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "no_clear_screen": {
-       "flags": [
-        "--no-clear-screen"
-       ],
-       "negation": "",
-       "help": "Disable clearing the terminal screen on reload when --watch is enabled",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "outdir": {
-       "flags": [
-        "--outdir"
-       ],
-       "negation": "",
-       "help": "Default to \"dist\" if multiple files",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "outfile": {
-       "flags": [
-        "--outfile"
-       ],
-       "negation": "",
-       "help": "Write to a file",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "packages": {
-       "flags": [
-        "--packages"
-       ],
-       "negation": "",
-       "help": "Add dependencies to bundle or keep them external",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "production": {
-       "flags": [
-        "--production"
-       ],
-       "negation": "",
-       "help": "Set NODE_ENV=production and enable minification",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "public_path": {
-       "flags": [
-        "--public-path"
-       ],
-       "negation": "",
-       "help": "A prefix to be appended to any import paths in bundled code",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "react_fast_refresh": {
-       "flags": [
-        "--react-fast-refresh"
-       ],
-       "negation": "",
-       "help": "Enable React Fast Refresh transform (does not emit hot-module code, use this for testing)",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "reject_unresolved": {
-       "flags": [
-        "--reject-unresolved"
-       ],
-       "negation": "",
-       "help": "Fail the build on any dynamic import()/require() specifier that cannot be resolved at build time",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "root": {
-       "flags": [
-        "--root"
-       ],
-       "negation": "",
-       "help": "Root directory used for multiple entry points",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "server_components": {
-       "flags": [
-        "--server-components"
-       ],
-       "negation": "",
-       "help": "(EXPERIMENTAL) Enable server components",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "sourcemap": {
-       "flags": [
-        "--sourcemap"
-       ],
-       "negation": "",
-       "help": "Build with sourcemaps - 'linked', 'inline', 'external', or 'none'",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "splitting": {
-       "flags": [
-        "--splitting"
-       ],
-       "negation": "",
-       "help": "Enable code splitting",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "target": {
-       "flags": [
-        "--target"
-       ],
-       "negation": "",
-       "help": "The intended execution environment for the bundle",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "watch": {
-       "flags": [
-        "--watch"
-       ],
-       "negation": "",
-       "help": "Automatically restart the process on file change",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "windows_copyright": {
-       "flags": [
-        "--windows-copyright"
-       ],
-       "negation": "",
-       "help": "When using --compile targeting Windows, set the executable copyright",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "windows_description": {
-       "flags": [
-        "--windows-description"
-       ],
-       "negation": "",
-       "help": "When using --compile targeting Windows, set the executable description",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "windows_hide_console": {
-       "flags": [
-        "--windows-hide-console"
-       ],
-       "negation": "",
-       "help": "When using --compile targeting Windows, prevent a Command prompt from opening alongside the executable",
-       "type": "bool",
-       "default": null,
-       "choices": []
-      },
-      "windows_icon": {
-       "flags": [
-        "--windows-icon"
-       ],
-       "negation": "",
-       "help": "When using --compile targeting Windows, assign an executable icon",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "windows_publisher": {
-       "flags": [
-        "--windows-publisher"
-       ],
-       "negation": "",
-       "help": "When using --compile targeting Windows, set the executable company name",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "windows_title": {
-       "flags": [
-        "--windows-title"
-       ],
-       "negation": "",
-       "help": "When using --compile targeting Windows, set the executable product name",
-       "type": "str",
-       "default": null,
-       "choices": []
-      },
-      "windows_version": {
-       "flags": [
-        "--windows-version"
-       ],
-       "negation": "",
-       "help": "When using --compile targeting Windows, set the executable version (e.g",
-       "type": "str",
        "default": null,
        "choices": []
       }
@@ -3218,7 +3783,7 @@
        "flags": [
         "--isolate"
        ],
-       "negation": "",
+       "negation": "--no-isolate",
        "help": "Run each test file in a fresh global object",
        "type": "bool",
        "default": null,
@@ -3239,7 +3804,7 @@
         "--no-orphans"
        ],
        "negation": "",
-       "help": "Exit when the parent process dies, and on exit SIGKILL every descendant",
+       "help": "Exit when the parent process dies, and on exit kill every descendant",
        "type": "bool",
        "default": null,
        "choices": []
@@ -3405,6 +3970,16 @@
        "default": null,
        "choices": []
       },
+      "timings": {
+       "flags": [
+        "--timings"
+       ],
+       "negation": "",
+       "help": "JSON file(s) of per-file durations (ms); several are merged, e.g. one per CI shard",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
       "todo": {
        "flags": [
         "--todo"
@@ -3422,6 +3997,16 @@
        ],
        "negation": "",
        "help": "Update snapshot files",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "update_timings": {
+       "flags": [
+        "--update-timings"
+       ],
+       "negation": "",
+       "help": "After the run, write measured per-file durations to the first --timings file (only this shard's files under --shard; merged with what was read otherwise)",
        "type": "bool",
        "default": null,
        "choices": []
@@ -3491,6 +4076,153 @@
   }
  },
  "deltas": {
+  "1.3.14": {
+   "date": "2026-07-29",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2,
+   "drop": [
+    "\tdefine",
+    "\tdisable_warning",
+    "\tdrop",
+    "\texperimental_stream_iter",
+    "\textension_order",
+    "\tfeature",
+    "\theap_prof_interval",
+    "\tignore_dce_annotations",
+    "\tinsecure_http_parser",
+    "\tinteractive",
+    "\tjsx_factory",
+    "\tjsx_fragment",
+    "\tjsx_import_source",
+    "\tjsx_runtime",
+    "\tjsx_side_effects",
+    "\tloader",
+    "\tmain_fields",
+    "\tno_macros",
+    "\tno_warnings",
+    "\tpending_deprecation",
+    "\tpreserve_symlinks",
+    "\tpreserve_symlinks_main",
+    "\tredirect_warnings",
+    "\ttls_max_v1_2",
+    "\ttls_max_v1_3",
+    "\ttls_min_v1_0",
+    "\ttls_min_v1_1",
+    "\ttls_min_v1_2",
+    "\ttls_min_v1_3",
+    "\ttrace_deprecation",
+    "\ttrace_warnings",
+    "\ttsconfig_override",
+    "\twatch_kill_signal",
+    "add\tcatalog",
+    "add\tfilter",
+    "build\tasset",
+    "build\treact_compiler",
+    "install\tcatalog",
+    "remove\tfilter",
+    "run\tdisable_warning",
+    "run\texperimental_stream_iter",
+    "run\theap_prof_interval",
+    "run\tinsecure_http_parser",
+    "run\tinteractive",
+    "run\tno_warnings",
+    "run\tpending_deprecation",
+    "run\tredirect_warnings",
+    "run\ttls_max_v1_2",
+    "run\ttls_max_v1_3",
+    "run\ttls_min_v1_0",
+    "run\ttls_min_v1_1",
+    "run\ttls_min_v1_2",
+    "run\ttls_min_v1_3",
+    "run\ttrace_deprecation",
+    "run\ttrace_warnings",
+    "run\twatch_kill_signal",
+    "test\ttimings",
+    "test\tupdate_timings"
+   ],
+   "revert": {
+    "\theap_prof": {
+     "flags": [
+      "--heap-prof"
+     ],
+     "negation": "",
+     "help": "Generate V8 heap snapshot on exit (.heapsnapshot)",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    },
+    "\tno_orphans": {
+     "flags": [
+      "--no-orphans"
+     ],
+     "negation": "",
+     "help": "Exit when the parent process dies, and on exit SIGKILL every descendant",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    },
+    "install\tfilter": {
+     "flags": [
+      "--filter"
+     ],
+     "negation": "",
+     "help": "Install packages for the matching workspaces",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "run\theap_prof": {
+     "flags": [
+      "--heap-prof"
+     ],
+     "negation": "",
+     "help": "Generate V8 heap snapshot on exit (.heapsnapshot)",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    },
+    "run\tno_orphans": {
+     "flags": [
+      "--no-orphans"
+     ],
+     "negation": "",
+     "help": "Exit when the parent process dies, and on exit SIGKILL every descendant",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    },
+    "test\tisolate": {
+     "flags": [
+      "--isolate"
+     ],
+     "negation": "",
+     "help": "Run each test file in a fresh global object",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    },
+    "test\tno_orphans": {
+     "flags": [
+      "--no-orphans"
+     ],
+     "negation": "",
+     "help": "Exit when the parent process dies, and on exit SIGKILL every descendant",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    }
+   },
+   "verbs": {
+    "": {
+     "help": "Bun is a fast JavaScript runtime, package manager, bundler, and test runner. (1.3.14+0d9b296af)"
+    }
+   },
+   "help": "Bun is a fast JavaScript runtime, package manager, bundler, and test runner. (1.3.14+0d9b296af)"
+  },
   "1.3.13": {
    "date": "2026-04-20",
    "platforms": [

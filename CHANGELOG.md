@@ -21,6 +21,17 @@ breaking changes.
   on the old `.tools-latest` default: pass `--prefix=.tools-latest` to
   keep it.
 
+## [0.5.2] — 2026-08-20
+
+### Changed
+
+- **bun 1.4.0** adds `--asset`, `--catalog`, `--define`, `--disable-warning`, `--drop`, `--experimental-stream-iter`, `--extension-order`, `--feature`, `--filter`, `--heap-prof-interval`, `--ignore-dce-annotations`, `--insecure-http-parser`, `--interactive`, `--jsx-factory`, `--jsx-fragment`, `--jsx-import-source`, `--jsx-runtime`, `--jsx-side-effects`, `--loader`, `--main-fields`, `--no-macros`, `--no-warnings`, `--pending-deprecation`, `--preserve-symlinks`, `--preserve-symlinks-main`, `--react-compiler`, `--redirect-warnings`, `--timings`, `--tls-max-v1.2`, `--tls-max-v1.3`, `--tls-min-v1.0`, `--tls-min-v1.1`, `--tls-min-v1.2`, `--tls-min-v1.3`, `--trace-deprecation`, `--trace-warnings`, `--tsconfig-override`, `--update-timings` and `--watch-kill-signal`. It also rewords 8 descriptions and restates its own description.
+- **claude 2.1.238** adds `--yes`, over 3 releases. It also rewords 1 description.
+- **ssh 10.5p1** adds `-Z`. It also rewords 2 descriptions and restates its own description.
+- **ssh_keygen 10.5p1** rewords 1 description. It also restates its own description.
+- **ssh_keyscan 10.5p1** rewords 1 description. It also restates its own description.
+- **uv 0.12.5** rewords 34 descriptions.
+
 ## [0.5.1] — 2026-08-16
 
 ### Fixed
@@ -270,7 +281,8 @@ breaking changes.
 - Name reservation on PyPI: an empty typed module and the
   trusted-publishing release workflow. Nothing importable of substance.
 
-[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/willemkokke/toolroom/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/willemkokke/toolroom/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/willemkokke/toolroom/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/willemkokke/toolroom/compare/v0.3.0...v0.4.0
