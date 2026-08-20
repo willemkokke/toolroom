@@ -32,7 +32,7 @@ from machinery._toolspec import Option, ToolSpec, Verb
 SCHEMA = 1
 """Bumped when the on-disk shape changes in a way a reader must know about."""
 
-EXTRACTOR = 2
+EXTRACTOR = 3
 """The extractor generation that produced an observation.
 
 Recorded per release so improving `_toolhelp`/`_toolspec` — or a tool
@@ -48,6 +48,16 @@ releases were recorded with no options at all. Pinning the resolution and
 the interpreter to the release's own date changes what extraction can see,
 which is exactly what this number is for.
 
+**3** — reading a tool's description rather than the furniture around it.
+A manual names itself after an en dash on mdoc pages, which the NAME
+pattern did not match, so every OpenSSH page fell back to its running
+header: `SSH(1)  General Commands Manual  SSH(1)`, justified to whatever
+width the reader rendered at. A tool that signs its help instead of
+describing itself — `git-cliff 2.13.1`, markdownlint-cli2's banner and
+URL — had the signature stored as its description, and bun's trailing
+build stamp went in with the sentence it followed. Each of those made a
+version bump read back as the tool rewording itself, and none of them was
+ever what the tool said it did.
 """
 
 
