@@ -1003,8 +1003,9 @@ def test_docker_dates_come_from_the_engine_not_the_upload(monkeypatch):
 
 
 def test_man_index_reads_a_dated_and_an_undated_listing(monkeypatch):
-    """One reader serves both manual publishers: kernel.org's Apache listing
-    shows dates; OpenSSH's table shows none, and its date stays empty."""
+    """One reader serves both manual publishers, and both date their rows —
+    kernel.org on the row itself, OpenSSH in the next cell a line below, which
+    is why its pattern crosses newlines where kernel.org's need not."""
     from machinery import _toolfetch
     from machinery._drivers import Driver, Manual, Provision
 
@@ -1033,10 +1034,17 @@ def test_man_index_reads_a_dated_and_an_undated_listing(monkeypatch):
         ("2.49.0", "2025-03-14"),
     ]
 
+    # The real shape: the date lives in the row's *next* cell, on its own
+    # line, and the `.asc` beside each tarball must not read as a release.
     openssh = (
         '<tr><td><a href="openssh-9.9p1.tar.gz">openssh-9.9p1.tar.gz</a></td>\n'
+        '    <td data-o="1">19-Sep-2024 01:17</td><td>1.9M</td></tr>\n'
+        '<tr><td><a href="openssh-9.9p1.tar.gz.asc">x</a></td>\n'
+        '    <td data-o="1">19-Sep-2024 01:17</td><td>833B</td></tr>\n'
         '<tr><td><a href="openssh-10.0p1.tar.gz">openssh-10.0p1.tar.gz</a></td>\n'
+        '    <td data-o="1">09-Apr-2025 07:00</td><td>1.9M</td></tr>\n'
         '<tr><td><a href="openssh-9.9p2.tar.gz">openssh-9.9p2.tar.gz</a></td>\n'
+        '    <td data-o="1">18-Feb-2025 01:17</td><td>1.9M</td></tr>\n'
     )
     monkeypatch.setattr(_toolfetch, "_read_index", lambda *_a: openssh.encode())
     ssh = Driver(
@@ -1046,15 +1054,21 @@ def test_man_index_reads_a_dated_and_an_undated_listing(monkeypatch):
             manual=Manual(
                 index="https://o.org/",
                 archive="openssh-{version}.tar.gz",
-                listing=r'href="openssh-(?P<version>\d+\.\d+p\d+)\.tar\.gz"',
+                listing=(
+                    r'href="openssh-(?P<version>\d+\.\d+p\d+)\.tar\.gz"'
+                    r"[\s\S]*?(?P<day>\d{2})-(?P<month>[A-Z][a-z]{2})-(?P<year>\d{4})"
+                ),
             ),
         ),
     )
     got = _toolfetch.releases(ssh)
-    # `version_tuple` reads 9.9p1 and 9.9p2 as the same base and the listing
-    # shows no dates; the portable patchlevel breaks the tie.
-    assert [r.version for r in got] == ["10.0p1", "9.9p2", "9.9p1"]
-    assert all(r.date == "" for r in got)
+    # `version_tuple` reads 9.9p1 and 9.9p2 as the same base; the portable
+    # patchlevel breaks the tie, and each release carries its own date.
+    assert [(r.version, r.date) for r in got] == [
+        ("10.0p1", "2025-04-09"),
+        ("9.9p2", "2025-02-18"),
+        ("9.9p1", "2024-09-19"),
+    ]
 
 
 def test_install_man_pulls_named_pages_from_a_source_tarball(tmp_path, monkeypatch):

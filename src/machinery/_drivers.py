@@ -288,7 +288,15 @@ DRIVERS: tuple[Driver, ...] = (
             manual=Manual(
                 index="https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/",
                 archive="openssh-{version}.tar.gz",
-                listing=r'href="openssh-(?P<version>\d+\.\d+p\d+)\.tar\.gz"',
+                # The date sits in the next row cell, a line below the
+                # href — so this crosses newlines where git's listing (one
+                # row, one line) does not. Without it every OpenSSH release
+                # was stored undated, and a date is what breaks a tie
+                # between two builds of one version.
+                listing=(
+                    r'href="openssh-(?P<version>\d+\.\d+p\d+)\.tar\.gz"'
+                    r"[\s\S]*?(?P<day>\d{2})-(?P<month>[A-Z][a-z]{2})-(?P<year>\d{4})"
+                ),
                 pages=("ssh.1",),
             ),
         ),
@@ -304,7 +312,15 @@ DRIVERS: tuple[Driver, ...] = (
             manual=Manual(
                 index="https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/",
                 archive="openssh-{version}.tar.gz",
-                listing=r'href="openssh-(?P<version>\d+\.\d+p\d+)\.tar\.gz"',
+                # The date sits in the next row cell, a line below the
+                # href — so this crosses newlines where git's listing (one
+                # row, one line) does not. Without it every OpenSSH release
+                # was stored undated, and a date is what breaks a tie
+                # between two builds of one version.
+                listing=(
+                    r'href="openssh-(?P<version>\d+\.\d+p\d+)\.tar\.gz"'
+                    r"[\s\S]*?(?P<day>\d{2})-(?P<month>[A-Z][a-z]{2})-(?P<year>\d{4})"
+                ),
                 pages=("ssh-keygen.1",),
             ),
         ),
@@ -320,7 +336,15 @@ DRIVERS: tuple[Driver, ...] = (
             manual=Manual(
                 index="https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/",
                 archive="openssh-{version}.tar.gz",
-                listing=r'href="openssh-(?P<version>\d+\.\d+p\d+)\.tar\.gz"',
+                # The date sits in the next row cell, a line below the
+                # href — so this crosses newlines where git's listing (one
+                # row, one line) does not. Without it every OpenSSH release
+                # was stored undated, and a date is what breaks a tie
+                # between two builds of one version.
+                listing=(
+                    r'href="openssh-(?P<version>\d+\.\d+p\d+)\.tar\.gz"'
+                    r"[\s\S]*?(?P<day>\d{2})-(?P<month>[A-Z][a-z]{2})-(?P<year>\d{4})"
+                ),
                 pages=("ssh-keyscan.1",),
             ),
         ),
