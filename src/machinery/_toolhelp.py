@@ -949,13 +949,12 @@ def _summary(text: str) -> str:
     header. Read from the machine's `git -h` this landed on a fragment of
     the usage line instead, which described nothing at all.
     """
+    # The whole NAME block, not its first line: a page rendered narrow wraps
+    # the description onto the next one, and reading to the line end alone
+    # cut git-describe off at "based on an".
     named = _MAN_NAME.search(text)
-    if named:
-        # The whole NAME block, not its first line: a page rendered narrow
-        # wraps the description onto the next one, and reading to the line
-        # end alone cut git-describe off at "based on an".
-        if described := _MAN_DASH.match(_unpadded(named.group("body"))):
-            return described[1]
+    if named and (described := _MAN_DASH.match(_unpadded(named.group("body")))):
+        return described[1]
     if re.match(r"^Usage of \S", text):
         return ""  # Go's `flag` opens with `Usage of <prog>:` and has no summary
     # A wrapped usage stands between the `usage:` line and the description,
