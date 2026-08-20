@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "A fast Git hook manager written in Rust, designed as a drop-in alternative to pre-commit, reimagined.",
    "verbs": {
@@ -1179,7 +1179,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.4.12": {
    "date": "2026-08-03",
@@ -1188,7 +1188,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.4.11": {
    "date": "2026-07-29",
@@ -1197,7 +1197,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\trequire_group",
     "install\tforce",
@@ -1238,7 +1238,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tglob",
     "run\tglob"
@@ -1317,7 +1317,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.4.8": {
    "date": "2026-07-04",
@@ -1326,7 +1326,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.4.7": {
    "date": "2026-07-04",
@@ -1335,7 +1335,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.4.6": {
    "date": "2026-07-01",
@@ -1344,7 +1344,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "verbs": {
     "autoupdate": {
      "help": "Auto-update the `rev` field of repositories in the config file to the latest version"
@@ -1358,7 +1358,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.4.4": {
    "date": "2026-06-04",
@@ -1367,7 +1367,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.4.3": {
    "date": "2026-05-27",
@@ -1376,7 +1376,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tgroup",
     "\tno_group",
@@ -1391,7 +1391,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

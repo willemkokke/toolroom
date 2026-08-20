@@ -9,7 +9,7 @@
    "Linux",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "the stupid content tracker",
    "verbs": {
@@ -19,6 +19,16 @@
      "positional": "any",
      "lead": "",
      "options": {
+      "C": {
+       "flags": [
+        "-C"
+       ],
+       "negation": "",
+       "help": "Run as if git was started in <path> instead of the current working directory",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
       "attr_source": {
        "flags": [
         "--attr-source"
@@ -36,6 +46,16 @@
        "negation": "",
        "help": "Treat the repository as a bare repository",
        "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "c": {
+       "flags": [
+        "-c"
+       ],
+       "negation": "",
+       "help": "Pass a configuration parameter to the command",
+       "type": "str",
        "default": null,
        "choices": []
       },
@@ -458,6 +478,36 @@
      "positional": "any",
      "lead": "",
      "options": {
+      "C": {
+       "flags": [
+        "-C"
+       ],
+       "negation": "",
+       "help": "Shortcut for --copy --force",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "D": {
+       "flags": [
+        "-D"
+       ],
+       "negation": "",
+       "help": "Shortcut for --delete --force",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "M": {
+       "flags": [
+        "-M"
+       ],
+       "negation": "",
+       "help": "Shortcut for --move --force",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "abbrev": {
        "flags": [
         "--abbrev"
@@ -800,6 +850,26 @@
      "positional": "any",
      "lead": "",
      "options": {
+      "B": {
+       "flags": [
+        "-B"
+       ],
+       "negation": "",
+       "help": "The same as -b, except that if the branch already exists it resets <branch> to the start point instead of failing",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "b": {
+       "flags": [
+        "-b"
+       ],
+       "negation": "",
+       "help": "Create a new branch named <new-branch>, start it at <start-point>, and check the resulting branch out; see git-branch(1) for details",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
       "conflict": {
        "flags": [
         "--conflict"
@@ -870,6 +940,16 @@
        "negation": "",
        "help": "Show the context between diff hunks, up to the specified <number> of lines, thereby fusing hunks that are close to each other",
        "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "l": {
+       "flags": [
+        "-l"
+       ],
+       "negation": "",
+       "help": "Create the new branch's reflog; see git-branch(1) for details",
+       "type": "bool",
        "default": null,
        "choices": []
       },
@@ -1368,7 +1448,6 @@
       "upload_pack": {
        "flags": [
         "--upload-pack",
-        "-pack",
         "-u"
        ],
        "negation": "",
@@ -1523,7 +1602,6 @@
        "flags": [
         "--no-gpg-sign",
         "--gpg-sign",
-        "-id",
         "-S"
        ],
        "negation": "",
@@ -1945,6 +2023,46 @@
      "positional": "any",
      "lead": "",
      "options": {
+      "G": {
+       "flags": [
+        "-G"
+       ],
+       "negation": "",
+       "help": "Look for differences whose patch text contains added/removed lines that match <regex>",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "O": {
+       "flags": [
+        "-O"
+       ],
+       "negation": "",
+       "help": "Control the order in which files appear in the output",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "R": {
+       "flags": [
+        "-R"
+       ],
+       "negation": "",
+       "help": "Swap two inputs; that is, show differences from index or on-disk file to tree contents",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "S": {
+       "flags": [
+        "-S"
+       ],
+       "negation": "",
+       "help": "Look for differences that change the number of occurrences of the specified <string> (i.e",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "abbrev": {
        "flags": [
         "--abbrev"
@@ -2186,11 +2304,6 @@
       "find_renames": {
        "flags": [
         "--find-renames",
-        "-M100",
-        "-M50",
-        "-M05",
-        "-M5",
-        "-M5",
         "-M"
        ],
        "negation": "",
@@ -2340,6 +2453,16 @@
        ],
        "negation": "",
        "help": "By default entries added by git add -N appear as an existing empty file in git diff and a new file in git diff --cached",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "l": {
+       "flags": [
+        "-l"
+       ],
+       "negation": "",
+       "help": "The -M and -C options involve some preliminary steps that can detect subsets of renames/copies cheaply, followed by an exhaustive fallback portion that compares all remaining unpaired destinations to all relevant sources",
        "type": "bool",
        "default": null,
        "choices": []
@@ -2703,6 +2826,16 @@
        "type": "str",
        "default": null,
        "choices": []
+      },
+      "z": {
+       "flags": [
+        "-z"
+       ],
+       "negation": "",
+       "help": "When --raw, --numstat, --name-only or --name-status has been given, do not munge pathnames and use NULs as output field terminators",
+       "type": "bool",
+       "default": null,
+       "choices": []
       }
      }
     },
@@ -2978,8 +3111,7 @@
       },
       "recurse_submodules_default": {
        "flags": [
-        "--recurse-submodules-default",
-        "-demand"
+        "--recurse-submodules-default"
        ],
        "negation": "",
        "help": "This option is used internally to temporarily provide a non-negative default value for the --recurse-submodules option",
@@ -3261,6 +3393,57 @@
      "positional": "any",
      "lead": "",
      "options": {
+      "G": {
+       "flags": [
+        "-G"
+       ],
+       "negation": "",
+       "help": "Look for differences whose patch text contains added/removed lines that match <regex>",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "L": {
+       "flags": [
+        "-L",
+        "-L"
+       ],
+       "negation": "",
+       "help": "Trace the evolution of the line range given by <start>,<end>, or by the function name regex <funcname>, within the <file>",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "O": {
+       "flags": [
+        "-O"
+       ],
+       "negation": "",
+       "help": "Control the order in which files appear in the output",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "R": {
+       "flags": [
+        "-R"
+       ],
+       "negation": "",
+       "help": "Swap two inputs; that is, show differences from index or on-disk file to tree contents",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "S": {
+       "flags": [
+        "-S"
+       ],
+       "negation": "",
+       "help": "Look for differences that change the number of occurrences of the specified <string> (i.e",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "abbrev": {
        "flags": [
         "--abbrev"
@@ -3410,6 +3593,16 @@
        "negation": "",
        "help": "Break complete rewrite changes into pairs of delete and create",
        "type": "optvalue",
+       "default": null,
+       "choices": []
+      },
+      "c": {
+       "flags": [
+        "-c"
+       ],
+       "negation": "",
+       "help": "Produce combined diff output for merge commits",
+       "type": "bool",
        "default": null,
        "choices": []
       },
@@ -4066,6 +4259,16 @@
        "default": null,
        "choices": []
       },
+      "l": {
+       "flags": [
+        "-l"
+       ],
+       "negation": "",
+       "help": "The -M and -C options involve some preliminary steps that can detect subsets of renames/copies cheaply, followed by an exhaustive fallback portion that compares all remaining unpaired destinations to all relevant sources",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "left_only": {
        "flags": [
         "--right-only",
@@ -4103,6 +4306,16 @@
        ],
        "negation": "",
        "help": "Include a line log size <number> in the output for each commit, where <number> is the length of that commit's message in bytes",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
+      "m": {
+       "flags": [
+        "-m"
+       ],
+       "negation": "",
+       "help": "Show diffs for merge commits in the default format",
        "type": "bool",
        "default": null,
        "choices": []
@@ -4756,6 +4969,16 @@
        "default": null,
        "choices": []
       },
+      "t": {
+       "flags": [
+        "-t"
+       ],
+       "negation": "",
+       "help": "Show the tree objects in the diff output",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "tags": {
        "flags": [
         "--tags"
@@ -4858,6 +5081,16 @@
        "negation": "",
        "help": "Highlight whitespace errors in the context, old or new lines of the diff",
        "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "z": {
+       "flags": [
+        "-z"
+       ],
+       "negation": "",
+       "help": "Separate the commits with NULs instead of newlines",
+       "type": "bool",
        "default": null,
        "choices": []
       }
@@ -5019,7 +5252,6 @@
        "flags": [
         "--no-gpg-sign",
         "--gpg-sign",
-        "-id",
         "-S"
        ],
        "negation": "",
@@ -5532,8 +5764,7 @@
       "no_recurse_submodules": {
        "flags": [
         "--no-recurse-submodules",
-        "--recurse-submodules",
-        "-demand"
+        "--recurse-submodules"
        ],
        "negation": "",
        "help": "May be used to make sure all submodule commits used by the revisions to be pushed are available on a remote-tracking branch",
@@ -5629,8 +5860,7 @@
        "flags": [
         "--no-signed",
         "--signed",
-        "--signed",
-        "-asked"
+        "--signed"
        ],
        "negation": "",
        "help": "GPG-sign the push request to update refs on the receiving side, to allow it to be checked by the hooks and/or be logged",
@@ -6576,6 +6806,16 @@
        "type": "bool",
        "default": null,
        "choices": []
+      },
+      "z": {
+       "flags": [
+        "-z"
+       ],
+       "negation": "",
+       "help": "Terminate entries with NUL, instead of LF",
+       "type": "bool",
+       "default": null,
+       "choices": []
       }
      }
     },
@@ -6913,6 +7153,16 @@
        "default": null,
        "choices": []
       },
+      "n": {
+       "flags": [
+        "-n"
+       ],
+       "negation": "",
+       "help": "<num> specifies how many lines from the annotation, if any, are printed when using -l",
+       "type": "bool",
+       "default": null,
+       "choices": []
+      },
       "no_contains": {
        "flags": [
         "--no-contains"
@@ -7003,6 +7253,17 @@
      "positional": "any",
      "lead": "",
      "options": {
+      "b": {
+       "flags": [
+        "-b",
+        "-B"
+       ],
+       "negation": "",
+       "help": "With add, create a new branch named <new-branch> starting at <commit-ish>, and check out <new-branch> into the new worktree",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
       "checkout": {
        "flags": [
         "--no-checkout",
@@ -7151,6 +7412,16 @@
        "type": "bool",
        "default": null,
        "choices": []
+      },
+      "z": {
+       "flags": [
+        "-z"
+       ],
+       "negation": "",
+       "help": "Terminate each line with a NUL rather than a newline when --porcelain is specified with list",
+       "type": "bool",
+       "default": null,
+       "choices": []
       }
      }
     }
@@ -7164,7 +7435,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "fetch\tnegotiation_include",
     "fetch\tnegotiation_restrict",
@@ -7218,22 +7489,6 @@
      "default": null,
      "choices": []
     },
-    "log\tdirstat": {
-     "flags": [
-      "--name-status",
-      "--name-only",
-      "--dirstat",
-      "--summary",
-      "--check",
-      "-L",
-      "-L"
-     ],
-     "negation": "",
-     "help": "Trace the evolution of the line range given by <start>,<end>, or by the function name regex <funcname>, within the <file>",
-     "type": "bool",
-     "default": null,
-     "choices": []
-    },
     "pull\tnegotiate_only": {
      "flags": [
       "--negotiate-only"
@@ -7263,7 +7518,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "clone\tno_reject_shallow",
     "fetch\tfilter",
@@ -7365,7 +7620,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "commit\tnull": {
      "flags": [
@@ -7512,7 +7767,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "clone\tremote_submodules",
     "clone\tshallow_submodules",
@@ -7540,6 +7795,16 @@
     "worktree\ttrack"
    ],
    "revert": {
+    "checkout\tB": {
+     "flags": [
+      "-B"
+     ],
+     "negation": "",
+     "help": "Creates the branch <new-branch>, start it at <start-point>; if it already exists, then reset it to <start-point>",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
     "commit\tverify": {
      "flags": [
       "--verify",
@@ -7721,7 +7986,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.51.0": {
    "date": "2025-08-18",
@@ -7729,7 +7994,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.50.1": {
    "date": "2025-07-08",
@@ -7737,7 +8002,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "add\tinter_hunk_context",
     "add\tunified",
@@ -7897,7 +8162,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.49.1": {
    "date": "2025-07-08",
@@ -7905,7 +8170,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "add": {
     "switch\tno_track": {
      "flags": [
@@ -8028,18 +8293,6 @@
      "negation": "",
      "help": "In sparse checkout mode, git checkout -- <paths> would update only entries matched by <paths> and sparse patterns in $GIT_DIR/info/sparse-checkout",
      "type": "bool",
-     "default": null,
-     "choices": []
-    },
-    "pull\tgpg_sign": {
-     "flags": [
-      "--no-gpg-sign",
-      "--gpg-sign",
-      "-S"
-     ],
-     "negation": "",
-     "help": "GPG-sign the resulting merge commit",
-     "type": "optvalue",
      "default": null,
      "choices": []
     },

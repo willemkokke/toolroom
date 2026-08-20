@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "djLint · HTML template linter and formatter.",
    "verbs": {
@@ -516,7 +516,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.44.0": {
    "date": "2026-08-04",
@@ -525,7 +525,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.43.2": {
    "date": "2026-08-01",
@@ -534,7 +534,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tallow_empty_input"
    ]
@@ -546,7 +546,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.43.0": {
    "date": "2026-07-27",
@@ -555,7 +555,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.42.3": {
    "date": "2026-07-23",
@@ -564,7 +564,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tstdin_filename"
    ]
@@ -576,7 +576,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.42.1": {
    "date": "2026-07-20",
@@ -585,7 +585,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.42.0": {
    "date": "2026-07-20",
@@ -594,7 +594,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.41.0": {
    "date": "2026-07-19",
@@ -603,7 +603,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.40.10": {
    "date": "2026-07-19",
@@ -612,7 +612,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\trules"
    ]
@@ -624,7 +624,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.40.8": {
    "date": "2026-07-17",
@@ -633,7 +633,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

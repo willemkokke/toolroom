@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "Zensical - A modern static site generator.",
    "verbs": {
@@ -132,7 +132,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.54": {
    "date": "2026-08-13",
@@ -141,7 +141,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.53": {
    "date": "2026-08-04",
@@ -150,7 +150,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.52": {
    "date": "2026-07-30",
@@ -159,7 +159,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.51": {
    "date": "2026-07-29",
@@ -168,7 +168,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.50": {
    "date": "2026-07-09",
@@ -177,89 +177,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
-   "revert": {
-    "build\tclean": {
-     "flags": [
-      "--clean",
-      "-c"
-     ],
-     "negation": "",
-     "help": "Clean cache.",
-     "type": "bool",
-     "default": false,
-     "choices": []
-    },
-    "build\tconfig_file": {
-     "flags": [
-      "--config-file",
-      "-f"
-     ],
-     "negation": "",
-     "help": "Path to config file.",
-     "type": "str",
-     "default": null,
-     "choices": []
-    },
-    "build\tstrict": {
-     "flags": [
-      "--strict",
-      "-s"
-     ],
-     "negation": "",
-     "help": "Enable strict mode - abort the build on warnings.",
-     "type": "bool",
-     "default": false,
-     "choices": []
-    },
-    "serve\tconfig_file": {
-     "flags": [
-      "--config-file",
-      "-f"
-     ],
-     "negation": "",
-     "help": "Path to config file.",
-     "type": "str",
-     "default": null,
-     "choices": []
-    },
-    "serve\tdev_addr": {
-     "flags": [
-      "--dev-addr",
-      "-a"
-     ],
-     "negation": "",
-     "help": "IP address and port (default: localhost:8000).",
-     "type": "str",
-     "default": null,
-     "choices": []
-    },
-    "serve\topen": {
-     "flags": [
-      "--open",
-      "-o"
-     ],
-     "negation": "",
-     "help": "Open preview in default browser.",
-     "type": "bool",
-     "default": false,
-     "choices": []
-    },
-    "serve\tstrict": {
-     "flags": [
-      "--strict",
-      "-s"
-     ],
-     "negation": "",
-     "help": "Strict mode (currently unsupported).",
-     "type": "bool",
-     "default": false,
-     "choices": []
-    }
-   },
-   "verbs": {
-    "": null
-   }
+   "extractor": 3
   },
   "0.0.48": {
    "date": "2026-07-09",
@@ -268,94 +186,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
-   "revert": {
-    "build\tclean": {
-     "flags": [
-      "--clean",
-      "-c"
-     ],
-     "negation": "",
-     "help": "Clean cache",
-     "type": "bool",
-     "default": null,
-     "choices": []
-    },
-    "build\tconfig_file": {
-     "flags": [
-      "--config-file",
-      "-f"
-     ],
-     "negation": "",
-     "help": "Path to config file",
-     "type": "str",
-     "default": null,
-     "choices": []
-    },
-    "build\tstrict": {
-     "flags": [
-      "--strict",
-      "-s"
-     ],
-     "negation": "",
-     "help": "Enable strict mode - abort the build on warnings",
-     "type": "bool",
-     "default": null,
-     "choices": []
-    },
-    "serve\tconfig_file": {
-     "flags": [
-      "--config-file",
-      "-f"
-     ],
-     "negation": "",
-     "help": "Path to config file",
-     "type": "str",
-     "default": null,
-     "choices": []
-    },
-    "serve\tdev_addr": {
-     "flags": [
-      "--dev-addr",
-      "-a"
-     ],
-     "negation": "",
-     "help": "IP address and port",
-     "type": "str",
-     "default": "localhost:8000",
-     "choices": []
-    },
-    "serve\topen": {
-     "flags": [
-      "--open",
-      "-o"
-     ],
-     "negation": "",
-     "help": "Open preview in default browser",
-     "type": "bool",
-     "default": null,
-     "choices": []
-    },
-    "serve\tstrict": {
-     "flags": [
-      "--strict",
-      "-s"
-     ],
-     "negation": "",
-     "help": "Strict mode (currently unsupported)",
-     "type": "bool",
-     "default": null,
-     "choices": []
-    }
-   },
-   "verbs": {
-    "": {
-     "help": "Zensical - A modern static site generator.",
-     "wraps": false,
-     "positional": "any",
-     "lead": ""
-    }
-   }
+   "extractor": 3
   },
   "0.0.47": {
    "date": "2026-07-05",
@@ -364,7 +195,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.46": {
    "date": "2026-06-21",
@@ -373,7 +204,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.45": {
    "date": "2026-06-09",
@@ -382,7 +213,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.44": {
    "date": "2026-06-04",
@@ -391,7 +222,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.43": {
    "date": "2026-05-19",
@@ -400,7 +231,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.42": {
    "date": "2026-05-15",
@@ -409,7 +240,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.41": {
    "date": "2026-05-09",
@@ -418,7 +249,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

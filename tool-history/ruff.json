@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "Ruff: An extremely fast Python linter and code formatter.",
    "verbs": {
@@ -876,7 +876,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.16.2": {
    "date": "2026-08-07",
@@ -885,7 +885,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.16.1": {
    "date": "2026-07-30",
@@ -894,7 +894,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.16.0": {
    "date": "2026-07-29",
@@ -903,7 +903,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.15.22": {
    "date": "2026-07-16",
@@ -912,7 +912,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "check\tadd_ignore": {
      "flags": [
@@ -933,7 +933,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.15.20": {
    "date": "2026-06-25",
@@ -942,7 +942,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "check\tadd_ignore",
     "format\textend_exclude"
@@ -955,7 +955,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.15.18": {
    "date": "2026-06-18",
@@ -964,7 +964,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.15.17": {
    "date": "2026-06-11",
@@ -973,7 +973,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.15.16": {
    "date": "2026-06-04",
@@ -982,7 +982,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.15.15": {
    "date": "2026-05-28",
@@ -991,7 +991,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.15.14": {
    "date": "2026-05-21",
@@ -1000,7 +1000,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

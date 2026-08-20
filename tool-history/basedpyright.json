@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "",
    "verbs": {
@@ -247,7 +247,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.8": {
    "date": "2026-06-14",
@@ -256,7 +256,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.7": {
    "date": "2026-06-07",
@@ -265,7 +265,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.6": {
    "date": "2026-05-24",
@@ -274,7 +274,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.5": {
    "date": "2026-05-17",
@@ -283,7 +283,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.4": {
    "date": "2026-05-11",
@@ -292,7 +292,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.3": {
    "date": "2026-04-20",
@@ -301,7 +301,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.2": {
    "date": "2026-04-17",
@@ -310,7 +310,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.1": {
    "date": "2026-04-16",
@@ -319,7 +319,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.39.0": {
    "date": "2026-04-01",
@@ -328,7 +328,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tpythonplatform": {
      "flags": [

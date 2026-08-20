@@ -9,7 +9,7 @@
    "Linux",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "OpenSSH authentication key utility",
    "verbs": {
@@ -451,13 +451,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
-   "verbs": {
-    "": {
-     "help": "SSH-KEYGEN(1)                                                                          General Commands Manual                                                                        SSH-KEYGEN(1)"
-    }
-   },
-   "help": "SSH-KEYGEN(1)                                                                          General Commands Manual                                                                        SSH-KEYGEN(1)"
+   "extractor": 3
   },
   "10.3p1": {
    "date": "2026-04-02",
@@ -465,7 +459,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tA": {
      "flags": [
@@ -485,7 +479,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "10.1p1": {
    "date": "2025-10-05",
@@ -493,7 +487,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "10.0p2": {
    "date": "2025-04-09",
@@ -501,7 +495,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tU": {
      "flags": [
@@ -521,7 +515,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.9p2": {
    "date": "2025-02-18",
@@ -529,7 +523,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.9p1": {
    "date": "2024-09-19",
@@ -537,7 +531,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.8p1": {
    "date": "2024-07-01",
@@ -545,7 +539,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.7p1": {
    "date": "2024-03-11",
@@ -553,7 +547,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.6p1": {
    "date": "2023-12-18",
@@ -561,7 +555,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.5p1": {
    "date": "2023-10-04",
@@ -569,7 +563,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.4p1": {
    "date": "2023-08-09",
@@ -577,7 +571,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.3p2": {
    "date": "2023-07-19",
@@ -585,7 +579,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.3p1": {
    "date": "2023-03-15",
@@ -593,7 +587,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.2p1": {
    "date": "2023-02-02",
@@ -601,7 +595,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.1p1": {
    "date": "2022-10-03",
@@ -609,7 +603,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.0p1": {
    "date": "2022-04-07",
@@ -617,7 +611,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tA": {
      "flags": [
@@ -647,7 +641,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.8p1": {
    "date": "2021-09-26",
@@ -655,7 +649,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.7p1": {
    "date": "2021-08-19",
@@ -663,7 +657,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.6p1": {
    "date": "2021-04-18",
@@ -671,7 +665,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.5p1": {
    "date": "2021-03-02",
@@ -679,7 +673,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.4p1": {
    "date": "2020-09-27",
@@ -687,7 +681,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tZ"
    ],
@@ -710,7 +704,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.2p1": {
    "date": "2020-02-13",
@@ -718,7 +712,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.1p1": {
    "date": "2019-10-08",
@@ -726,7 +720,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tw"
    ],
@@ -776,7 +770,7 @@
       "-W"
      ],
      "negation": "",
-     "help": "Specify desired generator when testing candidate moduli for DH-GEX",
+     "help": "Specify desired generator when testing candidate moduli for DH- GEX",
      "type": "str",
      "default": null,
      "choices": []
@@ -833,7 +827,13 @@
      "default": null,
      "choices": []
     }
-   }
+   },
+   "verbs": {
+    "": {
+     "help": "authentication key generation, management and conversion"
+    }
+   },
+   "help": "authentication key generation, management and conversion"
   },
   "8.0p1": {
    "date": "2019-04-17",
@@ -841,7 +841,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tY"
    ],
@@ -864,7 +864,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tD": {
      "flags": [
@@ -924,7 +924,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.7p1": {
    "date": "2018-04-02",
@@ -932,7 +932,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "add": {
     "\to": {
      "flags": [
@@ -964,7 +964,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.5p1": {
    "date": "2017-03-20",
@@ -972,7 +972,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tU"
    ],
@@ -995,7 +995,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.3p1": {
    "date": "2016-08-01",
@@ -1003,7 +1003,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.2p2": {
    "date": "2016-03-10",
@@ -1011,7 +1011,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.2p1": {
    "date": "2016-02-28",
@@ -1019,7 +1019,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.1p2": {
    "date": "2016-01-14",
@@ -1027,7 +1027,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tL": {
      "flags": [
@@ -1057,7 +1057,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.0p1": {
    "date": "2015-08-11",
@@ -1065,7 +1065,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.9p1": {
    "date": "2015-06-30",
@@ -1073,7 +1073,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.8p1": {
    "date": "2015-03-17",
@@ -1081,7 +1081,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.7p1": {
    "date": "2014-10-06",
@@ -1089,7 +1089,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tE"
    ]
@@ -1100,7 +1100,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tt": {
      "flags": [
@@ -1120,7 +1120,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.4p1": {
    "date": "2013-11-07",
@@ -1128,7 +1128,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\to"
    ],
@@ -1161,7 +1161,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.2p2": {
    "date": "2013-05-15",
@@ -1169,7 +1169,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.2p1": {
    "date": "2013-03-21",
@@ -1177,7 +1177,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.1p1": {
    "date": "2012-08-28",
@@ -1185,7 +1185,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tQ",
     "\tk",
@@ -1198,7 +1198,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tJ",
     "\tj"
@@ -1210,7 +1210,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tK"
    ]
@@ -1221,7 +1221,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tA"
    ]
@@ -1232,7 +1232,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.7p1": {
    "date": "2011-01-23",
@@ -1240,7 +1240,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.6p1": {
    "date": "2010-08-23",
@@ -1248,7 +1248,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.5p1": {
    "date": "2010-04-15",
@@ -1256,7 +1256,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tm",
     "\tz"
@@ -1300,7 +1300,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.3p1": {
    "date": "2009-10-01",
@@ -1308,7 +1308,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tI",
     "\tL",
@@ -1349,7 +1349,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.1p1": {
    "date": "2008-07-21",
@@ -1357,7 +1357,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.0p1": {
    "date": "2008-04-03",
@@ -1365,7 +1365,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.9p1": {
    "date": "2008-03-27",
@@ -1373,7 +1373,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.7p1": {
    "date": "2007-09-04",
@@ -1381,7 +1381,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.6p1": {
    "date": "2007-03-07",
@@ -1389,7 +1389,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.5p1": {
    "date": "2006-11-07",
@@ -1397,7 +1397,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\te": {
      "flags": [
@@ -1417,7 +1417,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.3p2": {
    "date": "2006-02-10",
@@ -1425,7 +1425,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.3p1": {
    "date": "2006-02-01",
@@ -1433,7 +1433,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.2p1": {
    "date": "2005-09-01",
@@ -1441,7 +1441,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.1p1": {
    "date": "2005-05-25",
@@ -1449,7 +1449,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.0p1": {
    "date": "2005-03-09",
@@ -1457,7 +1457,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tH": {
      "flags": [
@@ -1477,7 +1477,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tF",
     "\tH",
@@ -1512,7 +1512,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tg": {
      "flags": [
@@ -1542,7 +1542,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tv"
    ]
@@ -1553,7 +1553,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tG",
     "\tM",
@@ -1571,7 +1571,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "3.4p1": {
    "date": "2002-09-17",
@@ -1579,7 +1579,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "3.3p1": {
    "date": "2002-09-17",
@@ -1587,7 +1587,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "3.1p1": {
    "date": "2002-09-17",
@@ -1595,7 +1595,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "3.0p1": {
    "date": "2002-09-17",
@@ -1603,7 +1603,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tl": {
      "flags": [
@@ -1623,7 +1623,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tD",
     "\tU"
@@ -1647,7 +1647,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

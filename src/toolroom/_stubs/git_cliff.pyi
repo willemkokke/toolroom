@@ -67,7 +67,7 @@ class GitCliff(ToolBase[_R]):
         workdir: Value = ...,
         **flags: Any,
     ) -> _R:
-        """git-cliff 2.13.1
+        """A highly customizable changelog generator ⛰️
 
         Args:
             azure_devops_repo: Sets the Azure DevOps repository. Added in 2.11.0.

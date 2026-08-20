@@ -94,7 +94,7 @@ class SshKeygen(ToolBase[_R]):
             T: Test DH group exchange candidate primes (generated using the -G option) for safety. Gone since 8.2p1.
             U: When used in combination with -s or -Y sign, this option indicates that a CA key resides in an ssh-agent(1). Added in 3.0p1.
             V: Specify a validity interval when signing a certificate. May be repeated: a list emits the flag once per item. Added in 5.4p1.
-            W: Specify desired generator when testing candidate moduli for DH-GEX. Gone since 8.2p1.
+            W: Specify desired generator when testing candidate moduli for DH- GEX. Gone since 8.2p1.
             Y: Find the principal(s) associated with the public key of a signature, provided using the -s flag in an authorized signers file provided using the -f flag. Added in 8.1p1.
             Z: Specifies the cipher to use for encryption when writing an OpenSSH-format private key file. Added in 8.5p1.
             a: When saving a private key, this option specifies the number of KDF (key derivation function, currently bcrypt_pbkdf(3)) rounds used. Added in 3.7p1.
