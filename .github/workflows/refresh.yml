@@ -72,6 +72,12 @@ jobs:
       - run: uv sync
 
       # Both installers first, so the question can be answered truthfully.
+      # No `--prefix` anywhere: provisioning puts them in the durable home
+      # and every later reading looks there first, which is what that home
+      # is for. Naming `.tools-latest` on the readings while provisioning
+      # wrote to the new default sent the two halves to different
+      # directories — the readings found an empty prefix and quietly fell
+      # back to whatever the runner had.
       # uv carries CPython's download index inside itself, so a stale one
       # reports a stale newest python. bun is how the node tier installs,
       # and without it every node tool is skipped as unreadable rather than
@@ -116,8 +122,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          uv run fm --json tools.owed --prefix=.tools-latest \
-            ${{ steps.scope.outputs.args }} > owed.json
+          uv run fm --json tools.owed ${{ steps.scope.outputs.args }} > owed.json
           total=$(jq '[.items[] | select(.task) | select(.task | endswith("owed"))
                        | .returned.releases[] | length] | add // 0' owed.json)
           blocked=$(jq '[.items[] | select(.task) | select(.task | endswith("owed"))
@@ -134,7 +139,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: >
-          uv run fm tools.gather --prefix=.tools-latest
+          uv run fm tools.gather
           ${{ steps.scope.outputs.args }}
           --out=observations/${{ matrix.os }}.json
 
