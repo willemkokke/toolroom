@@ -7,6 +7,20 @@ breaking changes.
 
 ## [Unreleased]
 
+### Changed
+
+- **Provisioned tools get a durable home.** With no `--prefix`,
+  `fm tools.provision` now materialises into the `toolroom` room in
+  footman's data directory (`~/.local/share/footman/toolroom`, moved
+  wholesale by `FOOTMAN_DATA_DIR` or `XDG_DATA_HOME`) instead of a
+  `.tools-latest` in the current directory — and every empty-prefix
+  reading (`sync`, `audit`, the tier drives) looks there first when it
+  has been provisioned, falling back to the host's PATH exactly as
+  before when it hasn't. Provision once, and every later reading on the
+  machine uses the isolated set. **Breaking** for anything that relied
+  on the old `.tools-latest` default: pass `--prefix=.tools-latest` to
+  keep it.
+
 ## [0.5.2] — 2026-08-20
 
 ### Changed

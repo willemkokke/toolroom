@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 
     from machinery import _provision, _toolfetch
 from footman._describe import bold, cyan, wants_color
-from footman.context import current
+from footman.context import current, data_dir
 from footman.params import doc
 from footman.registry import Group
 
@@ -78,14 +78,36 @@ def _history_path(key: str) -> Path:
     return _HISTORY / f"{key}.json"
 
 
+def default_prefix() -> Path:
+    """Where provisioned tools live when no `--prefix` names another place.
+
+    A `toolroom` room in footman's data directory — durable, never touched
+    by the cache collector, and moved wholesale by `FOOTMAN_DATA_DIR` (or
+    `XDG_DATA_HOME`). One machine-level home, instead of a `.tools-latest`
+    in whichever directory the command happened to run from.
+    """
+    return data_dir() / "toolroom"
+
+
+def _resolve_prefix(prefix: str | Path) -> Path | None:
+    """The tree a reading works from: an explicit *prefix* wins; empty falls
+    back to `default_prefix()` when it has been provisioned, else `None` —
+    the host's own PATH, exactly as an empty prefix always read."""
+    if prefix:
+        return Path(prefix).expanduser().resolve()
+    home = default_prefix()
+    return home if home.is_dir() else None
+
+
 @contextmanager
 def _on_path(prefix: str | Path) -> Generator[None]:
     """Read binaries from *prefix*`/bin` for the duration — a
     `fm tools.provision` directory, so a task reads the provisioned set
     instead of whatever this machine happens to have.
 
-    Empty *prefix* is a no-op, so every caller can pass its parameter
-    straight through.
+    Empty *prefix* falls back to `default_prefix()` when that directory has
+    been provisioned, and is a no-op otherwise — so every caller can pass
+    its parameter straight through.
 
     Inside a run the overlay goes through `ctx.env`, which scopes it to this
     task and its children: a sibling's `PATH` is untouched, and footman has
@@ -94,12 +116,12 @@ def _on_path(prefix: str | Path) -> Generator[None]:
     to serve that overlay, so it patches `os.environ` and restores it, the
     same bare-call fallback `context._process_state` makes.
     """
-    if not prefix:
+    root = _resolve_prefix(prefix)
+    if root is None:
         yield
         return
     import os
 
-    root = Path(prefix).expanduser().resolve()
     bindir = root / "bin"
     inherited = os.environ.get("PATH", "")
     overlay = {"PATH": f"{bindir}{os.pathsep}{inherited}"}
@@ -633,8 +655,13 @@ def _ignore(driver: _drivers.Driver, root: Path | None) -> str:
 
 
 def _prefix_root(prefix: str) -> Path | None:
-    """The provisioned tree a reading must come from, or None for "anywhere"."""
-    return Path(prefix).expanduser().resolve() if prefix else None
+    """The provisioned tree a reading must come from, or None for "anywhere".
+
+    Resolves exactly as `_on_path` does — the default prefix, when it has
+    been provisioned, binds the provenance check too, so a reading claimed
+    from the default set really came from it.
+    """
+    return _resolve_prefix(prefix)
 
 
 @tasks.task
@@ -2337,9 +2364,10 @@ def _roll_changelog(path: Path, version: str, previous: str) -> int:
 @tasks.task
 def provision(
     only: Annotated[str, doc("provision just this tool")] = "",
-    prefix: Annotated[Path, doc("directory to materialise the binaries into")] = Path(
-        ".tools-latest"
-    ),
+    prefix: Annotated[
+        Path | None,
+        doc("directory to materialise into; omitted = footman's data dir"),
+    ] = None,
     sync_: Annotated[
         bool, doc("run `tools sync` against the prefix afterwards")
     ] = False,
@@ -2350,11 +2378,13 @@ def provision(
 
     The stubs are read from installed binaries, so syncing against the newest
     release means having it on PATH. This gathers the latest of every curated
-    tool under one throwaway prefix — `uv tool install` for the PyPI wheels
+    tool under one isolated prefix — `uv tool install` for the PyPI wheels
     (the Rust and C++ tools included), bun's own release then `bun add` for the
     node CLIs, a release asset for the Go ones — touching nothing outside it.
-    `--sync` then rewrites the stubs against that prefix; `--clean` deletes it.
-    Deleting the prefix is the whole undo.
+    Omitted, the prefix is the `toolroom` room in footman's data directory,
+    which every empty-prefix reading looks in first, so provisioning once
+    serves every later `sync`/`audit` on this machine. `--sync` rewrites the
+    stubs against the prefix; `--clean` deletes it, which is the whole undo.
 
     `--strict` turns a failed tier into a failed run. Without it the table
     names what did not arrive and the run still succeeds, which is right
@@ -2365,7 +2395,11 @@ def provision(
 
     # Absolute: bun errors `ReadOnlyFileSystem` on a relative BUN_INSTALL, and
     # an absolute prefix keeps every tier's launchers and env vars unambiguous.
-    prefix = Path(prefix).expanduser().resolve()
+    # Omitted, the binaries land in the default room — the same place every
+    # empty-prefix reading looks first.
+    prefix = (
+        Path(prefix).expanduser().resolve() if prefix is not None else default_prefix()
+    )
     outcomes = _provision.provision(_drivers.DRIVERS, prefix, only=only)
     _print_outcomes(outcomes)
     if strict:
