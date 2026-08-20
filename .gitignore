@@ -6,3 +6,9 @@ __pycache__/
 .DS_Store
 .tools-latest/
 docs/_generated/
+
+# Agent scratch: each session works in its own worktree under here, and a
+# worktree is a git repository — `git add -A` in the main checkout would
+# otherwise commit another session's as an embedded repo, which is exactly
+# how one nearly shipped.
+.claude/
