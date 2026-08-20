@@ -1440,6 +1440,36 @@ def test_a_manual_names_itself_with_whichever_dash_its_format_uses():
     assert _toolhelp._summary(emdash) == "OpenSSH remote login client"
 
 
+def test_a_name_line_that_wrapped_is_read_whole():
+    """A manual is justified to the width it was rendered at, so a long NAME
+    line wraps — and reading only as far as the line ended truncated the
+    description mid-sentence. git-describe arrived as "based on an", which
+    is not a smaller answer but a wrong one.
+
+    The block is read whole and unwrapped, so where the break fell stops
+    mattering, which is the whole point of not depending on the width.
+    """
+    wrapped = (
+        "NAME\n"
+        "       git-describe - Give an object a human readable name based on an\n"
+        "       available ref\n"
+        "\nSYNOPSIS\n"
+    )
+    one_line = (
+        "NAME\n"
+        "       git-describe - Give an object a human readable name based on an "
+        "available ref\n\nSYNOPSIS\n"
+    )
+    whole = "Give an object a human readable name based on an available ref"
+    assert _toolhelp._summary(wrapped) == whole
+    assert _toolhelp._summary(one_line) == whole
+
+    # A description of its own may hold " - "; the name half stops at the
+    # first one, so the rest survives intact.
+    dashed = "NAME\n     tool - do a thing - and another\n\nSYNOPSIS\n"
+    assert _toolhelp._summary(dashed) == "do a thing - and another"
+
+
 def test_a_summary_does_not_depend_on_the_width_it_was_rendered_at():
     """A manual is justified to whatever width the reader had, and the
     padding is not the tool's words. Stored raw, the same page read at two

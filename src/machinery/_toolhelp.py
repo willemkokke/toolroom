@@ -951,7 +951,11 @@ def _summary(text: str) -> str:
     """
     named = _MAN_NAME.search(text)
     if named:
-        return _unpadded(named.group(1))
+        # The whole NAME block, not its first line: a page rendered narrow
+        # wraps the description onto the next one, and reading to the line
+        # end alone cut git-describe off at "based on an".
+        if described := _MAN_DASH.match(_unpadded(named.group("body"))):
+            return described[1]
     if re.match(r"^Usage of \S", text):
         return ""  # Go's `flag` opens with `Usage of <prog>:` and has no summary
     # A wrapped usage stands between the `usage:` line and the description,
@@ -1009,7 +1013,12 @@ _BARE_URL = re.compile(r"^https?://\S+$")
 # line alone landed on this one, which is a worse answer than the banner was.
 _BYLINE = re.compile(r"^[^<>]*<[^<>@\s]+@[^<>\s]+>$")
 
-_MAN_NAME = re.compile(r"^NAME\n\s+\S+ [-\u2013\u2014] (.+)$", re.M)
+_MAN_NAME = re.compile(r"^NAME\n(?P<body>(?:[ \t]+\S.*\n?)+)", re.M)
+# The name, then the dash its format spells, then what the tool does. Read
+# from the unwrapped block, so where the line broke stops mattering. The
+# name half is non-greedy: a description may contain " - " of its own, and
+# a page may list several names before the dash.
+_MAN_DASH = re.compile(r"^.*? [-\u2013\u2014] (.+)$")
 
 
 def subcommands(text: str) -> dict[str, str]:
