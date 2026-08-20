@@ -1288,6 +1288,25 @@ def _is_the_root_again(text: str, root: str) -> bool:
     return text.strip() == root.strip()
 
 
+def _unstamped(summary: str, version: str) -> str:
+    """A description with the tool's own build stamp taken off.
+
+    Some tools sign their help rather than describe themselves: bun ends
+    its line `... and test runner. (1.4.0+34cbb9a40)`. The stamp moves
+    every release, so storing it makes an ordinary version bump look like
+    the tool rewriting its description, and every refresh reports a change
+    nobody made.
+
+    Only a trailing parenthetical *containing the version just read* comes
+    off, which is narrow on purpose: a description that genuinely ends in
+    brackets keeps them, and a manual page's `SSH(1)` is not a stamp.
+    """
+    if not version:
+        return summary
+    stamp = re.compile(rf"\s*\([^()]*{re.escape(version)}[^()]*\)\s*$")
+    return stamp.sub("", summary).rstrip()
+
+
 def from_help(
     name: str,
     *,
@@ -1352,9 +1371,18 @@ def from_help(
             parsed.append(
                 parse_help(text, name=verb.replace("-", "_"), man=man, shorts=shorts)
             )
+    # The tool's own line, and the root verb's when it is the same line —
+    # a verb-less tool describes itself once and it lands in both.
+    banner = _summary(root)
+    summary = _unstamped(banner, version)
+    if summary != banner:
+        parsed = [
+            replace(verb, help=summary) if verb.help == banner else verb
+            for verb in parsed
+        ]
     return ToolSpec(
         name=name,
-        help=_summary(root),
+        help=summary,
         version=version,
         verbs=tuple(parsed),
         in_process=in_process,

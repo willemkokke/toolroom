@@ -1361,6 +1361,34 @@ def test_no_stub_carries_a_home_directory():
     assert guilty == set()
 
 
+def test_a_tools_own_build_stamp_is_not_part_of_its_description():
+    """bun signs its help line with its build. Stored, the stamp moves every
+    release and an ordinary version bump reads as a reworded description —
+    so the refresh reported a change nobody made, every time."""
+    at = "Bun is a fast JavaScript runtime, package manager, and test runner."
+    assert _toolhelp._unstamped(f"{at} (1.3.14+0d9b296af)", "1.3.14") == at
+    assert _toolhelp._unstamped(f"{at} (1.4.0+34cbb9a40)", "1.4.0") == at
+    # The point of the exercise: two releases, one description.
+    assert _toolhelp._unstamped(f"{at} (1.3.14+0d9b296af)", "1.3.14") == (
+        _toolhelp._unstamped(f"{at} (1.4.0+34cbb9a40)", "1.4.0")
+    )
+
+
+def test_only_a_parenthetical_holding_this_version_is_a_stamp():
+    """Narrow on purpose: a description that genuinely ends in brackets keeps
+    them, a manual's `SSH(1)` is not a stamp, and a tool that names some
+    *other* project's version is left alone rather than mangled."""
+    keep = "A tool (with a real parenthetical)"
+    assert _toolhelp._unstamped(keep, "1.2.3") == keep
+    assert _toolhelp._unstamped("SSH(1) General Commands Manual", "10.5p1") == (
+        "SSH(1) General Commands Manual"
+    )
+    other = "markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)"
+    assert _toolhelp._unstamped(other, "0.23.2") == other
+    # No version read, nothing to strip.
+    assert _toolhelp._unstamped(f"{keep} (1.2.3)", "") == f"{keep} (1.2.3)"
+
+
 def test_a_manual_names_itself_with_whichever_dash_its_format_uses():
     """groff pages write `git - the stupid content tracker`; mdoc pages —
     every BSD manual, so the whole ssh family — write an en dash. Reading
