@@ -228,15 +228,21 @@ jobs:
           git commit -m "chore(tools): weekly refresh${tag:+ — release $tag}"
           git fetch origin "$branch" --depth=1 2>/dev/null || true
           git push --force-with-lease origin "$branch"
+          title="chore(tools): weekly tool refresh${tag:+ ($tag)}"
+          body="$(printf 'Observed on ubuntu, macOS and Windows; folded by one assembler. Trigger mode: %s; additions only: %s.\n\n```\n%s\n```\n\nThe gate is the reviewer here: it replays every chain, regenerates every stub, and runs the drift tests.' \
+            "$mode" "${additions_only:-false}" \
+            "$(jq -r '.items[] | select(.task) | select(.task | endswith("assemble")) | .output' assembled.json)")"
+          # The title and body describe *this* fold, so a refreshed PR is
+          # retitled and rewritten rather than left saying what the run that
+          # opened it found. One that kept its first body claimed "nothing
+          # new — release warranted: no" while the branch under it carried a
+          # new release and the version bump to go with it.
           if [ -n "$(gh pr list --head "$branch" --state open --json number \
                      --jq '.[].number')" ]; then
+            gh pr edit "$branch" --title "$title" --body "$body"
             echo "refreshed the open PR for $branch"
           else
-            gh pr create --base main --head "$branch" \
-              --title "chore(tools): weekly tool refresh${tag:+ ($tag)}" \
-              --body "$(printf 'Observed on ubuntu, macOS and Windows; folded by one assembler. Trigger mode: %s; additions only: %s.\n\n```\n%s\n```\n\nThe gate is the reviewer here: it replays every chain, regenerates every stub, and runs the drift tests.' \
-                "$mode" "${additions_only:-false}" \
-                "$(jq -r '.items[] | select(.task) | select(.task | endswith("assemble")) | .output' assembled.json)")"
+            gh pr create --base main --head "$branch" --title "$title" --body "$body"
           fi
           # The graded call: additions ship unattended, anything else waits.
           merge=false
