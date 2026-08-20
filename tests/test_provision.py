@@ -616,3 +616,38 @@ def test_the_interpreter_is_placed_however_the_platform_allows(tmp_path, monkeyp
     placed = _provision._place_interpreter(tmp_path / "win", target)
     assert placed is not None and placed.name == "python.cmd"
     assert str(target) in placed.read_text(encoding="utf-8")
+
+
+# --- the default prefix -------------------------------------------------------
+
+# With no --prefix, provisioned tools live in one durable machine-level room
+# (the `toolroom` room in footman's data directory) and every empty-prefix
+# reading looks there first — falling back to the host's PATH, exactly as an
+# empty prefix always read, when nothing has been provisioned.
+
+
+def test_default_prefix_rides_footman_data_dir(tmp_path, monkeypatch):
+    from machinery import _tasks
+
+    monkeypatch.setenv("FOOTMAN_DATA_DIR", str(tmp_path / "data"))
+    assert _tasks.default_prefix() == tmp_path / "data" / "toolroom"
+
+
+def test_empty_prefix_resolves_to_the_default_room_once_provisioned(
+    tmp_path, monkeypatch
+):
+    from machinery import _tasks
+
+    monkeypatch.setenv("FOOTMAN_DATA_DIR", str(tmp_path / "data"))
+    assert _tasks._resolve_prefix("") is None  # nothing provisioned: host PATH
+    (tmp_path / "data" / "toolroom").mkdir(parents=True)
+    assert _tasks._resolve_prefix("") == tmp_path / "data" / "toolroom"
+
+
+def test_an_explicit_prefix_wins_over_the_default_room(tmp_path, monkeypatch):
+    from machinery import _tasks
+
+    monkeypatch.setenv("FOOTMAN_DATA_DIR", str(tmp_path / "data"))
+    (tmp_path / "data" / "toolroom").mkdir(parents=True)
+    mine = tmp_path / "mine"
+    assert _tasks._resolve_prefix(str(mine)) == mine.resolve()
