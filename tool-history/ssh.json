@@ -9,7 +9,7 @@
    "Linux",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "OpenSSH remote login client",
    "verbs": {
@@ -471,28 +471,10 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tZ"
-   ],
-   "revert": {
-    "\tC": {
-     "flags": [
-      "-C"
-     ],
-     "negation": "",
-     "help": "Requests compression of all data (including stdin, stdout, stderr, and data for forwarded X11, TCP and Unix-domain connections)",
-     "type": "bool",
-     "default": null,
-     "choices": []
-    }
-   },
-   "verbs": {
-    "": {
-     "help": "SSH(1)                                                                                 General Commands Manual                                                                               SSH(1)"
-    }
-   },
-   "help": "SSH(1)                                                                                 General Commands Manual                                                                               SSH(1)"
+   ]
   },
   "10.3p1": {
    "date": "2026-04-02",
@@ -500,7 +482,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "10.2p1": {
    "date": "2025-10-10",
@@ -508,7 +490,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "10.1p1": {
    "date": "2025-10-05",
@@ -516,7 +498,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "10.0p2": {
    "date": "2025-04-09",
@@ -524,7 +506,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "10.0p1": {
    "date": "2025-04-09",
@@ -532,7 +514,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.9p2": {
    "date": "2025-02-18",
@@ -540,7 +522,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.9p1": {
    "date": "2024-09-19",
@@ -548,7 +530,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.8p1": {
    "date": "2024-07-01",
@@ -556,7 +538,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.7p1": {
    "date": "2024-03-11",
@@ -564,7 +546,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.6p1": {
    "date": "2023-12-18",
@@ -572,7 +554,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.5p1": {
    "date": "2023-10-04",
@@ -580,7 +562,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "verbs": {
     "": {
      "positional": "required",
@@ -594,7 +576,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.3p2": {
    "date": "2023-07-19",
@@ -602,7 +584,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tP"
    ],
@@ -635,7 +617,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.2p1": {
    "date": "2023-02-02",
@@ -643,7 +625,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.1p1": {
    "date": "2022-10-03",
@@ -651,7 +633,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.0p1": {
    "date": "2022-04-07",
@@ -659,7 +641,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.9p1": {
    "date": "2022-02-23",
@@ -667,7 +649,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.8p1": {
    "date": "2021-09-26",
@@ -675,7 +657,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.7p1": {
    "date": "2021-08-19",
@@ -683,7 +665,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.6p1": {
    "date": "2021-04-18",
@@ -691,7 +673,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tQ": {
      "flags": [
@@ -711,7 +693,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.4p1": {
    "date": "2020-09-27",
@@ -719,7 +701,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.3p1": {
    "date": "2020-05-26",
@@ -727,7 +709,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.2p1": {
    "date": "2020-02-13",
@@ -735,7 +717,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "8.1p1": {
    "date": "2019-10-08",
@@ -743,7 +725,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tA": {
      "flags": [
@@ -765,7 +747,13 @@
      "default": null,
      "choices": []
     }
-   }
+   },
+   "verbs": {
+    "": {
+     "help": "OpenSSH SSH client (remote login program)"
+    }
+   },
+   "help": "OpenSSH SSH client (remote login program)"
   },
   "8.0p1": {
    "date": "2019-04-17",
@@ -773,7 +761,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.9p1": {
    "date": "2018-10-18",
@@ -781,7 +769,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tI": {
      "flags": [
@@ -801,7 +789,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.7p1": {
    "date": "2018-04-02",
@@ -809,7 +797,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.6p1": {
    "date": "2017-10-03",
@@ -817,7 +805,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tB"
    ],
@@ -846,7 +834,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tR": {
      "flags": [
@@ -866,7 +854,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.3p1": {
    "date": "2016-08-01",
@@ -874,7 +862,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.2p2": {
    "date": "2016-03-10",
@@ -882,7 +870,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tJ"
    ]
@@ -893,7 +881,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.1p2": {
    "date": "2016-01-14",
@@ -901,7 +889,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tQ": {
      "flags": [
@@ -931,7 +919,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "7.0p1": {
    "date": "2015-08-11",
@@ -939,7 +927,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.9p1": {
    "date": "2015-06-30",
@@ -947,7 +935,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tL": {
      "flags": [
@@ -965,7 +953,7 @@
      ],
      "negation": "",
      "help": "Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side",
-     "type": "str",
+     "type": "list[str]",
      "default": null,
      "choices": []
     }
@@ -977,7 +965,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tT": {
      "flags": [
@@ -1007,22 +995,10 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tG"
-   ],
-   "revert": {
-    "\tR": {
-     "flags": [
-      "-R"
-     ],
-     "negation": "",
-     "help": "Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side",
-     "type": "list[str]",
-     "default": null,
-     "choices": []
-    }
-   }
+   ]
   },
   "6.6p1": {
    "date": "2014-03-15",
@@ -1030,7 +1006,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tC": {
      "flags": [
@@ -1050,7 +1026,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.4p1": {
    "date": "2013-11-07",
@@ -1058,7 +1034,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tQ": {
      "flags": [
@@ -1066,16 +1042,6 @@
      ],
      "negation": "",
      "help": "Queries ssh for the algorithms supported for the specified version 2 protocol_feature",
-     "type": "str",
-     "default": null,
-     "choices": []
-    },
-    "\tR": {
-     "flags": [
-      "-R"
-     ],
-     "negation": "",
-     "help": "Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side",
      "type": "str",
      "default": null,
      "choices": []
@@ -1088,7 +1054,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.2p2": {
    "date": "2013-05-15",
@@ -1096,7 +1062,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tE",
     "\tQ"
@@ -1108,7 +1074,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.1p1": {
    "date": "2012-08-28",
@@ -1116,7 +1082,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.0p1": {
    "date": "2012-04-21",
@@ -1124,7 +1090,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.9p1": {
    "date": "2011-09-06",
@@ -1132,7 +1098,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.8p2": {
    "date": "2011-05-04",
@@ -1140,19 +1106,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
-   "revert": {
-    "\tR": {
-     "flags": [
-      "-R"
-     ],
-     "negation": "",
-     "help": "Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side",
-     "type": "list[str]",
-     "default": null,
-     "choices": []
-    }
-   }
+   "extractor": 3
   },
   "5.8p1": {
    "date": "2011-02-03",
@@ -1160,7 +1114,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.7p1": {
    "date": "2011-01-23",
@@ -1168,7 +1122,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.6p1": {
    "date": "2010-08-23",
@@ -1176,18 +1130,8 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
-    "\tR": {
-     "flags": [
-      "-R"
-     ],
-     "negation": "",
-     "help": "Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side",
-     "type": "str",
-     "default": null,
-     "choices": []
-    },
     "\ti": {
      "flags": [
       "-i"
@@ -1206,18 +1150,8 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
-    "\tR": {
-     "flags": [
-      "-R"
-     ],
-     "negation": "",
-     "help": "Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side",
-     "type": "list[str]",
-     "default": null,
-     "choices": []
-    },
     "\tS": {
      "flags": [
       "-S"
@@ -1236,7 +1170,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tS": {
      "flags": [
@@ -1256,7 +1190,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tW"
    ],
@@ -1279,19 +1213,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
-   "revert": {
-    "\tR": {
-     "flags": [
-      "-R"
-     ],
-     "negation": "",
-     "help": "Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side",
-     "type": "str",
-     "default": null,
-     "choices": []
-    }
-   }
+   "extractor": 3
   },
   "5.1p1": {
    "date": "2008-07-21",
@@ -1299,7 +1221,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\ty"
    ]
@@ -1310,7 +1232,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.9p1": {
    "date": "2008-03-27",
@@ -1318,7 +1240,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.7p1": {
    "date": "2007-09-04",
@@ -1326,7 +1248,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.6p1": {
    "date": "2007-03-07",
@@ -1334,7 +1256,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tK"
    ]
@@ -1345,7 +1267,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.4p1": {
    "date": "2006-09-27",
@@ -1353,7 +1275,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.3p2": {
    "date": "2006-02-10",
@@ -1361,7 +1283,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tw": {
      "flags": [
@@ -1381,7 +1303,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.2p1": {
    "date": "2005-09-01",
@@ -1389,7 +1311,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tw"
    ],
@@ -1424,16 +1346,6 @@
      "default": null,
      "choices": []
     },
-    "\tR": {
-     "flags": [
-      "-R"
-     ],
-     "negation": "",
-     "help": "Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side",
-     "type": "list[str]",
-     "default": null,
-     "choices": []
-    },
     "\te": {
      "flags": [
       "-e"
@@ -1452,7 +1364,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\tb": {
      "flags": [
@@ -1472,7 +1384,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "3.9p1": {
    "date": "2004-08-17",
@@ -1480,7 +1392,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tO"
    ]
@@ -1491,7 +1403,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tM",
     "\tS"
@@ -1515,7 +1427,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tY"
    ],
@@ -1558,7 +1470,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tV"
    ],
@@ -1581,7 +1493,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "3.4p1": {
    "date": "2002-09-17",
@@ -1589,7 +1501,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "add": {
     "\tP": {
      "flags": [
@@ -1609,7 +1521,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "3.1p1": {
    "date": "2002-09-17",
@@ -1617,7 +1529,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "3.0p1": {
    "date": "2002-09-17",
@@ -1625,7 +1537,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "\ti": {
      "flags": [
@@ -1645,7 +1557,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tD",
     "\tF",
@@ -1671,7 +1583,7 @@
     "Linux",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

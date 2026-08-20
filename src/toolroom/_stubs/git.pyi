@@ -75,6 +75,9 @@ class Git(ToolBase[_R]):
         def __call__(  # type: ignore[override]
             self,
             *args: str | PathLike[str],
+            C: Flag = ...,
+            D: Flag = ...,
+            M: Flag = ...,
             abbrev: Value = ...,
             all: Flag = ...,
             color: ValuedFlag = ...,
@@ -112,6 +115,9 @@ class Git(ToolBase[_R]):
             """List, create, or delete branches
 
             Args:
+                C: Shortcut for --copy --force.
+                D: Shortcut for --delete --force.
+                M: Shortcut for --move --force.
                 abbrev: In the verbose listing that show the commit object name, show the shortest prefix that is at least <n> hexdigits long that uniquely refers the object.
                 all: List both remote-tracking branches and local branches.
                 color: Color branches to highlight current, local, and remote-tracking branches. Value optional: `True` for the bare flag, or pass one.
@@ -154,6 +160,8 @@ class Git(ToolBase[_R]):
         def __call__(  # type: ignore[override]
             self,
             *args: str | PathLike[str],
+            B: Value = ...,
+            b: Value = ...,
             conflict: Value = ...,
             detach: Flag = ...,
             force: Flag = ...,
@@ -161,6 +169,7 @@ class Git(ToolBase[_R]):
             ignore_other_worktrees: Flag = ...,
             ignore_skip_worktree_bits: Flag = ...,
             inter_hunk_context: Value = ...,
+            l: Flag = ...,
             merge: Flag = ...,
             no_track: Flag = ...,
             orphan: Value = ...,
@@ -180,6 +189,8 @@ class Git(ToolBase[_R]):
             """Switch branches or restore working tree files
 
             Args:
+                B: The same as -b, except that if the branch already exists it resets <branch> to the start point instead of failing.
+                b: Create a new branch named <new-branch>, start it at <start-point>, and check the resulting branch out; see git-branch(1) for details.
                 conflict: The same as --merge option above, but changes the way the conflicting hunks are presented, overriding the merge.conflictStyle configuration variable.
                 detach: Rather than checking out a branch to work on it, check out a commit for inspection and discardable experiments.
                 force: When switching branches, proceed even if the index or the working tree differs from HEAD, and even if there are untracked files in the way.
@@ -187,6 +198,7 @@ class Git(ToolBase[_R]):
                 ignore_other_worktrees: git checkout refuses when the wanted branch is already checked out or otherwise in use by another worktree.
                 ignore_skip_worktree_bits: In sparse checkout mode, git checkout -- <path>.
                 inter_hunk_context: Show the context between diff hunks, up to the specified <number> of lines, thereby fusing hunks that are close to each other. Added in 2.51.0.
+                l: Create the new branch's reflog; see git-branch(1) for details.
                 merge: When switching branches, if you have local modifications to one or more files that are different between the current branch and the branch to which you are switching, the command refuses to switch branches in order to preserve your modifications in context.
                 no_track: Do not set up "upstream" configuration, even if the branch.autoSetupMerge configuration variable is true.
                 orphan: Create a new unborn branch, named <new-branch>, started from <start-point> and switch to it.
@@ -428,6 +440,10 @@ class Git(ToolBase[_R]):
         def __call__(  # type: ignore[override]
             self,
             *args: str | PathLike[str],
+            G: Flag = ...,
+            O: Flag = ...,
+            R: Flag = ...,
+            S: Flag = ...,
             abbrev: ValuedFlag = ...,
             anchored: Value = ...,
             base: Flag = ...,
@@ -466,6 +482,7 @@ class Git(ToolBase[_R]):
             inter_hunk_context: Value = ...,
             irreversible_delete: Flag = ...,
             ita_invisible_in_index: Flag = ...,
+            l: Flag = ...,
             line_prefix: Value = ...,
             max_depth: Value = ...,
             minimal: Flag = ...,
@@ -501,11 +518,16 @@ class Git(ToolBase[_R]):
             word_diff: ValuedFlag = ...,
             word_diff_regex: Value = ...,
             ws_error_highlight: Value = ...,
+            z: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Show changes between commits, commit and working tree, etc
 
             Args:
+                G: Look for differences whose patch text contains added/removed lines that match <regex>.
+                O: Control the order in which files appear in the output.
+                R: Swap two inputs; that is, show differences from index or on-disk file to tree contents.
+                S: Look for differences that change the number of occurrences of the specified <string> (i.e.
                 abbrev: Instead of showing the full 40-byte hexadecimal object name in diff-raw format output and diff-tree header lines, show the shortest prefix that is at least <n> hexdigits long that uniquely refers the object. Value optional: `True` for the bare flag, or pass one.
                 anchored: Generate a diff using the "anchored diff" algorithm. May be repeated: a list emits the flag once per item.
                 base: Compare the working tree with • the "base" version (stage #1) when using -1 or --base, • "our branch" (stage #2) when using -2 or --ours, or • "their branch" (stage #3) when using -3 or --theirs.
@@ -544,6 +566,7 @@ class Git(ToolBase[_R]):
                 inter_hunk_context: Show the context between diff hunks, up to the specified <number> of lines, thereby fusing hunks that are close to each other.
                 irreversible_delete: Omit the preimage for deletes, i.e. print only the header but not the diff between the preimage and /dev/null.
                 ita_invisible_in_index: By default entries added by git add -N appear as an existing empty file in git diff and a new file in git diff --cached.
+                l: The -M and -C options involve some preliminary steps that can detect subsets of renames/copies cheaply, followed by an exhaustive fallback portion that compares all remaining unpaired destinations to all relevant sources.
                 line_prefix: Prepend an additional <prefix> to every line of output.
                 max_depth: For each pathspec given on command line, descend at most <depth> levels of directories. Added in 2.52.0.
                 minimal: Spend extra time to make sure the smallest possible diff is produced.
@@ -579,6 +602,7 @@ class Git(ToolBase[_R]):
                 word_diff: By default, words are delimited by whitespace; see --word-diff-regex below. Value optional: `True` for the bare flag, or pass one.
                 word_diff_regex: Use <regex> to decide what a word is, instead of considering runs of non-whitespace to be a word.
                 ws_error_highlight: Highlight whitespace errors in the context, old or new lines of the diff.
+                z: When --raw, --numstat, --name-only or --name-status has been given, do not munge pathnames and use NULs as output field terminators.
             """
             ...
         @property
@@ -723,6 +747,11 @@ class Git(ToolBase[_R]):
         def __call__(  # type: ignore[override]
             self,
             *args: str | PathLike[str],
+            G: Flag = ...,
+            L: Flag = ...,
+            O: Flag = ...,
+            R: Flag = ...,
+            S: Flag = ...,
             abbrev: ValuedFlag = ...,
             abbrev_commit: Flag = ...,
             all: Flag = ...,
@@ -738,6 +767,7 @@ class Git(ToolBase[_R]):
             boundary: Flag = ...,
             branches: ValuedFlag = ...,
             break_rewrites: ValuedFlag = ...,
+            c: Flag = ...,
             cc: Flag = ...,
             check: Flag = ...,
             cherry: Flag = ...,
@@ -802,10 +832,12 @@ class Git(ToolBase[_R]):
             invert_grep: Flag = ...,
             irreversible_delete: Flag = ...,
             ita_invisible_in_index: Flag = ...,
+            l: Flag = ...,
             left_only: Flag = ...,
             left_right: Flag = ...,
             line_prefix: Value = ...,
             log_size: Flag = ...,
+            m: Flag = ...,
             mailmap: Flag = ...,
             max_count_oldest: Value = ...,
             max_depth: Value = ...,
@@ -869,6 +901,7 @@ class Git(ToolBase[_R]):
             stdin: Flag = ...,
             submodule: ValuedFlag = ...,
             summary: Flag = ...,
+            t: Flag = ...,
             tags: ValuedFlag = ...,
             text: Flag = ...,
             textconv: Flag = ...,
@@ -879,11 +912,17 @@ class Git(ToolBase[_R]):
             word_diff: ValuedFlag = ...,
             word_diff_regex: Value = ...,
             ws_error_highlight: Value = ...,
+            z: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Show commit logs
 
             Args:
+                G: Look for differences whose patch text contains added/removed lines that match <regex>.
+                L: Trace the evolution of the line range given by <start>,<end>, or by the function name regex <funcname>, within the <file>.
+                O: Control the order in which files appear in the output.
+                R: Swap two inputs; that is, show differences from index or on-disk file to tree contents.
+                S: Look for differences that change the number of occurrences of the specified <string> (i.e.
                 abbrev: Instead of showing the full 40-byte hexadecimal object name in diff-raw format output and diff-tree header lines, show the shortest prefix that is at least <n> hexdigits long that uniquely refers the object. Value optional: `True` for the bare flag, or pass one.
                 abbrev_commit: Instead of showing the full 40-byte hexadecimal commit object name, show a prefix that names the object uniquely. `abbrev_commit=off` emits `--no-abbrev-commit`.
                 all: Pretend as if all the refs in refs/, along with HEAD, are listed on the command line as <commit>.
@@ -899,6 +938,7 @@ class Git(ToolBase[_R]):
                 boundary: Output excluded boundary commits.
                 branches: Pretend as if all the refs in refs/heads are listed on the command line as <commit>. Value optional: `True` for the bare flag, or pass one.
                 break_rewrites: Break complete rewrite changes into pairs of delete and create. Value optional: `True` for the bare flag, or pass one.
+                c: Produce combined diff output for merge commits.
                 cc: Produce dense combined diff output for merge commits.
                 check: Warn if changes introduce conflict markers or whitespace errors.
                 cherry: A synonym for --right-only --cherry-mark --no-merges; useful to limit the output to the commits on our side and mark those that have been applied to the other side of a forked history with git log --cherry upstream...mybranch, similar to git cherry upstream mybranch.
@@ -963,10 +1003,12 @@ class Git(ToolBase[_R]):
                 invert_grep: Limit the commits output to ones with a log message that do not match the <pattern> specified with --grep=<pattern>.
                 irreversible_delete: Omit the preimage for deletes, i.e. print only the header but not the diff between the preimage and /dev/null.
                 ita_invisible_in_index: By default entries added by git add -N appear as an existing empty file in git diff and a new file in git diff --cached.
+                l: The -M and -C options involve some preliminary steps that can detect subsets of renames/copies cheaply, followed by an exhaustive fallback portion that compares all remaining unpaired destinations to all relevant sources.
                 left_only: List only commits on the respective side of a symmetric difference, i.e. only those which would be marked < resp.
                 left_right: Mark which side of a symmetric difference a commit is reachable from.
                 line_prefix: Prepend an additional <prefix> to every line of output.
                 log_size: Include a line log size <number> in the output for each commit, where <number> is the length of that commit's message in bytes.
+                m: Show diffs for merge commits in the default format.
                 mailmap: Use mailmap file to map author and committer names and email addresses to canonical real names and email addresses. Added in 2.52.0.
                 max_count_oldest: Limit the output to the last <number> commits that would be shown. Added in 2.55.0.
                 max_depth: For each pathspec given on command line, descend at most <depth> levels of directories. Added in 2.52.0.
@@ -1030,6 +1072,7 @@ class Git(ToolBase[_R]):
                 stdin: In addition to getting arguments from the command line, read them from standard input as well.
                 submodule: Specify how differences in submodules are shown. Value optional: `True` for the bare flag, or pass one.
                 summary: Output a condensed summary of extended header information such as creations, renames and mode changes.
+                t: Show the tree objects in the diff output.
                 tags: Pretend as if all the refs in refs/tags are listed on the command line as <commit>. Value optional: `True` for the bare flag, or pass one.
                 text: Treat all files as text.
                 textconv: Allow (or disallow) external text conversion filters to be run when comparing binary files.
@@ -1040,6 +1083,7 @@ class Git(ToolBase[_R]):
                 word_diff: By default, words are delimited by whitespace; see --word-diff-regex below. Value optional: `True` for the bare flag, or pass one.
                 word_diff_regex: Use <regex> to decide what a word is, instead of considering runs of non-whitespace to be a word.
                 ws_error_highlight: Highlight whitespace errors in the context, old or new lines of the diff.
+                z: Separate the commits with NULs instead of newlines.
             """
             ...
         @property
@@ -1428,6 +1472,7 @@ class Git(ToolBase[_R]):
             show_stash: Flag = ...,
             untracked_files: ValuedFlag = ...,
             verbose: Flag = ...,
+            z: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Show the working tree status
@@ -1446,6 +1491,7 @@ class Git(ToolBase[_R]):
                 show_stash: Show the number of entries currently stashed away.
                 untracked_files: Show untracked files. Value optional: `True` for the bare flag, or pass one.
                 verbose: In addition to the names of files that have been changed, also show the textual changes that are staged to be committed (i.e., like the output of git diff --cached).
+                z: Terminate entries with NUL, instead of LF.
             """
             ...
         @property
@@ -1517,6 +1563,7 @@ class Git(ToolBase[_R]):
             local_user: Value = ...,
             merged: Value = ...,
             message: Value = ...,
+            n: Flag = ...,
             no_contains: Value = ...,
             no_merged: Value = ...,
             omit_empty: Flag = ...,
@@ -1546,6 +1593,7 @@ class Git(ToolBase[_R]):
                 local_user: Make a cryptographically signed tag using the given key.
                 merged: Only list tags whose commits are reachable from <commit> (HEAD if not specified).
                 message: Use <msg> (instead of prompting).
+                n: <num> specifies how many lines from the annotation, if any, are printed when using -l.
                 no_contains: Only list tags which don't contain <commit> (HEAD if not specified).
                 no_merged: Only list tags whose commits are not reachable from <commit> (HEAD if not specified).
                 omit_empty: Do not print a newline after formatted refs where the format expands to the empty string.
@@ -1564,6 +1612,7 @@ class Git(ToolBase[_R]):
         def __call__(  # type: ignore[override]
             self,
             *args: str | PathLike[str],
+            b: Value = ...,
             checkout: Flag = ...,
             detach: Flag = ...,
             dry_run: Flag = ...,
@@ -1578,11 +1627,13 @@ class Git(ToolBase[_R]):
             relative_paths: Flag = ...,
             track: Flag = ...,
             verbose: Flag = ...,
+            z: Flag = ...,
             **flags: Any,
         ) -> _R2:
             """Manage multiple working trees
 
             Args:
+                b: With add, create a new branch named <new-branch> starting at <commit-ish>, and check out <new-branch> into the new worktree.
                 checkout: By default, add checks out <commit-ish>, however, --no-checkout can be used to suppress checkout in order to make customizations, such as configuring sparse-checkout. Added in 2.52.0.
                 detach: With add, detach HEAD in the new worktree.
                 dry_run: With prune, do not remove anything; just report what it would remove.
@@ -1597,6 +1648,7 @@ class Git(ToolBase[_R]):
                 relative_paths: Link worktrees using relative paths or absolute paths (default). Added in 2.52.0.
                 track: When creating a new branch, if <commit-ish> is a branch, mark it as "upstream" from the new branch. Added in 2.52.0.
                 verbose: With prune, report all removals.
+                z: Terminate each line with a NUL rather than a newline when --porcelain is specified with list.
             """
             ...
         @property
@@ -1606,8 +1658,10 @@ class Git(ToolBase[_R]):
     def __call__(  # type: ignore[override]
         self,
         *args: str | PathLike[str],
+        C: Value = ...,
         attr_source: Value = ...,
         bare: Flag = ...,
+        c: Value = ...,
         config_env: Value = ...,
         exec_path: ValuedFlag = ...,
         git_dir: Value = ...,
@@ -1632,8 +1686,10 @@ class Git(ToolBase[_R]):
         """the stupid content tracker
 
         Args:
+            C: Run as if git was started in <path> instead of the current working directory.
             attr_source: Read gitattributes from <tree-ish> instead of the worktree.
             bare: Treat the repository as a bare repository.
+            c: Pass a configuration parameter to the command.
             config_env: Like -c <name>=<value>, give configuration variable <name> a value, where <envvar> is the name of an environment variable from which to retrieve the value.
             exec_path: Path to wherever your core Git programs are installed. Value optional: `True` for the bare flag, or pass one.
             git_dir: Set the path to the repository (".git" directory).
@@ -1660,8 +1716,10 @@ class Git(ToolBase[_R]):
     def flags(
         self,
         *,
+        C: Value = ...,
         attr_source: Value = ...,
         bare: Flag = ...,
+        c: Value = ...,
         config_env: Value = ...,
         exec_path: ValuedFlag = ...,
         git_dir: Value = ...,

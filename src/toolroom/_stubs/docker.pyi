@@ -417,21 +417,21 @@ class Docker(ToolBase[_R]):
                 call: Set method for evaluating build ("check", "outline", "targets"). Defaults to `build`. Not available on Windows.
                 cgroup_parent: Set the parent cgroup for the "RUN" instructions during build.
                 check: Shorthand for "--call=check". Not available on Windows.
-                compress: Compress the build context using gzip. Added in 29.7.0. Not available on Linux and macOS.
-                cpu_period: Limit the CPU CFS (Completely Fair Scheduler) period. Added in 29.7.0. Not available on Linux and macOS.
-                cpu_quota: Limit the CPU CFS (Completely Fair Scheduler) quota. Added in 29.7.0. Not available on Linux and macOS.
-                cpu_shares: CPU shares (relative weight). Added in 29.7.0. Not available on Linux and macOS.
-                cpuset_cpus: CPUs in which to allow execution (0-3, 0,1). Added in 29.7.0. Not available on Linux and macOS.
-                cpuset_mems: MEMs in which to allow execution (0-3, 0,1). Added in 29.7.0. Not available on Linux and macOS.
+                compress: Compress the build context using gzip. Not available on Linux and macOS.
+                cpu_period: Limit the CPU CFS (Completely Fair Scheduler) period. Not available on Linux and macOS.
+                cpu_quota: Limit the CPU CFS (Completely Fair Scheduler) quota. Not available on Linux and macOS.
+                cpu_shares: CPU shares (relative weight). Not available on Linux and macOS.
+                cpuset_cpus: CPUs in which to allow execution (0-3, 0,1). Not available on Linux and macOS.
+                cpuset_mems: MEMs in which to allow execution (0-3, 0,1). Not available on Linux and macOS.
                 debug: Enable debug logging. Not available on Windows.
                 file: Name of the Dockerfile. Defaults to `is "PATH/Dockerfile`.
-                force_rm: Always remove intermediate containers. Added in 29.7.0. Not available on Linux and macOS.
+                force_rm: Always remove intermediate containers. Not available on Linux and macOS.
                 iidfile: Write the image ID to the file.
-                isolation: Container isolation technology. Added in 29.7.0. Not available on Linux and macOS.
+                isolation: Container isolation technology. Not available on Linux and macOS.
                 label: Set metadata for an image.
                 load: Shorthand for "--output=type=docker". Not available on Windows.
-                memory: Memory limit. Added in 29.7.0. Not available on Linux and macOS.
-                memory_swap: Swap limit equal to memory plus swap: -1 to enable unlimited swap. Added in 29.7.0. Not available on Linux and macOS.
+                memory: Memory limit. Not available on Linux and macOS.
+                memory_swap: Swap limit equal to memory plus swap: -1 to enable unlimited swap. Not available on Linux and macOS.
                 metadata_file: Write build result metadata to a file. Not available on Windows.
                 network: Set the networking mode for the RUN instructions during build. Defaults to `default`.
                 no_cache: Do not use cache when building the image.
@@ -445,10 +445,10 @@ class Docker(ToolBase[_R]):
                 push: Shorthand for "--output=type=registry,unpack=false". Not available on Windows.
                 quiet: Suppress the build output and print image ID on success.
                 resource: Resource limits for build containers (format: "memory=2g", "cpu-quota=50000"). May be repeated: a list emits the flag once per item. Added in 29.6.0. Not available on Windows.
-                rm: Remove intermediate containers after a successful build. Defaults to `True`. Added in 29.7.0. Not available on Linux and macOS.
+                rm: Remove intermediate containers after a successful build. Defaults to `True`. Not available on Linux and macOS.
                 sbom: Shorthand for "--attest=type=sbom". Not available on Windows.
                 secret: Secret to expose to the build (format: "id=mysecret[,src=/local/secret]"). May be repeated: a list emits the flag once per item. Not available on Windows.
-                security_opt: Security options. Added in 29.7.0. Not available on Linux and macOS.
+                security_opt: Security options. Not available on Linux and macOS.
                 shm_size: Size of "/dev/shm".
                 ssh: SSH agent socket or keys to expose to the build (format: "default|<id>[=<socket>|<key>[,<key>]]"). May be repeated: a list emits the flag once per item. Not available on Windows.
                 tag: Name and optionally a tag in the "name:tag" format.

@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "",
    "verbs": {
@@ -143,7 +143,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.6.0-wk.3": {
    "date": "2026-03-18",
@@ -152,7 +152,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.5.2-wk.1": {
    "date": "2026-03-10",
@@ -161,7 +161,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tno_gitignore"
    ]

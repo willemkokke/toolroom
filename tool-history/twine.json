@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "",
    "verbs": {
@@ -235,7 +235,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.1.0": {
    "date": "2025-01-21",
@@ -244,7 +244,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.0.1": {
    "date": "2024-12-01",
@@ -253,7 +253,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "6.0.0": {
    "date": "2024-11-30",
@@ -262,7 +262,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.1.1": {
    "date": "2024-06-26",
@@ -271,7 +271,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.1.0": {
    "date": "2024-05-16",
@@ -280,7 +280,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "5.0.0": {
    "date": "2024-02-11",
@@ -289,7 +289,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "upload\tattestations"
    ]
@@ -301,7 +301,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "4.0.1": {
    "date": "2022-06-01",
@@ -310,7 +310,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

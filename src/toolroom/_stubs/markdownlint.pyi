@@ -25,7 +25,7 @@ class Markdownlint(ToolBase[_R]):
         no_globs: Flag = ...,
         **flags: Any,
     ) -> _R:
-        """markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)
+        """Run this verb.
 
         Args:
             config: specifies the path to a configuration file to define the base configuration.

@@ -3,14 +3,14 @@
  "tool": "gh",
  "observed_from": "2.88.0",
  "base": {
-  "version": "2.97.0",
-  "date": "2026-07-31",
+  "version": "2.98.0",
+  "date": "2026-08-20",
   "platforms": [
    "Linux",
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "Work seamlessly with GitHub from the command line.",
    "verbs": {
@@ -993,6 +993,16 @@
        ],
        "negation": "",
        "help": "Select another repository using the [HOST/]OWNER/REPO format",
+       "type": "str",
+       "default": null,
+       "choices": []
+      },
+      "worktree": {
+       "flags": [
+        "--worktree"
+       ],
+       "negation": "",
+       "help": "Check out the pull request into a worktree at the given path",
        "type": "str",
        "default": null,
        "choices": []
@@ -2516,6 +2526,18 @@
   }
  },
  "deltas": {
+  "2.97.0": {
+   "date": "2026-07-31",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 3,
+   "drop": [
+    "pr.checkout\tworktree"
+   ]
+  },
   "2.96.0": {
    "date": "2026-07-29",
    "platforms": [
@@ -2523,7 +2545,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "api\tallow_escape_sequences"
    ]
@@ -2535,7 +2557,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.94.0": {
    "date": "2026-06-10",
@@ -2544,7 +2566,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "issue.list\tauthor": {
      "flags": [
@@ -2577,7 +2599,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "issue.create\tblocked_by",
     "issue.create\tblocking",
@@ -2593,7 +2615,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.91.0": {
    "date": "2026-04-22",
@@ -2602,7 +2624,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.90.0": {
    "date": "2026-04-16",
@@ -2611,7 +2633,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.89.0": {
    "date": "2026-03-26",
@@ -2620,7 +2642,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.88.1": {
    "date": "2026-03-12",
@@ -2629,7 +2651,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.88.0": {
    "date": "2026-03-10",
@@ -2638,7 +2660,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

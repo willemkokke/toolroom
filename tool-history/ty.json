@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "An extremely fast Python type checker.",
    "verbs": {
@@ -324,7 +324,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.71": {
    "date": "2026-08-13",
@@ -333,7 +333,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.70": {
    "date": "2026-08-10",
@@ -342,7 +342,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.69": {
    "date": "2026-08-06",
@@ -351,7 +351,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.68": {
    "date": "2026-08-06",
@@ -360,7 +360,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.67": {
    "date": "2026-08-05",
@@ -369,7 +369,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.66": {
    "date": "2026-08-04",
@@ -378,7 +378,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.65": {
    "date": "2026-07-29",
@@ -387,7 +387,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.64": {
    "date": "2026-07-29",
@@ -396,7 +396,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.63": {
    "date": "2026-07-23",
@@ -405,7 +405,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "check\texclude_scripts"
    ]
@@ -417,7 +417,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.61": {
    "date": "2026-07-18",
@@ -426,7 +426,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.60": {
    "date": "2026-07-16",
@@ -435,7 +435,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.59": {
    "date": "2026-07-12",
@@ -444,7 +444,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.58": {
    "date": "2026-07-10",
@@ -453,7 +453,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.57": {
    "date": "2026-07-08",
@@ -462,7 +462,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.56": {
    "date": "2026-07-01",
@@ -471,7 +471,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "0.0.55": {
    "date": "2026-06-27",
@@ -480,7 +480,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

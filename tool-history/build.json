@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "A simple, correct Python build frontend.",
    "verbs": {
@@ -191,7 +191,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tenv_dir",
     "\treport",
@@ -217,7 +217,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.4.3": {
    "date": "2026-04-10",
@@ -226,7 +226,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.4.2": {
    "date": "2026-03-25",
@@ -235,7 +235,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.4.1": {
    "date": "2026-03-24",
@@ -244,7 +244,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.4.0": {
    "date": "2026-01-08",
@@ -253,7 +253,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tdependency_constraints_txt"
    ]
@@ -265,7 +265,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tmetadata",
     "\tquiet"
@@ -289,7 +289,7 @@
       "-s"
      ],
      "negation": "",
-     "help": "",
+     "help": "build a wheel (disables the default behavior)",
      "type": "str",
      "default": null,
      "choices": []
@@ -303,7 +303,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tconfig_json"
    ]
@@ -315,7 +315,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.2.1": {
    "date": "2024-03-28",
@@ -324,7 +324,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

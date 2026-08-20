@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "MkDocs - Project documentation with Markdown.",
    "verbs": {
@@ -494,7 +494,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "serve\tdirtyreload",
     "serve\tlivereload"
@@ -968,7 +968,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "serve\topen"
    ],
@@ -994,7 +994,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.5.1": {
    "date": "2023-07-27",
@@ -1003,7 +1003,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.5.0": {
    "date": "2023-07-26",
@@ -1012,7 +1012,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.4.3": {
    "date": "2023-05-02",
@@ -1021,7 +1021,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "\tcolor",
     "serve\tclean",
@@ -1093,7 +1093,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.4.1": {
    "date": "2022-10-15",
@@ -1102,7 +1102,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "1.4.0": {
    "date": "2022-09-27",
@@ -1111,7 +1111,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

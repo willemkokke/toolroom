@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "Claude Code - starts an interactive session by default, use -p/--print for",
    "verbs": {
@@ -1371,7 +1371,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "revert": {
     "plugin.install\tyes": {
      "flags": [
@@ -1404,7 +1404,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.1.235": {
    "date": "2026-08-18",
@@ -1413,7 +1413,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.1.234": {
    "date": "2026-08-17",
@@ -1422,7 +1422,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.1.233": {
    "date": "2026-08-14",
@@ -1431,7 +1431,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.1.232": {
    "date": "2026-08-13",
@@ -1440,7 +1440,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "verbs": {
     "plugin.validate": {
      "help": "Validate a plugin or marketplace manifest"
@@ -1454,7 +1454,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.1.229": {
    "date": "2026-08-12",
@@ -1463,7 +1463,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.1.228": {
    "date": "2026-08-11",
@@ -1472,7 +1472,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "plugin.install\tyes",
     "plugin.update\tyes"
@@ -1485,7 +1485,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.1.226": {
    "date": "2026-08-09",
@@ -1494,7 +1494,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

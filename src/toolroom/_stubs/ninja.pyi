@@ -37,7 +37,7 @@ class Ninja(ToolBase[_R]):
             C: change to DIR before doing anything else.
             d: enable debugging (use '-d list' to list modes).
             f: specify input build file [default=build.ninja].
-            j: run N jobs in parallel (0 means infinity) [default=30 on this system].
+            j: run N jobs in parallel (0 means infinity) [default=6 on this system].
             k: keep going until N jobs fail (0 means infinity) [default=1].
             l: do not start new jobs if the load average is greater than N.
             n: dry run (don't run commands but act like they succeeded).

@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "Automatic Changelog generator using Jinja2 templates.",
    "verbs": {
@@ -286,7 +286,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.9.5": {
    "date": "2026-07-29",
@@ -295,7 +295,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.9.4": {
    "date": "2026-04-29",
@@ -304,7 +304,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.9.3": {
    "date": "2026-03-26",
@@ -313,7 +313,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.9.2": {
    "date": "2026-03-20",
@@ -322,7 +322,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.9.1": {
    "date": "2026-03-17",
@@ -331,7 +331,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.9.0": {
    "date": "2026-03-13",
@@ -340,7 +340,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.8.1": {
    "date": "2026-03-12",
@@ -349,7 +349,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.8.0": {
    "date": "2026-03-12",
@@ -358,7 +358,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.7.1": {
    "date": "2026-01-30",
@@ -367,7 +367,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "2.7.0": {
    "date": "2025-11-21",
@@ -376,7 +376,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }

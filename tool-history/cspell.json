@@ -10,7 +10,7 @@
    "Windows",
    "macOS"
   ],
-  "extractor": 2,
+  "extractor": 3,
   "surface": {
    "help": "Spelling Checker for Code",
    "verbs": {
@@ -796,7 +796,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.8.0": {
    "date": "2026-04-05",
@@ -805,7 +805,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.7.0": {
    "date": "2026-02-23",
@@ -814,7 +814,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.6.4": {
    "date": "2026-02-04",
@@ -823,7 +823,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.6.3": {
    "date": "2026-02-02",
@@ -832,7 +832,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2,
+   "extractor": 3,
    "drop": [
     "trace\tno_dictionary"
    ]
@@ -844,7 +844,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.6.1": {
    "date": "2026-01-26",
@@ -853,7 +853,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.6.0": {
    "date": "2026-01-12",
@@ -862,7 +862,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   },
   "9.4.0": {
    "date": "2025-12-01",
@@ -871,7 +871,7 @@
     "Windows",
     "macOS"
    ],
-   "extractor": 2
+   "extractor": 3
   }
  }
 }
