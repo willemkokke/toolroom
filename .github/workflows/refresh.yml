@@ -71,10 +71,23 @@ jobs:
       - uses: astral-sh/setup-uv@v7
       - run: uv sync
 
-      - name: uv first, so the question can be answered truthfully
+      # Both installers first, so the question can be answered truthfully.
+      # uv carries CPython's download index inside itself, so a stale one
+      # reports a stale newest python. bun is how the node tier installs,
+      # and without it every node tool is skipped as unreadable rather than
+      # reported as work — which a full run never notices, because some
+      # other tool always has something and the gather provisions bun
+      # anyway. Ask about one node tool by name and the gate answered
+      # "nothing to do" about a tool it had simply declined to consider.
+      - name: the installers first, so the question can be answered truthfully
         env:
           GH_TOKEN: ${{ github.token }}
         run: uv run fm tools.provision --only=uv --strict
+
+      - name: bun too, for the node tier
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uv run fm tools.provision --only=bun --strict
 
       # A re-read needs no switch: `EXTRACTOR` says which generation took a
       # reading, and a gather offers back everything older than today's. So
@@ -115,12 +128,6 @@ jobs:
           else
             echo "work=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: provision what a gather actually drives
-        if: steps.owed.outputs.work == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: uv run fm tools.provision --only=uv,bun --strict
 
       - name: observe what this platform sees
         if: steps.owed.outputs.work == 'true'
