@@ -3,8 +3,8 @@
  "tool": "uv",
  "observed_from": "0.11.25",
  "base": {
-  "version": "0.12.3",
-  "date": "2026-08-07",
+  "version": "0.12.5",
+  "date": "2026-08-14",
   "platforms": [
    "Linux",
    "Windows",
@@ -311,7 +311,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -435,7 +435,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -1080,7 +1080,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -1164,7 +1164,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -1707,7 +1707,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -1845,7 +1845,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -2498,7 +2498,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -2582,7 +2582,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -3089,7 +3089,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -3256,7 +3256,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -3959,7 +3959,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -4094,7 +4094,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -4775,7 +4775,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -4881,7 +4881,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -5249,7 +5249,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -5340,7 +5340,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -6174,7 +6174,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -6278,7 +6278,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -6830,7 +6830,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -6964,7 +6964,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -7726,7 +7726,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -7840,7 +7840,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -8554,7 +8554,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -8659,7 +8659,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -9322,7 +9322,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -9416,7 +9416,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -10077,7 +10077,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -10151,7 +10151,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -10618,7 +10618,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -10736,7 +10736,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -11355,7 +11355,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -11426,7 +11426,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -11796,7 +11796,7 @@
         "--default-index"
        ],
        "negation": "",
-       "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+       "help": "The default package index (by default: <https://pypi.org/simple>)",
        "type": "str",
        "default": null,
        "choices": []
@@ -11890,7 +11890,7 @@
         "--index"
        ],
        "negation": "",
-       "help": "The URLs to use when resolving dependencies, in addition to the default index",
+       "help": "The indexes to use when resolving dependencies, in addition to the default index",
        "type": "str",
        "default": null,
        "choices": []
@@ -12323,6 +12323,366 @@
   }
  },
  "deltas": {
+  "0.12.4": {
+   "date": "2026-08-13",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2,
+   "revert": {
+    "add\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "add\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "build\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "build\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "export\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "export\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "lock\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "lock\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "pip.compile\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "pip.compile\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "pip.install\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "pip.install\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "pip.list\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "pip.list\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "pip.sync\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "pip.sync\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "remove\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "remove\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "run\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "run\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "sync\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "sync\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "tool.install\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "tool.install\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "tool.run\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "tool.run\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "tool.upgrade\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "tool.upgrade\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "tree\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "tree\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "venv\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "venv\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "version\tdefault_index": {
+     "flags": [
+      "--default-index"
+     ],
+     "negation": "",
+     "help": "The URL of the default package index (by default: <https://pypi.org/simple>)",
+     "type": "str",
+     "default": null,
+     "choices": []
+    },
+    "version\tindex": {
+     "flags": [
+      "--index"
+     ],
+     "negation": "",
+     "help": "The URLs to use when resolving dependencies, in addition to the default index",
+     "type": "str",
+     "default": null,
+     "choices": []
+    }
+   }
+  },
+  "0.12.3": {
+   "date": "2026-08-07",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
   "0.12.2": {
    "date": "2026-08-05",
    "platforms": [

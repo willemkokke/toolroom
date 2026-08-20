@@ -3,8 +3,8 @@
  "tool": "claude",
  "observed_from": "2.1.226",
  "base": {
-  "version": "2.1.226",
-  "date": "2026-08-09",
+  "version": "2.1.238",
+  "date": "2026-08-20",
   "platforms": [
    "Linux",
    "Windows",
@@ -1135,6 +1135,17 @@
        "type": "str",
        "default": "user",
        "choices": []
+      },
+      "yes": {
+       "flags": [
+        "--yes",
+        "-y"
+       ],
+       "negation": "",
+       "help": "Accept the displayed marketplace-declared command without the confirmation prompt - a plugin installed by running a command, or one whose archive is fetched through a headersHelper command (required when stdin or stdout is not a TTY)",
+       "type": "bool",
+       "default": null,
+       "choices": []
       }
      }
     },
@@ -1303,11 +1314,22 @@
        "type": "str",
        "default": "user",
        "choices": []
+      },
+      "yes": {
+       "flags": [
+        "--yes",
+        "-y"
+       ],
+       "negation": "",
+       "help": "Accept the displayed marketplace-declared command without the confirmation prompt - a changed install command, or the headersHelper command that fetches its archive (required when stdin or stdout is not a TTY)",
+       "type": "bool",
+       "default": null,
+       "choices": []
       }
      }
     },
     "plugin.validate": {
-     "help": "Validate a plugin or marketplace manifest",
+     "help": "Validate a plugin or marketplace manifest, or the skills, agents, and commands",
      "wraps": false,
      "positional": "required",
      "lead": "path",
@@ -1341,5 +1363,138 @@
    }
   }
  },
- "deltas": {}
+ "deltas": {
+  "2.1.237": {
+   "date": "2026-08-19",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2,
+   "revert": {
+    "plugin.install\tyes": {
+     "flags": [
+      "--yes",
+      "-y"
+     ],
+     "negation": "",
+     "help": "For a plugin installed by running a marketplace-declared command: accept the displayed command without the confirmation prompt (required when stdin or stdout is not a TTY)",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    },
+    "plugin.update\tyes": {
+     "flags": [
+      "--yes",
+      "-y"
+     ],
+     "negation": "",
+     "help": "For a plugin installed by running a marketplace-declared command: accept a changed command without the confirmation prompt (required when stdin or stdout is not a TTY)",
+     "type": "bool",
+     "default": null,
+     "choices": []
+    }
+   }
+  },
+  "2.1.236": {
+   "date": "2026-08-19",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "2.1.235": {
+   "date": "2026-08-18",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "2.1.234": {
+   "date": "2026-08-17",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "2.1.233": {
+   "date": "2026-08-14",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "2.1.232": {
+   "date": "2026-08-13",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2,
+   "verbs": {
+    "plugin.validate": {
+     "help": "Validate a plugin or marketplace manifest"
+    }
+   }
+  },
+  "2.1.231": {
+   "date": "2026-08-13",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "2.1.229": {
+   "date": "2026-08-12",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "2.1.228": {
+   "date": "2026-08-11",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2,
+   "drop": [
+    "plugin.install\tyes",
+    "plugin.update\tyes"
+   ]
+  },
+  "2.1.227": {
+   "date": "2026-08-10",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  },
+  "2.1.226": {
+   "date": "2026-08-09",
+   "platforms": [
+    "Linux",
+    "Windows",
+    "macOS"
+   ],
+   "extractor": 2
+  }
+ }
 }
