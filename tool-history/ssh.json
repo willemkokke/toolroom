@@ -4,7 +4,7 @@
  "observed_from": "2.9p1",
  "base": {
   "version": "10.4p1",
-  "date": "2026-08-01",
+  "date": "2026-07-06",
   "platforms": [
    "Linux",
    "macOS"
@@ -456,7 +456,7 @@
  },
  "deltas": {
   "10.3p1": {
-   "date": "",
+   "date": "2026-04-02",
    "platforms": [
     "Linux",
     "macOS"
@@ -464,7 +464,7 @@
    "extractor": 2
   },
   "10.2p1": {
-   "date": "",
+   "date": "2025-10-10",
    "platforms": [
     "Linux",
     "macOS"
@@ -472,7 +472,7 @@
    "extractor": 2
   },
   "10.1p1": {
-   "date": "",
+   "date": "2025-10-05",
    "platforms": [
     "Linux",
     "macOS"
@@ -480,7 +480,7 @@
    "extractor": 2
   },
   "10.0p2": {
-   "date": "",
+   "date": "2025-04-09",
    "platforms": [
     "Linux",
     "macOS"
@@ -488,7 +488,7 @@
    "extractor": 2
   },
   "10.0p1": {
-   "date": "",
+   "date": "2025-04-09",
    "platforms": [
     "Linux",
     "macOS"
@@ -496,7 +496,7 @@
    "extractor": 2
   },
   "9.9p2": {
-   "date": "",
+   "date": "2025-02-18",
    "platforms": [
     "Linux",
     "macOS"
@@ -504,7 +504,7 @@
    "extractor": 2
   },
   "9.9p1": {
-   "date": "",
+   "date": "2024-09-19",
    "platforms": [
     "Linux",
     "macOS"
@@ -512,7 +512,7 @@
    "extractor": 2
   },
   "9.8p1": {
-   "date": "",
+   "date": "2024-07-01",
    "platforms": [
     "Linux",
     "macOS"
@@ -520,7 +520,7 @@
    "extractor": 2
   },
   "9.7p1": {
-   "date": "",
+   "date": "2024-03-11",
    "platforms": [
     "Linux",
     "macOS"
@@ -528,7 +528,7 @@
    "extractor": 2
   },
   "9.6p1": {
-   "date": "",
+   "date": "2023-12-18",
    "platforms": [
     "Linux",
     "macOS"
@@ -536,7 +536,7 @@
    "extractor": 2
   },
   "9.5p1": {
-   "date": "",
+   "date": "2023-10-04",
    "platforms": [
     "Linux",
     "macOS"
@@ -550,7 +550,7 @@
    }
   },
   "9.4p1": {
-   "date": "",
+   "date": "2023-08-09",
    "platforms": [
     "Linux",
     "macOS"
@@ -558,7 +558,7 @@
    "extractor": 2
   },
   "9.3p2": {
-   "date": "",
+   "date": "2023-07-19",
    "platforms": [
     "Linux",
     "macOS"
@@ -591,7 +591,7 @@
    }
   },
   "9.3p1": {
-   "date": "",
+   "date": "2023-03-15",
    "platforms": [
     "Linux",
     "macOS"
@@ -599,7 +599,7 @@
    "extractor": 2
   },
   "9.2p1": {
-   "date": "",
+   "date": "2023-02-02",
    "platforms": [
     "Linux",
     "macOS"
@@ -607,7 +607,7 @@
    "extractor": 2
   },
   "9.1p1": {
-   "date": "",
+   "date": "2022-10-03",
    "platforms": [
     "Linux",
     "macOS"
@@ -615,7 +615,7 @@
    "extractor": 2
   },
   "9.0p1": {
-   "date": "",
+   "date": "2022-04-07",
    "platforms": [
     "Linux",
     "macOS"
@@ -623,7 +623,7 @@
    "extractor": 2
   },
   "8.9p1": {
-   "date": "",
+   "date": "2022-02-23",
    "platforms": [
     "Linux",
     "macOS"
@@ -631,7 +631,7 @@
    "extractor": 2
   },
   "8.8p1": {
-   "date": "",
+   "date": "2021-09-26",
    "platforms": [
     "Linux",
     "macOS"
@@ -639,7 +639,7 @@
    "extractor": 2
   },
   "8.7p1": {
-   "date": "",
+   "date": "2021-08-19",
    "platforms": [
     "Linux",
     "macOS"
@@ -647,7 +647,7 @@
    "extractor": 2
   },
   "8.6p1": {
-   "date": "",
+   "date": "2021-04-18",
    "platforms": [
     "Linux",
     "macOS"
@@ -667,7 +667,7 @@
    }
   },
   "8.5p1": {
-   "date": "",
+   "date": "2021-03-02",
    "platforms": [
     "Linux",
     "macOS"
@@ -675,7 +675,7 @@
    "extractor": 2
   },
   "8.4p1": {
-   "date": "",
+   "date": "2020-09-27",
    "platforms": [
     "Linux",
     "macOS"
@@ -683,7 +683,7 @@
    "extractor": 2
   },
   "8.3p1": {
-   "date": "",
+   "date": "2020-05-26",
    "platforms": [
     "Linux",
     "macOS"
@@ -691,7 +691,7 @@
    "extractor": 2
   },
   "8.2p1": {
-   "date": "",
+   "date": "2020-02-13",
    "platforms": [
     "Linux",
     "macOS"
@@ -699,7 +699,7 @@
    "extractor": 2
   },
   "8.1p1": {
-   "date": "",
+   "date": "2019-10-08",
    "platforms": [
     "Linux",
     "macOS"
@@ -729,7 +729,7 @@
    }
   },
   "8.0p1": {
-   "date": "",
+   "date": "2019-04-17",
    "platforms": [
     "Linux",
     "macOS"
@@ -737,7 +737,7 @@
    "extractor": 2
   },
   "7.9p1": {
-   "date": "",
+   "date": "2018-10-18",
    "platforms": [
     "Linux",
     "macOS"
@@ -757,7 +757,7 @@
    }
   },
   "7.8p1": {
-   "date": "",
+   "date": "2018-08-23",
    "platforms": [
     "Linux",
     "macOS"
@@ -765,7 +765,7 @@
    "extractor": 2
   },
   "7.7p1": {
-   "date": "",
+   "date": "2018-04-02",
    "platforms": [
     "Linux",
     "macOS"
@@ -773,7 +773,7 @@
    "extractor": 2
   },
   "7.6p1": {
-   "date": "",
+   "date": "2017-10-03",
    "platforms": [
     "Linux",
     "macOS"
@@ -802,7 +802,7 @@
    }
   },
   "7.5p1": {
-   "date": "",
+   "date": "2017-03-20",
    "platforms": [
     "Linux",
     "macOS"
@@ -822,7 +822,7 @@
    }
   },
   "7.4p1": {
-   "date": "",
+   "date": "2016-12-19",
    "platforms": [
     "Linux",
     "macOS"
@@ -830,7 +830,7 @@
    "extractor": 2
   },
   "7.3p1": {
-   "date": "",
+   "date": "2016-08-01",
    "platforms": [
     "Linux",
     "macOS"
@@ -838,7 +838,7 @@
    "extractor": 2
   },
   "7.2p2": {
-   "date": "",
+   "date": "2016-03-10",
    "platforms": [
     "Linux",
     "macOS"
@@ -849,7 +849,7 @@
    ]
   },
   "7.2p1": {
-   "date": "",
+   "date": "2016-02-28",
    "platforms": [
     "Linux",
     "macOS"
@@ -857,7 +857,7 @@
    "extractor": 2
   },
   "7.1p2": {
-   "date": "",
+   "date": "2016-01-14",
    "platforms": [
     "Linux",
     "macOS"
@@ -887,7 +887,7 @@
    }
   },
   "7.1p1": {
-   "date": "",
+   "date": "2015-08-20",
    "platforms": [
     "Linux",
     "macOS"
@@ -895,7 +895,7 @@
    "extractor": 2
   },
   "7.0p1": {
-   "date": "",
+   "date": "2015-08-11",
    "platforms": [
     "Linux",
     "macOS"
@@ -903,7 +903,7 @@
    "extractor": 2
   },
   "6.9p1": {
-   "date": "",
+   "date": "2015-06-30",
    "platforms": [
     "Linux",
     "macOS"
@@ -933,7 +933,7 @@
    }
   },
   "6.8p1": {
-   "date": "",
+   "date": "2015-03-17",
    "platforms": [
     "Linux",
     "macOS"
@@ -963,7 +963,7 @@
    }
   },
   "6.7p1": {
-   "date": "",
+   "date": "2014-10-06",
    "platforms": [
     "Linux",
     "macOS"
@@ -986,7 +986,7 @@
    }
   },
   "6.6p1": {
-   "date": "",
+   "date": "2014-03-15",
    "platforms": [
     "Linux",
     "macOS"
@@ -1006,7 +1006,7 @@
    }
   },
   "6.5p1": {
-   "date": "",
+   "date": "2014-01-29",
    "platforms": [
     "Linux",
     "macOS"
@@ -1014,7 +1014,7 @@
    "extractor": 2
   },
   "6.4p1": {
-   "date": "",
+   "date": "2013-11-07",
    "platforms": [
     "Linux",
     "macOS"
@@ -1044,7 +1044,7 @@
    }
   },
   "6.3p1": {
-   "date": "",
+   "date": "2013-09-13",
    "platforms": [
     "Linux",
     "macOS"
@@ -1052,7 +1052,7 @@
    "extractor": 2
   },
   "6.2p2": {
-   "date": "",
+   "date": "2013-05-15",
    "platforms": [
     "Linux",
     "macOS"
@@ -1064,7 +1064,7 @@
    ]
   },
   "6.2p1": {
-   "date": "",
+   "date": "2013-03-21",
    "platforms": [
     "Linux",
     "macOS"
@@ -1072,7 +1072,7 @@
    "extractor": 2
   },
   "6.1p1": {
-   "date": "",
+   "date": "2012-08-28",
    "platforms": [
     "Linux",
     "macOS"
@@ -1080,7 +1080,7 @@
    "extractor": 2
   },
   "6.0p1": {
-   "date": "",
+   "date": "2012-04-21",
    "platforms": [
     "Linux",
     "macOS"
@@ -1088,7 +1088,7 @@
    "extractor": 2
   },
   "5.9p1": {
-   "date": "",
+   "date": "2011-09-06",
    "platforms": [
     "Linux",
     "macOS"
@@ -1096,7 +1096,7 @@
    "extractor": 2
   },
   "5.8p2": {
-   "date": "",
+   "date": "2011-05-04",
    "platforms": [
     "Linux",
     "macOS"
@@ -1116,7 +1116,7 @@
    }
   },
   "5.8p1": {
-   "date": "",
+   "date": "2011-02-03",
    "platforms": [
     "Linux",
     "macOS"
@@ -1124,7 +1124,7 @@
    "extractor": 2
   },
   "5.7p1": {
-   "date": "",
+   "date": "2011-01-23",
    "platforms": [
     "Linux",
     "macOS"
@@ -1132,7 +1132,7 @@
    "extractor": 2
   },
   "5.6p1": {
-   "date": "",
+   "date": "2010-08-23",
    "platforms": [
     "Linux",
     "macOS"
@@ -1162,7 +1162,7 @@
    }
   },
   "5.5p1": {
-   "date": "",
+   "date": "2010-04-15",
    "platforms": [
     "Linux",
     "macOS"
@@ -1192,7 +1192,7 @@
    }
   },
   "5.4p1": {
-   "date": "",
+   "date": "2010-03-07",
    "platforms": [
     "Linux",
     "macOS"
@@ -1212,7 +1212,7 @@
    }
   },
   "5.3p1": {
-   "date": "",
+   "date": "2009-10-01",
    "platforms": [
     "Linux",
     "macOS"
@@ -1235,7 +1235,7 @@
    }
   },
   "5.2p1": {
-   "date": "",
+   "date": "2009-02-22",
    "platforms": [
     "Linux",
     "macOS"
@@ -1255,7 +1255,7 @@
    }
   },
   "5.1p1": {
-   "date": "",
+   "date": "2008-07-21",
    "platforms": [
     "Linux",
     "macOS"
@@ -1266,7 +1266,7 @@
    ]
   },
   "5.0p1": {
-   "date": "",
+   "date": "2008-04-03",
    "platforms": [
     "Linux",
     "macOS"
@@ -1274,7 +1274,7 @@
    "extractor": 2
   },
   "4.9p1": {
-   "date": "",
+   "date": "2008-03-27",
    "platforms": [
     "Linux",
     "macOS"
@@ -1282,7 +1282,7 @@
    "extractor": 2
   },
   "4.7p1": {
-   "date": "",
+   "date": "2007-09-04",
    "platforms": [
     "Linux",
     "macOS"
@@ -1290,7 +1290,7 @@
    "extractor": 2
   },
   "4.6p1": {
-   "date": "",
+   "date": "2007-03-07",
    "platforms": [
     "Linux",
     "macOS"
@@ -1301,7 +1301,7 @@
    ]
   },
   "4.5p1": {
-   "date": "",
+   "date": "2006-11-07",
    "platforms": [
     "Linux",
     "macOS"
@@ -1309,7 +1309,7 @@
    "extractor": 2
   },
   "4.4p1": {
-   "date": "",
+   "date": "2006-09-27",
    "platforms": [
     "Linux",
     "macOS"
@@ -1317,7 +1317,7 @@
    "extractor": 2
   },
   "4.3p2": {
-   "date": "",
+   "date": "2006-02-10",
    "platforms": [
     "Linux",
     "macOS"
@@ -1337,7 +1337,7 @@
    }
   },
   "4.3p1": {
-   "date": "",
+   "date": "2006-02-01",
    "platforms": [
     "Linux",
     "macOS"
@@ -1345,7 +1345,7 @@
    "extractor": 2
   },
   "4.2p1": {
-   "date": "",
+   "date": "2005-09-01",
    "platforms": [
     "Linux",
     "macOS"
@@ -1408,7 +1408,7 @@
    }
   },
   "4.1p1": {
-   "date": "",
+   "date": "2005-05-25",
    "platforms": [
     "Linux",
     "macOS"
@@ -1428,7 +1428,7 @@
    }
   },
   "4.0p1": {
-   "date": "",
+   "date": "2005-03-09",
    "platforms": [
     "Linux",
     "macOS"
@@ -1436,7 +1436,7 @@
    "extractor": 2
   },
   "3.9p1": {
-   "date": "",
+   "date": "2004-08-17",
    "platforms": [
     "Linux",
     "macOS"
@@ -1447,7 +1447,7 @@
    ]
   },
   "3.8p1": {
-   "date": "",
+   "date": "2004-02-24",
    "platforms": [
     "Linux",
     "macOS"
@@ -1471,7 +1471,7 @@
    }
   },
   "3.7p1": {
-   "date": "",
+   "date": "2003-09-16",
    "platforms": [
     "Linux",
     "macOS"
@@ -1514,7 +1514,7 @@
    }
   },
   "3.6p1": {
-   "date": "",
+   "date": "2003-03-31",
    "platforms": [
     "Linux",
     "macOS"
@@ -1537,7 +1537,7 @@
    }
   },
   "3.5p1": {
-   "date": "",
+   "date": "2002-10-14",
    "platforms": [
     "Linux",
     "macOS"
@@ -1545,7 +1545,7 @@
    "extractor": 2
   },
   "3.4p1": {
-   "date": "",
+   "date": "2002-09-17",
    "platforms": [
     "Linux",
     "macOS"
@@ -1565,7 +1565,7 @@
    }
   },
   "3.3p1": {
-   "date": "",
+   "date": "2002-09-17",
    "platforms": [
     "Linux",
     "macOS"
@@ -1573,7 +1573,7 @@
    "extractor": 2
   },
   "3.1p1": {
-   "date": "",
+   "date": "2002-09-17",
    "platforms": [
     "Linux",
     "macOS"
@@ -1581,7 +1581,7 @@
    "extractor": 2
   },
   "3.0p1": {
-   "date": "",
+   "date": "2002-09-17",
    "platforms": [
     "Linux",
     "macOS"
@@ -1601,7 +1601,7 @@
    }
   },
   "2.9p2": {
-   "date": "",
+   "date": "2002-09-17",
    "platforms": [
     "Linux",
     "macOS"
@@ -1627,7 +1627,7 @@
    }
   },
   "2.9p1": {
-   "date": "",
+   "date": "2002-09-17",
    "platforms": [
     "Linux",
     "macOS"
