@@ -1368,9 +1368,17 @@ def test_a_tool_that_signs_its_help_is_not_describing_itself():
     reworded summary — and it never said what the tool does anyway.
 
     Skipping it finds the real description where there is one, and honestly
-    reports none where there is not.
+    reports none where there is not. The byline between the two goes with
+    it: reading past the version alone landed on git-cliff's authors, which
+    is a worse answer than the banner it replaced.
     """
-    signed = "git-cliff 2.13.1\nA highly customizable changelog generator\n\nUSAGE:\n"
+    # git-cliff's own opening, in clap's order: what it is, who wrote it,
+    # what it does. Only the third line is a description.
+    signed = (
+        "git-cliff 2.13.1\n"
+        "git-cliff contributors <git-cliff@protonmail.com>\n"
+        "A highly customizable changelog generator\n\nUsage:\n"
+    )
     assert _toolhelp._summary(signed) == "A highly customizable changelog generator"
 
     # markdownlint-cli2 has no description at all: a banner, its URL, then

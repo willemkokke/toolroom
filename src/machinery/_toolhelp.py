@@ -966,7 +966,11 @@ def _summary(text: str) -> str:
             continue
         if stripped.lower().startswith("usage"):
             continue
-        if _BANNER.match(stripped) or _BARE_URL.match(stripped):
+        if (
+            _BANNER.match(stripped)
+            or _BARE_URL.match(stripped)
+            or _BYLINE.match(stripped)
+        ):
             # A signature, not a description: markdownlint-cli2 opens
             # `markdownlint-cli2 v0.23.2 (markdownlint v0.41.1)` and then its
             # project URL, and neither says what the tool does. Stored as the
@@ -1000,6 +1004,10 @@ def _summary(text: str) -> str:
 # every word before it, which `_unstamped` trims instead.
 _BANNER = re.compile(r"^\S+ +v?\d[\w.+-]*(?: +\([^()]*\))?$")
 _BARE_URL = re.compile(r"^https?://\S+$")
+# Who wrote it, which clap prints between the signature and the description:
+# `git-cliff contributors <git-cliff@protonmail.com>`. Skipping the version
+# line alone landed on this one, which is a worse answer than the banner was.
+_BYLINE = re.compile(r"^[^<>]*<[^<>@\s]+@[^<>\s]+>$")
 
 _MAN_NAME = re.compile(r"^NAME\n\s+\S+ [-\u2013\u2014] (.+)$", re.M)
 
