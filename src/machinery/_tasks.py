@@ -1568,14 +1568,26 @@ def _fold_into(
         platforms = sorted(versions[version])
         if (entry := _toolhistory.entry_of(doc, version)) is not None:
             was = json.dumps(entry, sort_keys=True)
-            _toolhistory.merge(
+            moved = _toolhistory.merge(
                 doc,
                 version=version,
                 surface=surface,
                 platforms=platforms,
                 absent=absent,
             )
-            touched = touched or json.dumps(entry, sort_keys=True) != was
+            # Read back rather than reused: a surface change *replaces* a
+            # delta's entry, and only the base is rewritten in place. The
+            # reference taken above therefore goes stale exactly when the
+            # fold did the most work, and comparing it answered "nothing
+            # moved" for every delta a better extractor had just corrected —
+            # so the correction was computed, believed, and dropped unsaved.
+            entry = _toolhistory.entry_of(doc, version) or {}
+            # This release has now been read by today's extractor, whatever
+            # that reading found. Unstamped, `_plan_gather` offers it again
+            # every run: the walk that heals the store never records that it
+            # healed it, and every gather pays for all of it again.
+            entry["extractor"] = _toolhistory.EXTRACTOR
+            touched = touched or moved or json.dumps(entry, sort_keys=True) != was
             continue
         if _toolhistory.insert(
             doc,

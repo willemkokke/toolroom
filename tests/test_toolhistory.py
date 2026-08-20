@@ -2876,6 +2876,57 @@ def test_gather_writes_a_document_another_machine_can_fold(tmp_path, monkeypatch
     assert _toolhistory.observed(stored) == ["1.0.1", "1.0.0"]
 
 
+def test_a_correction_below_the_head_is_saved_and_stamped():
+    """A better extractor corrects a *delta*, and the fold must notice.
+
+    Rewriting a delta replaces its entry; only the base is rewritten in
+    place. The fold used to decide whether anything moved by comparing the
+    entry object it had taken a reference to before merging — stale exactly
+    when the merge did the most work — so every correction below the head
+    was computed, believed, and dropped without ever being written. ssh
+    kept a rendering of its manual header as the description of every
+    release but its newest, through a walk that had just read all 84 of
+    them correctly.
+
+    The stamp is the other half: a release read by today's extractor has to
+    say so, or `_plan_gather` offers it again every run and the walk that
+    heals the store never records that it healed it.
+    """
+    from machinery import _tasks as tools
+
+    def surface(text):
+        return {"help": text, "verbs": {"": {"help": text, "options": {}}}}
+
+    doc = _toolhistory.new(
+        "ssh",
+        version="2.0",
+        date="2026-02-01",
+        surface=surface("OpenSSH remote login client"),
+        platforms=["Linux"],
+    )
+    _toolhistory.extend(
+        doc,
+        version="1.0",
+        date="2026-01-01",
+        surface=surface("SSH(1)      General Commands Manual      SSH(1)"),
+        platforms=["Linux"],
+    )
+    # Pretend that older reading came from the previous generation.
+    doc["deltas"]["1.0"]["extractor"] = _toolhistory.EXTRACTOR - 1
+    assert (_toolhistory.at(doc, "1.0") or {})["help"].startswith("SSH(1)")
+
+    fresh, touched = tools._fold_into(
+        doc,
+        "ssh",
+        {"1.0": {"Linux": surface("OpenSSH remote login client")}},
+        {"1.0": {"date": "2026-01-01", "tag": ""}},
+    )
+    assert fresh == [], "correcting a release the chain has is not a new release"
+    assert touched, "a correction below the head must be saved"
+    assert (_toolhistory.at(doc, "1.0") or {})["help"] == "OpenSSH remote login client"
+    assert doc["deltas"]["1.0"]["extractor"] == _toolhistory.EXTRACTOR
+
+
 def test_two_platforms_fold_into_one_release_with_the_exception_named(
     tmp_path, monkeypatch
 ):
