@@ -41,6 +41,7 @@ recording sees nothing.
 from __future__ import annotations
 
 import contextlib
+import warnings
 from collections.abc import Iterator, Mapping
 from typing import Any
 
@@ -48,7 +49,25 @@ import toolroom as _toolroom
 from toolroom import _host
 from toolroom._host import Argv, Result, ToolError
 
-__all__ = ["Call", "answers"]
+__all__ = ["Call", "UnservedAnswers", "answers"]
+
+
+class UnservedAnswers(Warning):
+    """A canned answer matched no call by the end of an `answers()` block.
+
+    An unmatched *call* is often incidental — the recorder default
+    exists for exactly that — but an unmatched *table entry* is a test
+    bug in the making: an answer was canned to steer the code under
+    test and never served, usually because the key was mis-spelt,
+    path-led where matching is name-led, or split into the wrong
+    tokens, and the test passes vacuously as if the entry did not
+    exist. A warning rather than an error so a deliberately shared
+    table (one fixture serving several tests, each exercising a subset)
+    can filter it; escalate it to a failure with `-W error` or a
+    `filterwarnings` mark where the table is per-test. A block that
+    exits on an exception is not warned — it already failed loudly.
+    """
+
 
 # What a table maps a prefix to: stdout, an exit code, or a full Result.
 Answer = str | int | Result
@@ -130,12 +149,13 @@ def _normalise(table: Mapping[Any, Answer]) -> dict[tuple[str, ...], Answer]:
 
 def _match(
     canned: dict[tuple[str, ...], Answer], named: tuple[str, ...]
-) -> Answer | None:
+) -> tuple[str, ...] | None:
+    """The longest canned prefix matching *named*, or None."""
     best: tuple[str, ...] | None = None
     for prefix in canned:
         if named[: len(prefix)] == prefix and (best is None or len(prefix) > len(best)):
             best = prefix
-    return canned[best] if best is not None else None
+    return best
 
 
 def _resolve(answer: Answer, where: str) -> tuple[int, str, str]:
@@ -174,6 +194,12 @@ def answers(
     and restored after it, so a canned version can neither be pre-empted
     by a real read earlier in the process nor leak into later tests.
     Not thread-safe: the seam is swapped module-wide for the duration.
+
+    A canned prefix that matched nothing by a *clean* block exit warns
+    (`UnservedAnswers`): an answer canned but never served is almost
+    always a mis-keyed prefix, and without the warning the test passes
+    vacuously. A block that exits on an exception is not warned — it
+    already failed loudly.
     """
     canned = _normalise(table or {})
     fm_result: Any = None
@@ -189,6 +215,7 @@ def answers(
                 "install footman, or drop hosted= to test the standalone lane."
             ) from None
     calls: list[Call] = []
+    served: set[tuple[str, ...]] = set()
 
     def fake_run(
         target: list[str] | Any,
@@ -233,10 +260,12 @@ def answers(
                 },
             )
         )
-        answer = _match(canned, named)
-        code, stdout, stderr = (
-            (0, "", "") if answer is None else _resolve(answer, command)
-        )
+        matched = _match(canned, named)
+        if matched is None:
+            code, stdout, stderr = 0, "", ""
+        else:
+            served.add(matched)
+            code, stdout, stderr = _resolve(canned[matched], command)
         if hosted:
             result: Any = fm_result(
                 code, command=command, stdout=stdout, stderr=stderr, tokens=exact
@@ -267,8 +296,8 @@ def answers(
                 probe=True,
             )
         )
-        answer = _match(canned, shown)
-        if answer is None:
+        matched = _match(canned, shown)
+        if matched is None:
             # An empty answer would surface as installed_version's own
             # "could not read a version" ValueError — which reads as a bug
             # in the code under test. Name the missing entry instead: a
@@ -278,7 +307,8 @@ def answers(
                 f"`{command}` — installed_version() under answers() needs "
                 f"one, e.g. {{{tuple(shown)!r}: '1.2.3'}}"
             )
-        code, stdout, stderr = _resolve(answer, command)
+        served.add(matched)
+        code, stdout, stderr = _resolve(canned[matched], command)
         return Result(code, stdout=stdout, stderr=stderr, tokens=tuple(argv))
 
     saved_run, saved_probe, saved_hosted = _host.run, _host.probe, _host.hosted
@@ -294,3 +324,16 @@ def answers(
         _host.run, _host.probe, _host.hosted = saved_run, saved_probe, saved_hosted
         _toolroom._version_cache.clear()
         _toolroom._version_cache.update(snapshot)
+    # Reached only on a clean exit: an exception leaving the block is
+    # already a loud failure, and a warning behind it would only mask it.
+    unserved = [prefix for prefix in canned if prefix not in served]
+    if unserved:
+        rendered = "; ".join(" ".join(prefix) for prefix in unserved)
+        warnings.warn(
+            f"answers(): these canned answers matched no call: {rendered} — "
+            f"an unserved entry is almost always a mis-keyed prefix "
+            f"(matching is name-led, never a resolved path, and by argv "
+            f"prefix), and the test passes vacuously without it",
+            UnservedAnswers,
+            stacklevel=3,
+        )

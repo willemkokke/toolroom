@@ -10,13 +10,14 @@ exists so a consumer never has to.
 from __future__ import annotations
 
 import sys
+import warnings
 from typing import Any
 
 import pytest
 
 import toolroom as tools
 from toolroom import Result, ToolError, _host
-from toolroom.testing import answers
+from toolroom.testing import UnservedAnswers, answers
 
 
 def test_no_table_is_a_pure_recorder():
@@ -156,9 +157,39 @@ def test_a_bad_answer_is_a_taught_refusal():
 
 def test_the_seam_is_restored_after_the_block():
     before = (_host.run, _host.probe, _host.hosted)
-    with answers({("git", "status"): "x"}):
+    with answers():
         pass
     assert (_host.run, _host.probe, _host.hosted) == before
+
+
+def test_an_unserved_answer_warns_at_clean_exit():
+    # The inverse of the silent unmatched call: an entry canned but never
+    # served is almost always a mis-keyed prefix, and the test would pass
+    # vacuously without the answer it meant to inject.
+    with (
+        pytest.warns(UnservedAnswers, match=r"uv tool list"),
+        answers({("uv", "tool", "list"): "x"}),
+    ):
+        tools.uv.sync()
+
+
+def test_a_fully_served_table_is_quiet():
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        with answers({("git", "status"): "clean"}):
+            tools.git.status()
+
+
+def test_a_failing_block_suppresses_the_unserved_warning():
+    # The block already failed loudly; a warning stacked behind the
+    # exception would only compete with it.
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        with (
+            pytest.raises(ToolError),
+            answers({("git", "push"): 1, ("never", "served"): "x"}),
+        ):
+            tools.git.push()
 
 
 # --- version reads: the probe door ------------------------------------------

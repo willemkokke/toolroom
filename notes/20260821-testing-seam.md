@@ -162,8 +162,37 @@ answers stand and footman's record sees nothing — which is what
 - Should `answers()` grow a `strict=True` (unmatched *call* refuses,
   like unmatched probes already do)? Deferred until a consumer asks;
   the recording-like default keeps the common case quiet.
+- ~~Should a canned prefix that matched nothing warn at block exit?~~
+  Landed same day as `UnservedAnswers` — see the addendum below.
 - Callable table values (`argv -> answer`) for stateful fakes —
   deferred, same reason.
 - Whether hse-devkit retires `FakeTool` in favour of this is hse's
   call; the surfaces were designed to line up (`calls` assertions,
   canned stdout by prefix, failure injection, `env` capture).
+
+## Addendum (2026-08-21): unserved answers warn
+
+Suggested by Willem after the call-as-handed build, and landed the same
+day. The asymmetry with the deferred `strict=True` is what made it
+default-on rather than opt-in: an unmatched *call* is often incidental
+— the recorder default exists for exactly that — but an unmatched
+*table entry* is a test bug in the making. The author canned an answer,
+meaning to steer the code under test, and it was never served: the key
+was mis-spelt, path-led where matching is name-led, or split into the
+wrong tokens, and the test passes vacuously with the block behaving as
+if the entry did not exist.
+
+So a clean block exit warns (`UnservedAnswers`, a `Warning` subclass)
+naming every prefix that matched nothing. Two deliberate edges:
+
+- **A warning, not an error.** A fixture that shares one table across
+  several tests — each exercising a subset — has legitimate unserved
+  entries and can filter the category; a per-test table escalates it
+  with a `filterwarnings` mark. The category class is public surface
+  precisely so both spellings are one line.
+- **Only on a clean exit.** A block that raises already failed loudly;
+  a warning stacked behind the exception competes with it and loses.
+
+`strict=True` (refusing unmatched *calls*) stays deferred — the two
+guards are independent, and this one carries no API besides the
+category.

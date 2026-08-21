@@ -43,6 +43,15 @@ An unmatched call succeeds silently — exit 0, empty streams — so
 takes the failing lane honestly: the result comes back under `nofail`,
 and raises otherwise.
 
+The inverse is loud: a canned prefix that matched *nothing* by a clean
+block exit warns (`UnservedAnswers`), because an entry canned but never
+served is almost always a mis-keyed prefix — path-led where matching is
+name-led, or split into the wrong tokens — and without the warning the
+test passes vacuously. A block that exits on an exception is not
+warned; it already failed loudly. A fixture that deliberately shares
+one table across tests can filter the category, and a per-test table
+can escalate it to an error with a `filterwarnings` mark.
+
 ## The record
 
 The yielded list holds one `Call` per interception:

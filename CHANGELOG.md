@@ -7,6 +7,17 @@ breaking changes.
 
 ## [Unreleased]
 
+### Added
+
+- **An answer canned but never served warns.** A canned prefix that
+  matched no call by a clean `answers()` block exit raises
+  `UnservedAnswers` (a `Warning`): an unmatched call is often
+  incidental, but an unserved table entry is almost always a mis-keyed
+  prefix, and the test was passing vacuously without the answer it
+  meant to inject. Blocks that exit on an exception stay quiet — they
+  already failed loudly — and the category filters or escalates like
+  any warning.
+
 ## [0.6.1] — 2026-08-21
 
 ### Added
