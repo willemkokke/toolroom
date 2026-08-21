@@ -420,6 +420,44 @@ def run(
     )
 
 
+def probe(
+    argv: list[str],
+    *,
+    shown: tuple[str, ...],
+    env: dict[str, str] | None,
+    timeout: float | None,
+) -> Result:
+    """A truthful value read outside any host — `installed_version`'s spawn.
+
+    Deliberately not `run()`: a version read is not a step of anyone's
+    story, so it must answer the same under `--dry-run` and `recording()`
+    as it does bare — no receipt, no colour ladder, no footman at all.
+    It lives at the seam so the testing double (`toolroom.testing`) has
+    one door to intercept; *shown* is the name-led spelling of the same
+    call, which that double matches canned answers against — execution
+    ignores it, and never raises for a non-zero exit: the caller reads
+    the code.
+    """
+    # Decode as UTF-8 with replacement (F39): a tool that prints a
+    # non-ASCII glyph in its --version must not crash the read on a
+    # locale-encoded pipe (cp1252 on Windows).
+    proc = subprocess.run(
+        argv,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=timeout,
+        env=env,
+    )
+    return Result(
+        proc.returncode,
+        stdout=proc.stdout or "",
+        stderr=proc.stderr or "",
+        tokens=tuple(argv),
+    )
+
+
 def _standalone(
     argv: list[str],
     *,

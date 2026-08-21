@@ -14,7 +14,8 @@ on the other. Python 3.11+, pre-1.0, moving fast.
 
 ## Hard invariants — do not violate
 
-- **Zero runtime deps, and the wheel is the bridge + stubs only.**
+- **Zero runtime deps, and the wheel is the bridge + the testing seam
+  (`toolroom.testing`) + stubs only.**
   Nothing under `src/toolroom/` imports anything but stdlib at module
   level. The machinery under `src/machinery/` is repo-only: uv_build
   ships only the declared `toolroom` module, the release workflow
@@ -24,7 +25,10 @@ on the other. Python 3.11+, pre-1.0, moving fast.
 - **footman is a dev dependency only** — it runs the gate and hosts
   the conformance suite. `src/toolroom/` may import footman *lazily
   and only behind `_host.hosted()`* (footman present in `sys.modules`
-  — presence in the process, never "a task is running").
+  — presence in the process, never "a task is running") — or behind
+  `toolroom.testing.answers(hosted=True)`, the consumer explicitly
+  asserting footman semantics (a missing footman there is a taught
+  refusal at entry).
   `machinery/` may lean on footman internals freely: it is repo-only
   and pinned.
 - **The seam speaks stdlib.** `list[str]` in, int-with-attributes

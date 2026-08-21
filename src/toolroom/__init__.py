@@ -1124,25 +1124,19 @@ class Tool:
         """
         key = self._path
         if key not in _version_cache:
-            # Decode as UTF-8 with replacement (F39): a tool that prints a
-            # non-ASCII glyph in its --version must not crash the read on a
-            # locale-encoded pipe (cp1252 on Windows).
             argv = [self._path, *self._version_argv]
-            out = _subprocess.run(
+            out = _host.probe(
                 argv,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                timeout=30,
+                shown=(self._argv0, *self._version_argv),
                 # Asking a tool its version must not make it check for a
                 # newer one: gh does that from any command unless told not
                 # to, so a task that guards on a version paid for a network
                 # round trip to find out.
                 env={**_os.environ, **_QUIET},
+                timeout=30,
             )
             found = read_version(out.stdout or out.stderr)
-            if out.returncode != 0 or not found:
+            if out.code != 0 or not found:
                 raise ValueError(f"could not read a version from `{' '.join(argv)}`")
             _version_cache[key] = version_tuple(found)
         return _version_cache[key]
@@ -1230,6 +1224,14 @@ cmd = Tool("cmd", "/c", version_argv=("/c", "ver"))  # no --version; `ver` is it
 
 def __getattr__(name: str) -> Tool:
     # Any executable is a tool: `tools.terraform("plan")` needs no declaration.
+    if name == "testing":
+        # The one attribute that is a module, not a tool. `from toolroom
+        # import testing` consults this hook *before* the import system
+        # falls back to the submodule, so without the redirect it would
+        # mint a Tool("testing") and quietly shadow the test helpers.
+        import importlib
+
+        return _cast("Tool", importlib.import_module("toolroom.testing"))
     if name.startswith("_"):
         raise AttributeError(name)
     return Tool(name.replace("_", "-"))

@@ -7,6 +7,25 @@ breaking changes.
 
 ## [Unreleased]
 
+### Added
+
+- **`toolroom.testing` — canned answers for bridge calls.** A test
+  wraps the code under test in `with toolroom.testing.answers({...}) as
+  calls:` and every bridge call is answered from the table instead of
+  spawning: keys are argv prefixes (longest match wins), values are
+  canned stdout, an exit code, or a full `Result`, and the yielded list
+  records each call's argv, environment and run policy for assertions.
+  The handles stay completely real — chaining, flag translation,
+  redaction are the bridge's own — only execution is replaced, at the
+  `_host` seam both lanes already pass through. A non-zero answer takes
+  the failing lane honestly (`ToolError`, or footman's `RunFailed`
+  under `answers(hosted=True)`, which simulates the hosted lane for
+  code written to run in footman tasks). `installed_version()` is
+  covered too: its spawn moved into the seam as `_host.probe()` —
+  same semantics, still untouched by `--dry-run` and `recording()` —
+  so a test can can a version line while the per-process cache is
+  isolated for the block.
+
 ## [0.5.3] — 2026-08-20
 
 ### Changed
