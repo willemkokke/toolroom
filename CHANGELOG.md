@@ -7,6 +7,8 @@ breaking changes.
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-08-21
+
 ### Added
 
 - **`toolroom.testing` — canned answers for bridge calls.** A test
@@ -303,7 +305,8 @@ breaking changes.
 - Name reservation on PyPI: an empty typed module and the
   trusted-publishing release workflow. Nothing importable of substance.
 
-[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/willemkokke/toolroom/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/willemkokke/toolroom/compare/v0.5.3...v0.6.0
 [0.5.3]: https://github.com/willemkokke/toolroom/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/willemkokke/toolroom/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/willemkokke/toolroom/compare/v0.5.0...v0.5.1

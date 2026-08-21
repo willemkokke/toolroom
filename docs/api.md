@@ -28,3 +28,12 @@ implementation — it moves without notice.
 ::: toolroom.read_version
 
 ::: toolroom.version_tuple
+
+## Testing
+
+How these fit together is [Testing](testing.md)'s story; this is the
+reference.
+
+::: toolroom.testing.answers
+
+::: toolroom.testing.Call

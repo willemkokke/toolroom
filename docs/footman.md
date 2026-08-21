@@ -46,7 +46,9 @@ would be faked.
 - **Receipts and reporting** — every call is a step: a line in the
   run's story, a row in `--json`, output replayed on failure.
 - **`recording()`** — tests capture the commands a block would run
-  without executing them.
+  without executing them. When a test needs a tool to *say* something
+  or to fail, that is [`toolroom.testing.answers()`](testing.md) —
+  toolroom's own double, host or no host.
 - **`--dry-run`** — calls are faked, not executed.
 - **The in-process lane** — tools that prefer running inside the
   process (pytest via `pytest.main`, mkdocs on macOS where `DYLD_*`
