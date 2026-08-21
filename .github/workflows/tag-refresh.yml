@@ -27,7 +27,11 @@ jobs:
       - name: tag the version the merge landed
         run: |
           version=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
-          if git rev-parse "v$version" >/dev/null 2>&1; then
+          # Asked of the remote, which is where the tag must not already be:
+          # checkout fetches no tags, so a local `rev-parse` never finds one
+          # and every bump-less refresh went on to tag, get rejected, and
+          # fail. The first refresh to carry only corrections found it.
+          if [ -n "$(git ls-remote --tags origin "refs/tags/v$version")" ]; then
             echo "v$version already tagged — the merged refresh carried no bump"
             exit 0
           fi
