@@ -67,3 +67,13 @@ jobs:
           "$docker_bin" build --help 2>&1 | head -4 || true
           echo "--- plugins the CLI can see ---"
           "$docker_bin" --help 2>&1 | grep -E "^\s+(buildx|compose)\*?\s" || echo "(none listed)"
+          # Whether the runner already decided this for us. If the split is an
+          # inherited variable rather than the platform, the reader has to
+          # settle it the way it settles colour, or a reading records the
+          # machine that took it.
+          echo "--- DOCKER_BUILDKIT in the environment ---"
+          echo "value: '${DOCKER_BUILDKIT-<unset>}'"
+          echo "--- forced on: does build route to buildx then? ---"
+          DOCKER_BUILDKIT=1 "$docker_bin" build --help 2>&1 | head -3 || true
+          echo "--- forced off: and away from it? ---"
+          DOCKER_BUILDKIT=0 "$docker_bin" build --help 2>&1 | head -3 || true
