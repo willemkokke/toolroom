@@ -1075,6 +1075,7 @@ def run_help(
             env={
                 **os.environ,
                 **QUIET,
+                **DECIDED,
                 "COLUMNS": "200",
                 "TERM": "dumb",
                 "NO_COLOR": "1",
@@ -1114,6 +1115,7 @@ def _decoded(text: str, argv: list[str], flag: str, timeout: float) -> str:
             env={
                 **os.environ,
                 **QUIET,
+                **DECIDED,
                 "COLUMNS": "200",
                 "TERM": "dumb",
                 "NO_COLOR": "1",
@@ -1290,6 +1292,27 @@ def _render_page(tree: str, page: str, timeout: float) -> str:
         return ""
     return _dehyphenate(_OVERSTRIKE.sub("", done.stdout or ""))
 
+
+DECIDED = {"DOCKER_BUILDKIT": "1"}
+"""A choice the tool would otherwise take from the machine reading it.
+
+`docker build` is buildx wherever buildx is installed, which is why the
+driver installs it — but with `DOCKER_BUILDKIT` unset the CLI only routes
+`build` that way for a Linux daemon, and a reader has no daemon at all.
+So Linux and macOS read buildx while Windows fell back to the builder
+docker shipped with before 2019, and one verb arrived as two surfaces:
+`--compress` and `--cpu-shares` from one leg, `--platform` and `--push`
+from the others, each recorded as missing on the platforms that saw the
+other. Twelve options of a per-platform difference that no user has.
+
+Docker's own notes retire the classic builder for Linux images and name
+the exception — native Windows *containers* — which is not the docker
+this describes: a Windows user on the usual backend talks to a Linux
+daemon and gets buildx like everyone else. Pinning the opt-in reads the
+builder that is actually installed, the same way `COLUMNS` and
+`help.format` are pinned so a reading describes the tool and not the
+machine that took it.
+"""
 
 QUIET = {"GH_NO_UPDATE_NOTIFIER": "1"}
 """Tools told not to phone home while being read.

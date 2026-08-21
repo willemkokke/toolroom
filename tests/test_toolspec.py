@@ -193,6 +193,20 @@ def test_reads_spawn_off_the_callers_console():
     assert "--ok" in text
 
 
+def test_the_reader_settles_which_builder_docker_describes():
+    """`docker build` is buildx wherever buildx is installed — which is why
+    the driver installs it — but with `DOCKER_BUILDKIT` unset the CLI only
+    routes `build` that way for a Linux daemon, and a reader has no daemon.
+
+    Linux and macOS read buildx; Windows fell back to the pre-2019 builder,
+    and one verb was stored as two surfaces with twelve options recorded as
+    a per-platform difference no user has. So the opt-in is pinned for the
+    read, like `COLUMNS` and `help.format` before it.
+    """
+    code = "import os; print('usage: x [--ok]', os.environ.get('DOCKER_BUILDKIT'))"
+    assert "1" in _toolhelp.run_help([sys.executable, "-c", code])
+
+
 def test_run_help_reads_utf8_not_the_locale_codec():
     """git-cliff's help is UTF-8. Decoded with Windows cp1252 the reader
     thread died mid-decode, stdout came back None, and ten releases were
