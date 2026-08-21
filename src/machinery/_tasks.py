@@ -2286,7 +2286,11 @@ def prepare_release(
     chooses anything else.
 
     Two files must agree or the release workflow refuses the tag
-    (`pyproject.toml` and `__init__.__version__`).
+    (`pyproject.toml` and `__init__.__version__`). The README's beta note
+    rolls with them: its minor-pin example (`toolroom~=X.Y.0`) follows the
+    released minor, so a minor bump rewrites it and a patch bump leaves it
+    — the pin already admits the patch (`tests/test_docs_drift.py` fails
+    the gate if it goes stale).
 
     `[Unreleased]` becomes `[X.Y.Z]` dated today, with the compare links
     repointed. Refuses rather than guesses when there is nothing to release.
@@ -2322,6 +2326,11 @@ def prepare_release(
             root / "src" / "toolroom" / "__init__.py",
             rf'^__version__ = "{previous}"',
             f'__version__ = "{version}"',
+        ),
+        (
+            root / "README.md",
+            r"toolroom~=\d+\.\d+\.0",
+            "toolroom~={}.{}.0".format(*version.split(".")[:2]),
         ),
     ):
         text = path.read_text(encoding="utf-8")

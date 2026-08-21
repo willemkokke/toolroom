@@ -3034,13 +3034,20 @@ def test_a_platform_new_to_a_tool_backfills_the_version_people_run(
 
 
 def _repo(tmp_path, version="1.2.3", entries=("- **A thing.** It happened.",)):
-    """A miniature checkout: the two files that must agree."""
+    """A miniature checkout: the two files that must agree, and the README
+    whose minor-pin example follows them."""
     (tmp_path / "src" / "toolroom").mkdir(parents=True)
     (tmp_path / "pyproject.toml").write_text(
         f'[project]\nname = "toolroom"\nversion = "{version}"\n', encoding="utf-8"
     )
     (tmp_path / "src" / "toolroom" / "__init__.py").write_text(
         f'__version__ = "{version}"\n', encoding="utf-8"
+    )
+    (tmp_path / "README.md").write_text(
+        "Pin the minor (`toolroom~={}.{}.0`) if you build on it.\n".format(
+            *version.split(".")[:2]
+        ),
+        encoding="utf-8",
     )
     repo = "https://github.com/willemkokke/toolroom"
     (tmp_path / "CHANGELOG.md").write_text(
@@ -3073,6 +3080,25 @@ def test_a_stub_only_release_is_a_patch_and_moves_what_must_agree(
     assert '__version__ = "1.2.4"' in (
         root / "src" / "toolroom" / "__init__.py"
     ).read_text(encoding="utf-8")
+    # The README's pin already admits a patch: ~=1.2.0 covers 1.2.4, so a
+    # patch bump leaves the advice exactly as it was.
+    assert "toolroom~=1.2.0" in (root / "README.md").read_text(encoding="utf-8")
+
+
+def test_a_minor_release_rolls_the_readme_pin(tmp_path, monkeypatch):
+    """The beta note's pin example names the released minor; a minor bump
+    is the one move that dates it, so the roll rewrites it in the same
+    breath as the two version files."""
+    from machinery import _tasks as tools
+
+    root = _repo(tmp_path)
+    monkeypatch.setattr(tools, "_HISTORY", root / "tool-history")
+
+    prepared = tools.prepare_release(bump="minor")
+    assert (prepared.previous, prepared.version) == ("1.2.3", "1.3.0")
+    readme = (root / "README.md").read_text(encoding="utf-8")
+    assert "toolroom~=1.3.0" in readme
+    assert "toolroom~=1.2.0" not in readme
 
 
 def test_rolling_the_changelog_dates_the_release_and_repoints_the_links(

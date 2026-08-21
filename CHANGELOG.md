@@ -7,6 +7,13 @@ breaking changes.
 
 ## [Unreleased]
 
+### Changed
+
+- **The README's minor-pin example can no longer go stale.**
+  `fm tools.prepare-release` rolls the beta note's `toolroom~=X.Y.0`
+  alongside the two version files on a minor bump, and a drift test
+  fails the gate whenever the pin and the tree disagree.
+
 ## [0.6.0] — 2026-08-21
 
 ### Added
