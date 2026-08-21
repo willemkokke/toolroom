@@ -29,35 +29,41 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: uv run fm tools.provision --only=docker --strict
 
-      - name: what landed, and what docker makes of it
+      # Through the environment file, never `eval`: a Windows path is full of
+      # backslashes and the shell eats them, which is how the first run of
+      # this probe went looking for `C:Usersrunner...` and reported that
+      # nothing had been installed anywhere.
+      - name: resolve the provisioned paths
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          eval "$(uv run python - <<'PY'
+          uv run python - >> "$GITHUB_ENV" <<'PY'
+          from pathlib import Path
+          from machinery import _toolfetch
           from machinery._provision import bin_dir
           from machinery._tasks import default_prefix
-          from machinery import _toolfetch
-          b = bin_dir(default_prefix())
-          h = _toolfetch.home_beside(b)
-          print(f'BIN={b}')
-          print(f'HOME_DIR={h}')
-          print(f'PLUGINS={h / ".docker" / "cli-plugins"}')
+          b = Path(bin_dir(default_prefix()))
+          h = Path(_toolfetch.home_beside(b))
+          print(f"BIN_POSIX={b.as_posix()}")
+          print(f"PLUGINS_POSIX={(h / '.docker' / 'cli-plugins').as_posix()}")
+          print(f"HOME_NATIVE={h}")
           PY
-          )"
-          echo "bin=$BIN"
+
+      - name: what landed, and what docker makes of it
+        shell: bash
+        run: |
+          echo "bin: $BIN_POSIX"
           echo "--- plugin directory ---"
-          ls -la "$PLUGINS" 2>&1 || echo "(no plugin directory)"
-          docker_bin="$BIN/docker"
-          [ -x "$docker_bin" ] || docker_bin="$BIN/docker.exe"
-          echo "--- docker binary: $docker_bin ---"
+          ls -la "$PLUGINS_POSIX" 2>&1 || echo "(no plugin directory)"
+          docker_bin="$BIN_POSIX/docker"
+          [ -f "$docker_bin" ] || docker_bin="$BIN_POSIX/docker.exe"
+          echo "--- docker binary ---"
           ls -la "$docker_bin" 2>&1 || echo "(no docker binary)"
-          # The reader gives the tool this home; do the same or the machine's
-          # own plugins answer instead, which is the contamination being hunted.
-          export HOME="$HOME_DIR" USERPROFILE="$HOME_DIR"
+          # The reader hands the tool this home; a Windows exe reads
+          # USERPROFILE, so it gets the native spelling, not the posix one.
+          export HOME="$HOME_NATIVE" USERPROFILE="$HOME_NATIVE"
           echo "--- docker buildx version ---"
           "$docker_bin" buildx version 2>&1 | head -3 || echo "(buildx did not answer)"
           echo "--- docker build --help (first lines) ---"
           "$docker_bin" build --help 2>&1 | head -4 || true
-          echo "--- does the CLI list it as a plugin? ---"
-          "$docker_bin" --help 2>&1 | grep -iA 4 "management commands\|^Commands" | head -12 || true
+          echo "--- plugins the CLI can see ---"
+          "$docker_bin" --help 2>&1 | grep -E "^\s+(buildx|compose)\*?\s" || echo "(none listed)"
