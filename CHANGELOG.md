@@ -7,6 +7,18 @@ breaking changes.
 
 ## [Unreleased]
 
+### Added
+
+- **`Call.args` / `Call.kwargs` — the call as handed.** The testing
+  seam's record now carries what the caller wrote, pre-render:
+  positionals verbatim and call keywords with False values included,
+  where the argv honestly omits them. "Never handed" and "handed, as
+  False" are different facts — `"python" not in call.kwargs` versus
+  `call.kwargs["frozen"] is False` — and tests can now assert either
+  directly instead of over-rendering flags into an argv no real call
+  would produce. Probe records keep them empty; `.flags()` keywords
+  stay part of the handle and show only in `argv`/`raw`.
+
 ### Changed
 
 - **The README's minor-pin example can no longer go stale.**

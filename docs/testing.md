@@ -51,10 +51,20 @@ The yielded list holds one `Call` per interception:
 - `.raw` — what would actually have spawned: resolved interpreter path,
   forced colour switch and all
 - `.command` — the shown line, values quoted and secrets redacted
+- `.args` / `.kwargs` — the call as the caller wrote it, pre-render:
+  positionals verbatim (a `Path` stays a `Path`), keywords with False
+  values included where the argv omits them
 - `.env` — the environment the call handed the seam (`None` inherits)
 - `.opts` — the rest of the run policy (`nofail`, `capture`, `input`,
   `cwd`, `timeout`, …) exactly as it crossed
-- `.probe` — marks a version read
+- `.probe` — marks a version read (no call of its own, so `args`/`kwargs`
+  are empty)
+
+The rule of thumb: assert on `kwargs` for *what the code decided to
+pass*, on `argv` for *what would have run*. The two answer different
+questions — "this flag was never handed, not even as False" is a
+`kwargs` fact no argv can carry, because the bridge renders a False
+flag as nothing at all.
 
 ## The hosted lane
 

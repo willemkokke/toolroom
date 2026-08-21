@@ -346,6 +346,7 @@ def run(
     *,
     parts: tuple[tuple[str, str], ...],
     exact: tuple[str, ...],
+    handed: tuple[tuple[Any, ...], dict[str, Any]] | None = None,
     nofail: bool = False,
     capture: bool = True,
     input: str | None = None,
@@ -364,6 +365,11 @@ def run(
     callable the bridge prepared. *parts*/*exact* are the two spellings
     of the same call (role-tagged for painting, literal for `--verbose`);
     standalone execution has no receipt to paint, so it reads neither.
+    *handed* is the call as the caller wrote it — positionals and
+    keywords pre-render, a False flag included where the argv omits it.
+    Execution ignores it, like `probe()`'s *shown*: it exists for the
+    testing seam, which records what the code under test decided to
+    pass, not only what would have run.
 
     *color* is the call's colour mode, unresolved — `auto` means "follow
     whoever owns the ambient", and hosted that is the run, so the mode

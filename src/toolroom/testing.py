@@ -55,19 +55,33 @@ Answer = str | int | Result
 
 
 class Call:
-    """One intercepted call: what would have run, and how.
+    """One intercepted call: what would have run, and what was handed.
 
     `argv` is the name-led spelling — raw tokens, assert-friendly.
     `raw` is what would actually have spawned: resolved interpreter
     path, forced colour switch and all (the same pairing footman's
     steps keep as `.command`/`.raw`). `command` is the shown line,
-    values quoted and secrets redacted. `env` is the environment the
-    call handed the seam (`None` inherits); `opts` carries the rest of
-    the run policy (`nofail`, `capture`, `input`, `cwd`, `timeout`, …)
-    exactly as it crossed. `probe` marks a version read.
+    values quoted and secrets redacted.
+
+    `args` and `kwargs` are the call *as the caller wrote it*,
+    pre-render: positionals verbatim (a `Path` stays a `Path`), and the
+    call keywords with **False values included** — the bridge omits a
+    False flag from the argv, the record must not, because "never
+    handed" and "handed, as False" are different facts and tests assert
+    on both. The rule of thumb: assert on `kwargs` for what the code
+    decided to pass, on `argv` for what would have run. `.flags()`
+    keywords are part of the handle, rendered into the verb path before
+    any call exists, so they show only in `argv`/`raw`; run policy
+    stays in `opts`.
+
+    `env` is the environment the call handed the seam (`None`
+    inherits); `opts` carries the rest of the run policy (`nofail`,
+    `capture`, `input`, `cwd`, `timeout`, …) exactly as it crossed.
+    `probe` marks a version read — a probe has no call of its own, so
+    its `args`/`kwargs` are `()` and `{}` by construction.
     """
 
-    __slots__ = ("argv", "command", "env", "opts", "probe", "raw")
+    __slots__ = ("args", "argv", "command", "env", "kwargs", "opts", "probe", "raw")
 
     def __init__(
         self,
@@ -75,6 +89,8 @@ class Call:
         argv: Argv,
         raw: Argv,
         command: str,
+        args: tuple[Any, ...] = (),
+        kwargs: dict[str, Any] | None = None,
         env: dict[str, str] | None,
         opts: dict[str, Any],
         probe: bool = False,
@@ -82,6 +98,8 @@ class Call:
         self.argv = argv
         self.raw = raw
         self.command = command
+        self.args = args
+        self.kwargs = {} if kwargs is None else kwargs
         self.env = env
         self.opts = opts
         self.probe = probe
@@ -177,6 +195,7 @@ def answers(
         *,
         parts: tuple[tuple[str, str], ...],
         exact: tuple[str, ...],
+        handed: tuple[tuple[Any, ...], dict[str, Any]] | None = None,
         nofail: bool = False,
         capture: bool = True,
         input: str | None = None,
@@ -191,11 +210,14 @@ def answers(
     ) -> Any:
         named = (parts[0][1], *exact[1:])
         command = " ".join(token for _role, token in parts)
+        call_args, call_kwargs = handed if handed is not None else ((), {})
         calls.append(
             Call(
                 argv=Argv(named),
                 raw=Argv(exact),
                 command=command,
+                args=call_args,
+                kwargs=call_kwargs,
                 env=env,
                 opts={
                     "nofail": nofail,

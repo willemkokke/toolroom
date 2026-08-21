@@ -73,6 +73,42 @@ def test_the_real_bridge_renders_the_flags():
     assert call.argv == ["ruff", "check", "src", "--fix", "--select=E", "--select=F"]
 
 
+def test_a_false_keyword_shows_in_kwargs_and_not_in_argv():
+    # The bridge omits a False flag from the argv — that is the rendering
+    # contract. The record keeps it: "handed, as False" is a fact tests
+    # assert on, and it lives in .kwargs, not in any token.
+    with answers() as calls:
+        tools.uv.sync(frozen=False)
+    (call,) = calls
+    assert call.kwargs["frozen"] is False
+    assert call.argv == ["uv", "sync"]
+
+
+def test_positionals_are_recorded_verbatim():
+    from pathlib import Path
+
+    with answers() as calls:
+        tools.ruff.check(Path("src"), fix=True)
+    (call,) = calls
+    assert call.args == (Path("src"),)
+    assert isinstance(call.args[0], Path)  # no str() — rendering is argv's job
+    assert call.kwargs == {"fix": True}
+
+
+def test_kwargs_tell_never_handed_apart_from_handed_as_false():
+    # The hse-shaped case: two calls with identical argv, where the
+    # difference the test cares about is whether a flag was handed at all.
+    # FakeTool answered it by over-rendering False into the argv; the
+    # record answers it directly, and strictly stronger.
+    with answers() as calls:
+        tools.uv.sync()
+        tools.uv.sync(no_python_downloads=False)
+    first, second = calls
+    assert first.argv == second.argv == ["uv", "sync"]
+    assert not any("python" in key for key in first.kwargs)
+    assert second.kwargs["no_python_downloads"] is False
+
+
 def test_argv_is_name_led_and_raw_keeps_the_path():
     with answers() as calls:
         tools.python("-c", "print('hi')")
@@ -135,6 +171,7 @@ def test_a_canned_version_read_parses_with_the_real_parser():
     (call,) = calls
     assert call.probe
     assert call.argv == ["git", "--version"]
+    assert (call.args, call.kwargs) == ((), {})  # a probe has no call of its own
     assert tools._version_cache.get("git") != (99, 43, 0)  # nothing leaked
 
 
@@ -171,10 +208,11 @@ def test_hosted_in_process_callable_is_recorded_never_invoked():
     # coverage prefers in-process; under the simulated host the bridge hands
     # the seam a callable, and the fake records the call without running it.
     with answers(hosted=True) as calls:
-        r = tools.coverage.report()
+        r = tools.coverage.report(show_missing=True)
     assert r.ok
     (call,) = calls
     assert call.argv[:2] == ["coverage", "report"]
+    assert call.kwargs == {"show_missing": True}  # the handed record crosses too
 
 
 # --- coexistence with footman's recording ------------------------------------

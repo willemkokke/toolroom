@@ -946,6 +946,10 @@ class Tool:
         parts = _show_parts(
             self._argv0, self._base, args, kwargs, single_dash=self._single_dash
         )
+        # The call as the caller wrote it, pre-render — a False keyword the
+        # argv omits, a Path still a Path. The dict is copied at this
+        # boundary so a later mutation cannot rewrite the record.
+        handed = (args, dict(kwargs))
         # The in-process argv/tail are colour-free: an in-process tool reads the
         # run-wide colour from the environment (set once at the run boundary), so
         # only a *spawned* tool that ignores the environment (git) needs its own
@@ -968,6 +972,7 @@ class Tool:
                 spawned,
                 parts=parts,
                 exact=tuple(spawned),
+                handed=handed,
                 nofail=nofail,
                 capture=capture,
                 input=input_,
@@ -1060,6 +1065,7 @@ class Tool:
                 _invoke,
                 parts=parts,
                 exact=tuple(argv),
+                handed=handed,
                 nofail=nofail,
                 capture=capture,
                 # Forwarded so run()'s refusal teaches: an in-process tool
