@@ -32,7 +32,7 @@ from machinery._toolspec import Option, ToolSpec, Verb
 SCHEMA = 1
 """Bumped when the on-disk shape changes in a way a reader must know about."""
 
-EXTRACTOR = 3
+EXTRACTOR = 4
 """The extractor generation that produced an observation.
 
 Recorded per release so improving `_toolhelp`/`_toolspec` — or a tool
@@ -58,6 +58,14 @@ URL — had the signature stored as its description, and bun's trailing
 build stamp went in with the sentence it followed. Each of those made a
 version bump read back as the tool rewording itself, and none of them was
 ever what the tool said it did.
+
+**4** — reading the builder docker actually installs. `docker build` is
+buildx wherever buildx is installed, and the driver installs it, but with
+`DOCKER_BUILDKIT` unset the CLI only routes `build` that way for a Linux
+daemon and a reader has no daemon. Linux and macOS read buildx while
+Windows read the builder docker shipped with before 2019, so one verb was
+stored as two surfaces and twelve options were recorded as a per-platform
+difference that no user has. The opt-in is pinned for the read now.
 """
 
 
